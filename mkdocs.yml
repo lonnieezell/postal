@@ -1,5 +1,5 @@
-site_name: Myth/Postal
-site_description: Documentation for Myth/Postal
+site_name: Postal
+site_description: A modern, driver-based email library for CodeIgniter 4.
 
 theme:
   name: material
@@ -28,9 +28,9 @@ theme:
     - search.highlight
     - search.share
 
-repo_url: https://github.com/myth/postal
-edit_uri: edit/develop/docs/
-copyright: Copyright &copy; 2026 Your Name.
+repo_url: https://github.com/lonnieezell/postal
+edit_uri: edit/main/docs/
+copyright: Copyright &copy; 2026 Lonnie Ezell.
 
 markdown_extensions:
   - pymdownx.highlight:

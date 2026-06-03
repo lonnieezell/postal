@@ -5,7 +5,15 @@
     "type": "library",
     "keywords": [
         "codeigniter",
-        "codeigniter4"
+        "codeigniter4",
+        "email",
+        "mailer",
+        "smtp",
+        "ses",
+        "mailgun",
+        "postmark",
+        "resend",
+        "transport"
     ],
     "authors": [
         {

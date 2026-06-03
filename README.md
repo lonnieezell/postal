@@ -1,138 +1,270 @@
-# Myth/Postal
+# Postal
 
-A starter template for building CodeIgniter 4 packages. Replace `Myth`, `Postal`, and related placeholders throughout the codebase before publishing.
+**A modern, driver-based email library for CodeIgniter 4.**
 
-## Starting a New Project from This Template
+Postal replaces CodeIgniter 4's monolithic `Email` class with a clean transport-driver
+architecture: compose a message once, send it through SMTP, Sendmail, PHP `mail()`, a log,
+or (soon) first-class HTTP API providers like SES, Mailgun, Postmark, and Resend — without
+changing your application code. It keeps the familiar CI4 email API working for a painless
+migration, and it's fully testable without ever sending a real message.
 
-1. Create a new empty repo on GitHub (no README, no .gitignore).
-2. Clone this template and point it at your new repo:
+> **Status:** Early development (`0.x`). The API is settling and may change before `1.0`.
+> Phase 1 (the core spine + SMTP-era transports) is the current focus — see the
+> [roadmap](#roadmap).
 
-```bash
-git clone https://github.com/lonnieezell/codeigniter-package-skeleton.git your-package-name
-cd your-package-name
-git remote set-url origin https://github.com/YOUR_ORG/your-package-name.git
-git push -u origin main
-```
+---
 
-3. Find and replace all placeholder strings throughout the codebase:
+## Why Postal?
 
-| Placeholder | Replace with |
-|---|---|
-| `Myth` | Your Composer vendor name (e.g. `Acme`) |
-| `Postal` | Your package name (e.g. `MyAddon`) |
-| `myth/postal` | Your Composer package slug (e.g. `acme/my-addon`) |
+- **Driver-based transports** — swap how mail is delivered via config, not code.
+- **Drop-in friendly** — existing `service('email')` calls keep working through a
+  compatibility adapter.
+- **API providers as first-class transports** *(Phase 2)* — SES, Mailgun, Postmark, Resend
+  over their HTTP APIs, no SMTP relay required.
+- **Zero required dependencies** — PHP standard extensions only. No database, no queue, no
+  view renderer needed to send mail.
+- **Built for testing** — a fake transport and expressive assertions let you verify mail in
+  PHPUnit without touching the network.
+- **Extensible** — clean `TransportInterface` and optional contracts that companion packages
+  (campaigns, tracking, templates) plug into.
 
-4. Run `composer install` (or `docker compose up`) to install dependencies.
-
-> **Note on GitHub Workflows:** The CI workflows in `.github/workflows/` are configured to trigger on PRs targeting `main` or pushes directly to `main`. If your project uses a different branching strategy (e.g., PRs go to `develop`, or you use a `release` branch), update the `branches:` values in each workflow file to match.
+---
 
 ## Requirements
 
 - PHP 8.2+
 - CodeIgniter 4.7+
+- Extensions: `ext-openssl`, `ext-mbstring` (and `ext-curl` for the API transports in Phase 2)
 
-## Project Structure
+---
 
-```
-src/
-  Config/
-    Registrar.php   # Hooks into CI4's auto-discovery (filters, etc.)
-    Services.php    # Register package services
-  Exceptions/
-    PackageException.php
-tests/
-  ExampleTest.php
-  _support/         # Test helpers and fixtures
-docs/
-  index.md          # Documentation home page
-  installation.md   # Installation guide
-  changelog.md      # Changelog
-mkdocs.yml          # MkDocs configuration (Material theme)
-```
-
-## Getting Started with Docker
-
-The repo includes a Docker setup using PHP 8.4 with all CI4-required extensions and Xdebug for coverage. Dependencies are installed automatically on first run.
-
-Start the dev server (visits `http://localhost:8080` to see the CI4 welcome page):
+## Installation
 
 ```bash
-docker compose up
+composer require myth/postal
 ```
 
-Rebuild the image after changing the `Dockerfile`:
+CodeIgniter auto-discovers the package — no manual wiring required. Publish a local config
+to customize transports:
 
 ```bash
-composer docker:build
+php spark email:test you@example.com   # send a test message via the default transport
 ```
 
-## Running Tests
+---
+
+## Quick Start
+
+### Compose and send
+
+```php
+use Myth\Postal\Email;
+
+$email = (new Email())
+    ->from('you@example.com', 'Your Name')
+    ->to('user@example.com')
+    ->subject('Welcome aboard')
+    ->html('<p>Glad to have you with us.</p>');
+
+$result = service('mailer')->send($email);
+
+if ($result->success) {
+    log_message('info', 'Sent message ' . $result->messageId);
+}
+```
+
+`send()` returns a `SendResult` carrying `success`, the provider `messageId`, any `error`,
+and the raw provider response.
+
+### Send through a named transport
+
+```php
+service('mailer')->mailer('ses')->send($email);   // use the 'ses' mailer for this send
+```
+
+### Mailable classes
+
+For reusable, testable messages, extend `Mailable`:
+
+```php
+use Myth\Postal\Mailable;
+
+class WelcomeEmail extends Mailable
+{
+    public function __construct(private User $user) {}
+
+    public function build(): void
+    {
+        $this->to($this->user->email)
+             ->subject('Welcome aboard')
+             ->html(view('emails/welcome', ['user' => $this->user]));
+    }
+}
+
+(new WelcomeEmail($user))->send();
+```
+
+Scaffold one with:
 
 ```bash
-composer docker:test            # run phpunit in Docker
-composer docker:test:coverage   # run with HTML coverage report (build/phpunit/html/)
-
-# or locally
-composer test
-composer test:coverage
+php spark make:mailable WelcomeEmail
 ```
 
-## Code Quality
+### Backward-compatible API
 
-```bash
-composer docker:cs          # check coding style
-composer docker:cs-fix      # fix coding style
-composer docker:analyze     # PHPStan + Rector dry-run
-composer docker:rector      # apply Rector changes
-composer docker:ci          # run all checks (style, analysis, tests)
+Existing CodeIgniter email code keeps working unchanged via `service('email')`:
 
-# or locally (same commands without the docker: prefix)
-composer cs
-composer cs-fix
-composer analyze
-composer ci
+```php
+$email = service('email');
+$email->setTo('user@example.com');
+$email->setSubject('Hello');
+$email->setMessage('<p>Hi there.</p>');
+$email->send();
 ```
 
-## Docker Shell
+---
 
-Open a bash shell inside the container:
+## Transports
 
-```bash
-composer docker:shell
+| Transport  | Config name | Status      |
+|------------|-------------|-------------|
+| SMTP       | `smtp`      | Phase 1     |
+| Sendmail   | `sendmail`  | Phase 1     |
+| PHP `mail()` | `mail`    | Phase 1     |
+| Log        | `log`       | Phase 1     |
+| Null       | `null`      | Phase 1     |
+| Fake (testing) | —       | Phase 1     |
+| Amazon SES | `ses`       | Phase 2     |
+| Mailgun    | `mailgun`   | Phase 2     |
+| Postmark   | `postmark`  | Phase 2     |
+| Resend     | `resend`    | Phase 2     |
+| Failover   | `failover`  | Phase 3     |
+| DKIM signing (decorator) | — | Phase 3 |
+
+Register your own transport by adding it to the `$transports` map in `Config\Email`.
+
+---
+
+## Configuration
+
+Transports are defined as named **mailers** in `Config\Email`, with a `$default` chosen per
+environment:
+
+```php
+public string $default = match (ENVIRONMENT) {
+    'production' => 'ses',
+    'testing'    => 'null',
+    default      => 'log',
+};
+
+public array $mailers = [
+    'smtp' => [
+        'transport'  => 'smtp',
+        'host'       => 'localhost',
+        'port'       => 587,
+        'encryption' => 'tls',
+        'username'   => '',
+        'password'   => '',
+    ],
+    'log'  => ['transport' => 'log'],
+    'null' => ['transport' => 'null'],
+];
 ```
 
-## Documentation (MkDocs)
+See the [documentation](#documentation) for the full configuration reference, including
+global message defaults, validation, and per-mailer DKIM settings.
 
-Docs live in `docs/` and are built with [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/). Update `mkdocs.yml` with your `site_name`, `repo_url`, and `copyright` after cloning.
+---
 
-**Install MkDocs** (requires Python 3 + pip):
+## Events
+
+Postal fires events through CodeIgniter's `Events` system at each stage of the send pipeline:
+
+| Event             | Fired                                   | Cancellable |
+|-------------------|-----------------------------------------|-------------|
+| `email.composing` | before defaults/suppression are applied | No          |
+| `email.sending`   | just before the transport sends         | **Yes**     |
+| `email.sent`      | after a successful send                 | No          |
+| `email.failed`    | after a failed send                     | No          |
+| `email.suppressed`| per recipient removed by a suppression list | No      |
+
+Returning `false` from an `email.sending` listener cancels the send. Event emission can be
+disabled with `Config\Email::$fireEvents = false`.
+
+---
+
+## Testing
+
+Swap in the fake transport and assert against what *would* have been sent — no network, no
+real mail:
+
+```php
+use Myth\Postal\Mailer;
+
+$fake = Mailer::fake();
+
+(new WelcomeEmail($user))->send();
+
+$fake->assertSent(WelcomeEmail::class);
+$fake->assertSentTo($user->email);
+$fake->assertSent(fn ($message) => str_contains($message->subject, 'Welcome'));
+$fake->assertSentCount(1);
+```
+
+---
+
+## Roadmap
+
+Postal ships in phases, each independently usable:
+
+- **Phase 1 — Core + SMTP-era transports** *(current)*: message composition, MIME rendering,
+  the `Mailer`/`MailerManager` pipeline, events, the SMTP/Sendmail/Mail/Log/Null transports,
+  the fake transport, and the backward-compatible adapter.
+- **Phase 2 — API transports**: SES, Mailgun, Postmark, and Resend over HTTP.
+- **Phase 3 — Composition & signing**: failover transport and local DKIM signing.
+- **Phase 4 — Developer experience**: `Mailable` assertions, `make:mailable`, and `email:test`.
+
+The full design proposal lives in
+[issue #1](https://github.com/lonnieezell/postal/issues/1).
+
+---
+
+## Documentation
+
+Full documentation ships with the project and is built with
+[Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) from the [`docs/`](docs/)
+directory.
+
+Preview locally (requires Python 3):
 
 ```bash
 pip3 install mkdocs mkdocs-material
+mkdocs serve   # http://127.0.0.1:8000
 ```
 
-**Preview locally** (live-reload at `http://127.0.0.1:8000`):
+---
+
+## Contributing
+
+Contributions are welcome. The project ships with a full toolchain (PHPUnit, php-cs-fixer,
+PHPStan, Rector) runnable locally or in Docker:
 
 ```bash
-mkdocs serve
+composer test        # run the test suite
+composer ci          # style + static analysis + tests (run before opening a PR)
+composer cs-fix      # auto-fix coding style
 ```
 
-**Build static output** to `site/`:
+Docker equivalents are available for every command by prefixing `docker:`
+(e.g. `composer docker:test`), and `docker compose up` starts a dev container with all
+required extensions. A pre-commit hook (installed on `composer install`) lints and
+auto-formats staged PHP files.
 
-```bash
-mkdocs build
-```
+Please ensure `composer ci` passes and new behavior is covered by tests before submitting a
+pull request.
 
-**Deploy to GitHub Pages** (done automatically by CI, but can be run manually):
-
-```bash
-mkdocs gh-deploy
-```
-
-## How the Package Integrates with CI4
-
-CI4 auto-discovers your package via `src/Config/Registrar.php`. Add filter aliases, routes, or other config there. Register services in `src/Config/Services.php`. No manual wiring needed in the host app — Composer autoload and CI4's discovery handle it automatically.
+---
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+Released under the [MIT License](LICENSE).
