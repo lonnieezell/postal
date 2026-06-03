@@ -3,7 +3,7 @@
 Install via Composer:
 
 ```bash
-composer require vendor/package
+composer require myth/postal
 ```
 
 ## Requirements

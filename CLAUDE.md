@@ -2,9 +2,21 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+
+## General Guidelines
+- Follow PSR-12 coding style (enforced by `php-cs-fixer`).
+- Use strict types and type declarations.
+- Use PHPDoc comments for all public methods and properties.
+- Add docblocks for each class, but never for file level or tests.
+- Follow CI4 conventions for Models, Services, and Config.
+- Write tests for all new features and bug fixes.
+- When adding new dependencies, update `composer.json` and ensure they are compatible with CI4 and PHP 8.2+.
+- When modifying CI4 config or services, update `Registrar.php` and `Services.php` accordingly.
+- When adding new features, consider how they will be tested and whether they require new database tables or config options.
+
 ## What This Is
 
-A CodeIgniter 4 package skeleton/template. The placeholder strings `YourVendor`, `YourPackage`, and `vendor/package` throughout the codebase must be replaced before publishing a real package.
+A CodeIgniter 4 package skeleton/template. The placeholder strings `Myth`, `Postal`, and `myth/postal` throughout the codebase must be replaced before publishing a real package.
 
 ## Commands
 
@@ -48,7 +60,7 @@ composer docker:shell     # bash shell inside container
 - `src/Config/Services.php` — extends `BaseService` to register package services available via `service('name')`
 - `src/Exceptions/PackageException.php` — base exception class for the package
 
-**Namespace**: `YourVendor\YourPackage\` maps to `src/`. Test namespace `Tests\` maps to `tests/`, `Tests\Support\` maps to `tests/_support/`.
+**Namespace**: `Myth\Postal\` maps to `src/`. Test namespace `Tests\` maps to `tests/`, `Tests\Support\` maps to `tests/_support/`.
 
 **PHPUnit bootstrap**: uses `vendor/codeigniter4/framework/system/Test/bootstrap.php` — this is required for CI4 test helpers and must remain in `phpunit.xml.dist`.
 

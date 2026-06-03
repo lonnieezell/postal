@@ -1,4 +1,4 @@
-# YourVendor/YourPackage
+# Myth/Postal
 
 Welcome to the documentation.
 

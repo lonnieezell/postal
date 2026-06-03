@@ -1,6 +1,6 @@
-# YourVendor/YourPackage
+# Myth/Postal
 
-A starter template for building CodeIgniter 4 packages. Replace `YourVendor`, `YourPackage`, and related placeholders throughout the codebase before publishing.
+A starter template for building CodeIgniter 4 packages. Replace `Myth`, `Postal`, and related placeholders throughout the codebase before publishing.
 
 ## Starting a New Project from This Template
 
@@ -18,9 +18,9 @@ git push -u origin main
 
 | Placeholder | Replace with |
 |---|---|
-| `YourVendor` | Your Composer vendor name (e.g. `Acme`) |
-| `YourPackage` | Your package name (e.g. `MyAddon`) |
-| `vendor/package` | Your Composer package slug (e.g. `acme/my-addon`) |
+| `Myth` | Your Composer vendor name (e.g. `Acme`) |
+| `Postal` | Your package name (e.g. `MyAddon`) |
+| `myth/postal` | Your Composer package slug (e.g. `acme/my-addon`) |
 
 4. Run `composer install` (or `docker compose up`) to install dependencies.
 

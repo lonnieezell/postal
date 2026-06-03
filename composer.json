@@ -1,6 +1,6 @@
 {
-    "name": "vendor/package",
-    "description": "A CodeIgniter 4 package",
+    "name": "myth/postal",
+    "description": "A modern CodeIgniter 4 email replacement library.",
     "license": "MIT",
     "type": "library",
     "keywords": [
@@ -28,7 +28,7 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "YourVendor\\YourPackage\\": "src"
+            "Myth\\Postal\\": "src"
         }
     },
     "autoload-dev": {
