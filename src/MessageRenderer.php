@@ -168,6 +168,15 @@ class MessageRenderer
      */
     private function htmlToText(string $html): string
     {
+        // strip_tags() keeps the *contents* of removed tags, so script/style/head
+        // blocks would dump their CSS/JS/metadata into the text. Remove them whole
+        // before any other conversion.
+        $html = preg_replace(
+            '#<(script|style|head)\b[^>]*>.*?</\1>#is',
+            '',
+            $html,
+        ) ?? $html;
+
         // Anchors collapse to their label followed by the URL in parentheses.
         $text = preg_replace_callback(
             '/<a\b[^>]*\bhref=(["\'])(.*?)\1[^>]*>(.*?)<\/a>/is',

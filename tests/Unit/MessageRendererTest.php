@@ -188,6 +188,41 @@ final class MessageRendererTest extends CIUnitTestCase
         $this->assertStringNotContainsString('twoThree', $textPart);
     }
 
+    public function testStripsStyleScriptAndHeadFromTextFallback(): void
+    {
+        $html = '<html><head><title>Page Title</title>'
+            . '<style>p{color:red;font-size:14px}</style></head>'
+            . '<body><script>alert("x");var y=1;</script>'
+            . '<p>Visible body</p></body></html>';
+
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->html($html);
+
+        $textPart = $this->textPartOf((new MessageRenderer())->render($email));
+
+        $this->assertStringContainsString('Visible body', $textPart);
+        // CSS, JS, and head metadata must never leak into the text part.
+        $this->assertStringNotContainsString('color:red', $textPart);
+        $this->assertStringNotContainsString('font-size', $textPart);
+        $this->assertStringNotContainsString('alert(', $textPart);
+        $this->assertStringNotContainsString('var y', $textPart);
+        $this->assertStringNotContainsString('Page Title', $textPart);
+    }
+
+    public function testStripsHtmlCommentsFromTextFallback(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->html('<p>Before<!-- secret internal note -->After</p>');
+
+        $textPart = $this->textPartOf((new MessageRenderer())->render($email));
+
+        $this->assertStringNotContainsString('secret internal note', $textPart);
+    }
+
     public function testEncodesNonAsciiSubjectWithRfc2047(): void
     {
         $email = (new Email())
