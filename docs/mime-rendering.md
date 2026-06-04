@@ -22,6 +22,7 @@ Why bother? A bare `text/html` message with no plain-text alternative is one of 
 
 The generated text is a best-effort conversion of your HTML:
 
+- `<script>`, `<style>`, and `<head>` blocks are removed whole, so their CSS, JS, and metadata never leak into the text
 - `<a href="https://example.com">our site</a>` becomes `our site (https://example.com)`
 - block-level tags (`<p>`, `<div>`, `<br>`, headings, list items…) become line breaks
 - remaining tags are stripped and HTML entities decoded (`&amp;` → `&`)
@@ -63,6 +64,8 @@ $headers = $renderer->headers(); // ['From' => '...', 'Subject' => '...', ...]
 ## Encoding
 
 Headers with non-ASCII characters — an accented subject, a display name like `Café Owner` — are encoded with RFC 2047 "Q" encoding. The address itself stays literal; only the display name is encoded. Pure-ASCII headers are left untouched.
+
+A pure-ASCII display name is wrapped in a quoted-string (`"Doe, John" <a@b.com>`), with quotes and backslashes escaped, so a comma or other special character can't split one recipient into two.
 
 Plain-text parts are word-wrapped at 76 characters, and every line ending is normalised to CRLF. The HTML part is encoded with `quoted-printable`, so even very long HTML lines stay within the 998-octet SMTP limit without requiring an `8BITMIME`-capable server.
 
