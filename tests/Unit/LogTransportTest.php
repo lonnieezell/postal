@@ -39,9 +39,9 @@ final class LogTransportTest extends CIUnitTestCase
         $this->assertTrue($result->success);
         $this->assertFalse($result->cancelled);
         $this->assertSame('debug', $logger->level);
-        $this->assertStringContainsString('Subject: Greetings', $logger->message);
-        $this->assertStringContainsString('multipart/alternative', $logger->message);
-        $this->assertStringContainsString('<p>Hello</p>', $logger->message);
+        $this->assertStringContainsString('Subject: Greetings', (string) $logger->message);
+        $this->assertStringContainsString('multipart/alternative', (string) $logger->message);
+        $this->assertStringContainsString('<p>Hello</p>', (string) $logger->message);
     }
 
     public function testSendHonoursConfiguredLevel(): void
@@ -67,10 +67,7 @@ final class LogTransportTest extends CIUnitTestCase
             public string $level   = '';
             public string $message = '';
 
-            /**
-             * @param array<string, mixed> $context
-             */
-            public function log($level, string|Stringable $message, array $context = []): void
+            public function log(mixed $level, string|Stringable $message, array $context = []): void
             {
                 $this->level   = (string) $level;
                 $this->message = (string) $message;

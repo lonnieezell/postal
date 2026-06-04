@@ -158,7 +158,7 @@ final class MessageRendererTest extends CIUnitTestCase
             ->html('<p>Hello <a href="https://example.com">our site</a></p>');
 
         $renderer = new MessageRenderer();
-        $mime      = $renderer->render($email);
+        $mime     = $renderer->render($email);
 
         // Still multipart/alternative even without an explicit text body.
         $this->assertStringContainsString('Content-Type: multipart/alternative;', $mime);
@@ -238,7 +238,7 @@ final class MessageRendererTest extends CIUnitTestCase
             ->to('you@example.com')
             ->text($longLine);
 
-        $mime = (new MessageRenderer())->render($email);
+        $mime     = (new MessageRenderer())->render($email);
         [, $body] = explode("\r\n\r\n", $mime, 2);
 
         foreach (explode("\r\n", rtrim($body)) as $line) {

@@ -22,11 +22,11 @@ use Psr\Log\LoggerInterface;
  * A transport that renders the message to MIME and writes it to a PSR-3 logger
  * instead of delivering it. Useful in development to inspect outgoing mail.
  */
-final class LogTransport implements TransportInterface
+final readonly class LogTransport implements TransportInterface
 {
-    private readonly LoggerInterface $logger;
+    private LoggerInterface $logger;
 
-    public function __construct(?LoggerInterface $logger = null, private readonly string $level = 'debug')
+    public function __construct(?LoggerInterface $logger = null, private string $level = 'debug')
     {
         $this->logger = $logger ?? service('logger');
     }

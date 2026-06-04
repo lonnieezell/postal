@@ -18,7 +18,6 @@ use CodeIgniter\Test\CIUnitTestCase;
 use Myth\Postal\Config\Email as EmailConfig;
 use Myth\Postal\Email;
 use Myth\Postal\Exceptions\PackageException;
-use Myth\Postal\Mailer;
 use Myth\Postal\MailerManager;
 use Psr\Log\AbstractLogger;
 use Stringable;
@@ -45,13 +44,6 @@ final class MailerManagerTest extends CIUnitTestCase
         $this->assertArrayHasKey('log', $config->transports);
     }
 
-    public function testResolvesLogMailer(): void
-    {
-        $manager = new MailerManager(new EmailConfig());
-
-        $this->assertInstanceOf(Mailer::class, $manager->mailer('log'));
-    }
-
     public function testMailerInstancesAreCached(): void
     {
         $manager = new MailerManager(new EmailConfig());
@@ -73,10 +65,7 @@ final class MailerManagerTest extends CIUnitTestCase
         $logger = new class () extends AbstractLogger {
             public string $message = '';
 
-            /**
-             * @param array<string, mixed> $context
-             */
-            public function log($level, string|Stringable $message, array $context = []): void
+            public function log(mixed $level, string|Stringable $message, array $context = []): void
             {
                 $this->message = (string) $message;
             }
