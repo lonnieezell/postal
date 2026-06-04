@@ -16,14 +16,14 @@ namespace Myth\Postal;
 /**
  * The outcome of a send attempt returned by every transport.
  */
-final class SendResult
+final readonly class SendResult
 {
     private function __construct(
-        public readonly bool $success,
-        public readonly ?string $messageId = null,
-        public readonly ?string $error = null,
-        public readonly mixed $raw = null,
-        public readonly bool $cancelled = false,
+        public bool $success,
+        public ?string $messageId = null,
+        public ?string $error = null,
+        public mixed $raw = null,
+        public bool $cancelled = false,
     ) {
     }
 

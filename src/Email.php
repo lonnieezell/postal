@@ -19,30 +19,34 @@ namespace Myth\Postal;
  */
 class Email
 {
-    public ?Address $from = null;
-
+    public ?Address $from    = null;
     public ?Address $replyTo = null;
 
-    /** @var list<Address> */
+    /**
+     * @var list<Address>
+     */
     public array $to = [];
 
-    /** @var list<Address> */
+    /**
+     * @var list<Address>
+     */
     public array $cc = [];
 
-    /** @var list<Address> */
+    /**
+     * @var list<Address>
+     */
     public array $bcc = [];
 
-    public string $subject = '';
-
+    public string $subject   = '';
     public ?string $htmlBody = null;
-
     public ?string $textBody = null;
 
-    /** @var array<string, string> */
+    /**
+     * @var array<string, string>
+     */
     public array $headers = [];
 
-    public int $priority = 3;
-
+    public int $priority       = 3;
     public ?string $returnPath = null;
 
     public function from(string $address, string $name = ''): static

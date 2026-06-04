@@ -15,6 +15,7 @@ namespace Myth\Postal\Config;
 
 use CodeIgniter\Config\BaseConfig;
 use Myth\Postal\Transport\NullTransport;
+use Myth\Postal\Transport\TransportInterface;
 
 /**
  * Postal mailer configuration.
@@ -40,7 +41,7 @@ class Email extends BaseConfig
      * The extensible transport-name => class map. Register a custom transport
      * by adding it here.
      *
-     * @var array<string, class-string<\Myth\Postal\Transport\TransportInterface>>
+     * @var array<string, class-string<TransportInterface>>
      */
     public array $transports = [
         'null' => NullTransport::class,

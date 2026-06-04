@@ -16,11 +16,11 @@ namespace Myth\Postal;
 /**
  * An email address with an optional display name.
  */
-final class Address
+final readonly class Address
 {
     public function __construct(
-        public readonly string $email,
-        public readonly string $name = '',
+        public string $email,
+        public string $name = '',
     ) {
     }
 
