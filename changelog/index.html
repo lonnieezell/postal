@@ -385,6 +385,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="[Unreleased]">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Added
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -430,6 +447,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="[Unreleased]">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Added
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -459,6 +493,20 @@
 
 <h1 id="changelog">Changelog</h1>
 <h2 id="unreleased">[Unreleased]</h2>
+<h3 id="added">Added</h3>
+<ul>
+<li>Core send pipeline: compose an <code>Email</code> and send it through a transport via
+  <code>service('mailer')</code>, receiving a <code>SendResult</code>.</li>
+<li><code>Email</code> message builder with <code>from</code>/<code>replyTo</code>/<code>to</code>/<code>cc</code>/<code>bcc</code>/<code>subject</code>/<code>html</code>/<code>text</code>/
+  <code>header</code>/<code>priority</code>/<code>returnPath</code> (mutable, chainable).</li>
+<li><code>Address</code> value object that parses and renders <code>"Name &lt;email&gt;"</code>.</li>
+<li><code>SendResult</code> with <code>ok()</code>/<code>fail()</code>/<code>cancelled()</code> factories.</li>
+<li><code>TransportInterface</code> and the <code>NullTransport</code> implementation.</li>
+<li><code>MailerManager</code> (resolves the default and named mailers from <code>Config\Email</code> via an
+  extensible transport map, lazily and cached) and a minimal <code>Mailer</code> that clones the
+  message at the dispatch boundary.</li>
+<li><code>Config\Email</code> configuration and the <code>service('mailer')</code> service.</li>
+</ul>
 
 
 
