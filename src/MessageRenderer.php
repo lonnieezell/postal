@@ -20,8 +20,7 @@ namespace Myth\Postal;
  */
 class MessageRenderer
 {
-    private const CRLF = "\r\n";
-
+    private const CRLF    = "\r\n";
     private const CHARSET = 'UTF-8';
 
     /**
@@ -42,6 +41,10 @@ class MessageRenderer
      */
     private array $renderedHeaders = [];
 
+    /**
+     * Serialises the email into a complete raw MIME message (headers, a blank
+     * line, then the body) and records the header set for headers().
+     */
     public function render(Email $email): string
     {
         [$contentHeaders, $body] = $this->buildBody($email);
