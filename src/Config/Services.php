@@ -14,8 +14,19 @@ declare(strict_types=1);
 namespace Myth\Postal\Config;
 
 use CodeIgniter\Config\BaseService;
+use Myth\Postal\MailerManager;
 
 class Services extends BaseService
 {
-    // Register your package services here
+    /**
+     * The Postal mailer manager, entry point for composing and sending mail.
+     */
+    public static function mailer(bool $getShared = true): MailerManager
+    {
+        if ($getShared) {
+            return self::getSharedInstance('mailer');
+        }
+
+        return new MailerManager();
+    }
 }
