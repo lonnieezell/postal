@@ -188,6 +188,84 @@ final class MessageRendererTest extends CIUnitTestCase
         $this->assertStringNotContainsString('twoThree', $textPart);
     }
 
+    public function testEncodesNonAsciiSubjectWithRfc2047(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->subject('Café résumé')
+            ->text('Hi');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        $this->assertStringContainsString('Subject: =?UTF-8?Q?', $mime);
+        $this->assertStringNotContainsString('Subject: Café', $mime);
+    }
+
+    public function testLeavesAsciiSubjectUnencoded(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->subject('Plain subject')
+            ->text('Hi');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        $this->assertStringContainsString('Subject: Plain subject', $mime);
+        $this->assertStringNotContainsString('=?UTF-8?Q?', $mime);
+    }
+
+    public function testEncodesNonAsciiAddressDisplayName(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com', 'Café Owner')
+            ->to('you@example.com')
+            ->text('Hi');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        // The addr-spec must stay literal; only the display name is encoded.
+        $this->assertMatchesRegularExpression('/From: =\?UTF-8\?Q\?.+\?= <me@example\.com>/', $mime);
+    }
+
+    public function testWordWrapsLongTextBodyLines(): void
+    {
+        $longLine = str_repeat('word ', 40); // ~200 chars on a single line
+
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->text($longLine);
+
+        $mime = (new MessageRenderer())->render($email);
+        [, $body] = explode("\r\n\r\n", $mime, 2);
+
+        foreach (explode("\r\n", rtrim($body)) as $line) {
+            $this->assertLessThanOrEqual(76, strlen($line));
+        }
+    }
+
+    public function testHeadersAccessorReturnsLastRenderedHeaderSet(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->subject('Hello')
+            ->header('X-Campaign', 'spring')
+            ->text('Hi');
+
+        $renderer = new MessageRenderer();
+        $renderer->render($email);
+
+        $headers = $renderer->headers();
+
+        $this->assertSame('me@example.com', $headers['From']);
+        $this->assertSame('Hello', $headers['Subject']);
+        $this->assertSame('spring', $headers['X-Campaign']);
+        $this->assertSame('text/plain; charset=UTF-8', $headers['Content-Type']);
+    }
+
     /**
      * Extracts the text/plain part body from a multipart/alternative message.
      */

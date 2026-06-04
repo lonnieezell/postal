@@ -81,7 +81,7 @@ class MessageRenderer
         $headers = [];
 
         if ($email->from instanceof Address) {
-            $headers['From'] = $email->from->toString();
+            $headers['From'] = $this->renderAddress($email->from);
         }
 
         if ($email->to !== []) {
@@ -93,7 +93,7 @@ class MessageRenderer
         }
 
         if ($email->replyTo instanceof Address) {
-            $headers['Reply-To'] = $email->replyTo->toString();
+            $headers['Reply-To'] = $this->renderAddress($email->replyTo);
         }
 
         if ($email->returnPath !== null) {
@@ -101,7 +101,7 @@ class MessageRenderer
             $headers['Sender']      = $email->returnPath;
         }
 
-        $headers['Subject']      = $email->subject;
+        $headers['Subject']      = $this->encodeHeader($email->subject);
         $headers['Date']         = date('r');
         $headers['Message-ID']   = $this->messageId($email);
         $headers['MIME-Version'] = '1.0';
@@ -135,10 +135,11 @@ class MessageRenderer
                 'Content-Transfer-Encoding' => '8bit',
             ];
 
-            return [$contentHeaders, (string) $email->textBody];
+            return [$contentHeaders, $this->wrapText((string) $email->textBody)];
         }
 
-        $text     = $email->textBody ?? $this->htmlToText($email->htmlBody);
+        $text     = $this->wrapText($email->textBody ?? $this->htmlToText($email->htmlBody));
+        $html     = $this->toCrlf($email->htmlBody);
         $boundary = uniqid('B_ALT_', true);
 
         $contentHeaders = [
@@ -152,7 +153,7 @@ class MessageRenderer
             . '--' . $boundary . self::CRLF
             . 'Content-Type: text/html; charset=' . self::CHARSET . self::CRLF
             . 'Content-Transfer-Encoding: 8bit' . self::CRLF . self::CRLF
-            . $email->htmlBody . self::CRLF . self::CRLF
+            . $html . self::CRLF . self::CRLF
             . '--' . $boundary . '--' . self::CRLF;
 
         return [$contentHeaders, $body];
@@ -197,7 +198,69 @@ class MessageRenderer
      */
     private function addressList(array $addresses): string
     {
-        return implode(', ', array_map(static fn (Address $address): string => $address->toString(), $addresses));
+        return implode(', ', array_map($this->renderAddress(...), $addresses));
+    }
+
+    /**
+     * Renders an address, RFC 2047-encoding the display name while leaving the
+     * addr-spec literal.
+     */
+    private function renderAddress(Address $address): string
+    {
+        if ($address->name === '') {
+            return $address->email;
+        }
+
+        return $this->encodeHeader($address->name) . ' <' . $address->email . '>';
+    }
+
+    /**
+     * RFC 2047 "Q" encodes a header value when it contains non-ASCII bytes;
+     * pure printable-ASCII values are returned unchanged.
+     */
+    private function encodeHeader(string $value): string
+    {
+        if (preg_match('/[^\x20-\x7E]/', $value) !== 1) {
+            return $value;
+        }
+
+        $encoded = '';
+
+        foreach (str_split($value) as $char) {
+            if ($char === ' ') {
+                $encoded .= '_';
+            } elseif (preg_match('/[A-Za-z0-9]/', $char) === 1) {
+                $encoded .= $char;
+            } else {
+                $encoded .= '=' . strtoupper(bin2hex($char));
+            }
+        }
+
+        return '=?' . self::CHARSET . '?Q?' . $encoded . '?=';
+    }
+
+    /**
+     * Wraps text at 76 characters on word boundaries and normalises every line
+     * ending to CRLF as required by RFC 5322.
+     */
+    private function wrapText(string $text): string
+    {
+        $normalised = (string) preg_replace('/\r\n|\r|\n/', "\n", $text);
+
+        $wrapped = implode("\n", array_map(
+            static fn (string $line): string => wordwrap($line, 76, "\n", false),
+            explode("\n", $normalised),
+        ));
+
+        return $this->toCrlf($wrapped);
+    }
+
+    /**
+     * Normalises all line endings in a string to CRLF.
+     */
+    private function toCrlf(string $text): string
+    {
+        return (string) preg_replace('/\r\n|\r|\n/', self::CRLF, $text);
     }
 
     /**
