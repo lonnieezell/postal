@@ -55,7 +55,7 @@ final class MessageRendererTest extends CIUnitTestCase
         $mime = (new MessageRenderer())->render($email);
 
         $this->assertStringContainsString('Cc: boss@example.com', $mime);
-        $this->assertStringContainsString('Reply-To: Reply Desk <reply@example.com>', $mime);
+        $this->assertStringContainsString('Reply-To: "Reply Desk" <reply@example.com>', $mime);
     }
 
     public function testOmitsCcAndReplyToWhenUnset(): void
@@ -227,6 +227,46 @@ final class MessageRendererTest extends CIUnitTestCase
 
         // The addr-spec must stay literal; only the display name is encoded.
         $this->assertMatchesRegularExpression('/From: =\?UTF-8\?Q\?.+\?= <me@example\.com>/', $mime);
+    }
+
+    public function testQuotesAsciiDisplayNameContainingComma(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('a@b.com', 'Doe, John')
+            ->text('Hi');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        // The name is wrapped in a quoted-string so the comma cannot split the
+        // address list into two recipients.
+        $this->assertStringContainsString('To: "Doe, John" <a@b.com>', $mime);
+    }
+
+    public function testEscapesQuotesAndBackslashesInAsciiDisplayName(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('a@b.com', 'Quote " and \\ slash')
+            ->text('Hi');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        $this->assertStringContainsString('To: "Quote \\" and \\\\ slash" <a@b.com>', $mime);
+    }
+
+    public function testStillQEncodesNonAsciiDisplayNameWithoutQuoting(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com', 'Café Owner')
+            ->to('you@example.com')
+            ->text('Hi');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        // Non-ASCII names use RFC 2047 Q-encoding, never the quoted-string form.
+        $this->assertMatchesRegularExpression('/From: =\?UTF-8\?Q\?.+\?= <me@example\.com>/', $mime);
+        $this->assertStringNotContainsString('From: "', $mime);
     }
 
     public function testWordWrapsLongTextBodyLines(): void

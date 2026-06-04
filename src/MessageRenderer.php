@@ -204,8 +204,9 @@ class MessageRenderer
     }
 
     /**
-     * Renders an address, RFC 2047-encoding the display name while leaving the
-     * addr-spec literal.
+     * Renders an address while leaving the addr-spec literal. A pure-ASCII
+     * display name is wrapped in an escaped quoted-string so specials such as a
+     * comma cannot split the address list; a non-ASCII name is RFC 2047-encoded.
      */
     private function renderAddress(Address $address): string
     {
@@ -213,7 +214,13 @@ class MessageRenderer
             return $address->email;
         }
 
-        return $this->encodeHeader($address->name) . ' <' . $address->email . '>';
+        if (preg_match('/[^\x20-\x7E]/', $address->name) === 1) {
+            $name = $this->encodeHeader($address->name);
+        } else {
+            $name = '"' . addcslashes($address->name, "\0..\37\177'\"\\") . '"';
+        }
+
+        return $name . ' <' . $address->email . '>';
     }
 
     /**
