@@ -13,11 +13,14 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use CodeIgniter\Config\Services;
 use CodeIgniter\Test\CIUnitTestCase;
 use Myth\Postal\Config\Email as EmailConfig;
 use Myth\Postal\Email;
 use Myth\Postal\Exceptions\PackageException;
 use Myth\Postal\MailerManager;
+use Psr\Log\AbstractLogger;
+use Stringable;
 
 /**
  * @internal
@@ -31,6 +34,14 @@ final class MailerManagerTest extends CIUnitTestCase
         $this->assertSame('null', $config->default);
         $this->assertArrayHasKey('null', $config->mailers);
         $this->assertArrayHasKey('null', $config->transports);
+    }
+
+    public function testConfigShipsLogMailer(): void
+    {
+        $config = new EmailConfig();
+
+        $this->assertArrayHasKey('log', $config->mailers);
+        $this->assertArrayHasKey('log', $config->transports);
     }
 
     public function testMailerInstancesAreCached(): void
@@ -47,6 +58,36 @@ final class MailerManagerTest extends CIUnitTestCase
         $email = (new Email())->from('me@example.com')->to('you@example.com');
 
         $this->assertTrue($manager->send($email)->success);
+    }
+
+    public function testSendingHtmlViaLogMailerWritesMimeToLogger(): void
+    {
+        $logger = new class () extends AbstractLogger {
+            public string $message = '';
+
+            public function log(mixed $level, string|Stringable $message, array $context = []): void
+            {
+                $this->message = (string) $message;
+            }
+        };
+        Services::injectMock('logger', $logger);
+
+        $manager = new MailerManager(new EmailConfig());
+
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->subject('Welcome')
+            ->html('<p>Hello there</p>');
+
+        $result = $manager->mailer('log')->send($email);
+
+        $this->assertTrue($result->success);
+        $this->assertStringContainsString('Subject: Welcome', $logger->message);
+        $this->assertStringContainsString('Content-Type: multipart/alternative;', $logger->message);
+        $this->assertStringContainsString('<p>Hello there</p>', $logger->message);
+
+        Services::reset();
     }
 
     public function testUnknownMailerThrows(): void

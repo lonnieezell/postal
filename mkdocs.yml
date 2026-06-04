@@ -49,4 +49,6 @@ plugins:
 nav:
   - Home: index.md
   - Installation: installation.md
+  - The Log Mailer: log-mailer.md
+  - MIME Rendering: mime-rendering.md
   - Changelog: changelog.md

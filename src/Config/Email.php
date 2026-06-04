@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Myth\Postal\Config;
 
 use CodeIgniter\Config\BaseConfig;
+use Myth\Postal\Transport\LogTransport;
 use Myth\Postal\Transport\NullTransport;
 use Myth\Postal\Transport\TransportInterface;
 
@@ -35,6 +36,7 @@ class Email extends BaseConfig
      */
     public array $mailers = [
         'null' => ['transport' => 'null'],
+        'log'  => ['transport' => 'log'],
     ];
 
     /**
@@ -45,5 +47,6 @@ class Email extends BaseConfig
      */
     public array $transports = [
         'null' => NullTransport::class,
+        'log'  => LogTransport::class,
     ];
 }
