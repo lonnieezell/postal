@@ -46,14 +46,17 @@ class MessageRenderer
     {
         [$contentHeaders, $body] = $this->buildBody($email);
 
-        $this->renderedHeaders = array_merge(
-            $this->buildHeaders($email),
-            $contentHeaders,
-        );
+        $headers = array_merge($this->buildHeaders($email), $contentHeaders);
 
-        $headerString = '';
+        $this->renderedHeaders = [];
+        $headerString          = '';
 
-        foreach ($this->renderedHeaders as $name => $value) {
+        foreach ($headers as $name => $value) {
+            // Strip CR/LF from both name and value to prevent header injection.
+            $name  = $this->stripNewlines($name);
+            $value = $this->stripNewlines($value);
+
+            $this->renderedHeaders[$name] = $value;
             $headerString .= $name . ': ' . $value . self::CRLF;
         }
 
@@ -78,7 +81,9 @@ class MessageRenderer
      */
     private function buildHeaders(Email $email): array
     {
-        $headers = [];
+        // Seed with caller-supplied headers first so the structural headers
+        // assigned below always take precedence over a colliding custom header.
+        $headers = $email->headers;
 
         if ($email->from instanceof Address) {
             $headers['From'] = $this->renderAddress($email->from);
@@ -109,12 +114,6 @@ class MessageRenderer
         // Only surface a priority when it deviates from the Normal default.
         if ($email->priority !== 3 && isset(self::PRIORITIES[$email->priority])) {
             $headers['X-Priority'] = self::PRIORITIES[$email->priority];
-        }
-
-        // Arbitrary caller-supplied headers come last so they cannot clobber
-        // the structural headers above.
-        foreach ($email->headers as $name => $value) {
-            $headers[$name] = $value;
         }
 
         return $headers;
@@ -261,6 +260,14 @@ class MessageRenderer
     private function toCrlf(string $text): string
     {
         return (string) preg_replace('/\r\n|\r|\n/', self::CRLF, $text);
+    }
+
+    /**
+     * Removes CR and LF so a value cannot inject additional header lines.
+     */
+    private function stripNewlines(string $value): string
+    {
+        return str_replace(["\r", "\n"], '', $value);
     }
 
     /**

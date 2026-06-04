@@ -246,6 +246,35 @@ final class MessageRendererTest extends CIUnitTestCase
         }
     }
 
+    public function testStripsCrlfFromHeaderValuesToPreventInjection(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->subject("Hi\r\nX-Injected: yes")
+            ->header('X-Note', "ok\r\nBcc: victim@example.com")
+            ->text('Hi');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        $this->assertStringNotContainsString("\r\nX-Injected: yes", $mime);
+        $this->assertStringNotContainsString("\r\nBcc: victim@example.com", $mime);
+    }
+
+    public function testCustomHeadersCannotClobberStructuralHeaders(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->header('From', 'attacker@evil.com')
+            ->text('Hi');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        $this->assertStringContainsString('From: me@example.com', $mime);
+        $this->assertStringNotContainsString('From: attacker@evil.com', $mime);
+    }
+
     public function testHeadersAccessorReturnsLastRenderedHeaderSet(): void
     {
         $email = (new Email())
