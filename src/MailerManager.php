@@ -25,11 +25,17 @@ class MailerManager
 {
     private readonly EmailConfig $config;
 
-    /** @var array<string, Mailer> */
+    /**
+     * @var array<string, Mailer>
+     */
     private array $mailers = [];
 
     public function __construct(?EmailConfig $config = null)
     {
+        // Resolve by FQCN, not the short name: config('Email') would resolve to
+        // the framework's Config\Email, not this package's config class. The
+        // FQCN form still honours app-level overrides via Factories.
+        // @phpstan-ignore codeigniter.factoriesClassConstFetch
         $this->config = $config ?? config(EmailConfig::class);
     }
 

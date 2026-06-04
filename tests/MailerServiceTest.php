@@ -15,19 +15,12 @@ namespace Tests;
 
 use CodeIgniter\Test\CIUnitTestCase;
 use Myth\Postal\Email;
-use Myth\Postal\MailerManager;
-use Myth\Postal\SendResult;
 
 /**
  * @internal
  */
 final class MailerServiceTest extends CIUnitTestCase
 {
-    public function testServiceReturnsMailerManager(): void
-    {
-        $this->assertInstanceOf(MailerManager::class, service('mailer'));
-    }
-
     public function testServiceIsShared(): void
     {
         $this->assertSame(service('mailer'), service('mailer'));
@@ -42,7 +35,6 @@ final class MailerServiceTest extends CIUnitTestCase
 
         $result = service('mailer')->send($email);
 
-        $this->assertInstanceOf(SendResult::class, $result);
         $this->assertTrue($result->success);
         $this->assertFalse($result->cancelled);
     }

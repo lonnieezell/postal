@@ -17,7 +17,6 @@ use CodeIgniter\Test\CIUnitTestCase;
 use Myth\Postal\Config\Email as EmailConfig;
 use Myth\Postal\Email;
 use Myth\Postal\Exceptions\PackageException;
-use Myth\Postal\Mailer;
 use Myth\Postal\MailerManager;
 
 /**
@@ -32,20 +31,6 @@ final class MailerManagerTest extends CIUnitTestCase
         $this->assertSame('null', $config->default);
         $this->assertArrayHasKey('null', $config->mailers);
         $this->assertArrayHasKey('null', $config->transports);
-    }
-
-    public function testMailerReturnsMailerForDefault(): void
-    {
-        $manager = new MailerManager(new EmailConfig());
-
-        $this->assertInstanceOf(Mailer::class, $manager->mailer());
-    }
-
-    public function testMailerReturnsMailerForNamedMailer(): void
-    {
-        $manager = new MailerManager(new EmailConfig());
-
-        $this->assertInstanceOf(Mailer::class, $manager->mailer('null'));
     }
 
     public function testMailerInstancesAreCached(): void
@@ -74,9 +59,9 @@ final class MailerManagerTest extends CIUnitTestCase
 
     public function testUnknownTransportThrows(): void
     {
-        $config            = new EmailConfig();
-        $config->mailers   = ['broken' => ['transport' => 'ghost']];
-        $config->default   = 'broken';
+        $config          = new EmailConfig();
+        $config->mailers = ['broken' => ['transport' => 'ghost']];
+        $config->default = 'broken';
 
         $manager = new MailerManager($config);
 

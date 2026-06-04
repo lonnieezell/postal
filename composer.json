@@ -68,7 +68,7 @@
         "docker:test":          "docker compose run --rm app composer test",
         "docker:test:coverage": "docker compose run --rm app composer test:coverage",
         "analyze": [
-            "phpstan analyze",
+            "phpstan analyze --memory-limit=512M",
             "rector process --dry-run"
         ],
         "ci": [

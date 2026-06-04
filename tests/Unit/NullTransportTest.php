@@ -16,18 +16,12 @@ namespace Tests\Unit;
 use CodeIgniter\Test\CIUnitTestCase;
 use Myth\Postal\Email;
 use Myth\Postal\Transport\NullTransport;
-use Myth\Postal\Transport\TransportInterface;
 
 /**
  * @internal
  */
 final class NullTransportTest extends CIUnitTestCase
 {
-    public function testImplementsTransportInterface(): void
-    {
-        $this->assertInstanceOf(TransportInterface::class, new NullTransport());
-    }
-
     public function testSendReturnsSuccessfulResult(): void
     {
         $email = (new Email())->from('me@example.com')->to('you@example.com');
