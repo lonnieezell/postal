@@ -64,10 +64,10 @@ $headers = $renderer->headers(); // ['From' => '...', 'Subject' => '...', ...]
 
 Headers with non-ASCII characters — an accented subject, a display name like `Café Owner` — are encoded with RFC 2047 "Q" encoding. The address itself stays literal; only the display name is encoded. Pure-ASCII headers are left untouched.
 
-Plain-text parts are word-wrapped at 76 characters, and every line ending is normalised to CRLF.
+Plain-text parts are word-wrapped at 76 characters, and every line ending is normalised to CRLF. The HTML part is encoded with `quoted-printable`, so even very long HTML lines stay within the 998-octet SMTP limit without requiring an `8BITMIME`-capable server.
 
 !!! note "Current limitations"
-    The renderer is deliberately small for now. HTML parts use `8bit` transfer encoding without line wrapping, so a single HTML line longer than 998 octets isn't RFC-compliant and assumes an `8BITMIME`-capable server. Very long non-ASCII header values aren't folded into multiple encoded-words. Both are fine for the log mailer and typical messages; richer encoding will arrive with the SMTP transport.
+    The renderer is deliberately small for now. Very long non-ASCII header values aren't folded into multiple encoded-words. This is fine for the log mailer and typical messages; richer encoding will arrive with the SMTP transport.
 
 ## Next steps
 

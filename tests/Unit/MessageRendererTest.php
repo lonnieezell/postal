@@ -223,6 +223,36 @@ final class MessageRendererTest extends CIUnitTestCase
         $this->assertStringNotContainsString('secret internal note', $textPart);
     }
 
+    public function testHtmlPartIsQuotedPrintableEncoded(): void
+    {
+        // An 8-bit char plus a line well over the 998-octet SMTP limit.
+        $html = '<p>caf&eacute; ' . str_repeat('x', 1200) . ' café</p>';
+
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->html($html);
+
+        $mime = (new MessageRenderer())->render($email);
+
+        $this->assertMatchesRegularExpression(
+            '/Content-Type: text\/html;[^\r\n]*\r\nContent-Transfer-Encoding: quoted-printable/',
+            $mime,
+        );
+
+        $htmlPart = $this->htmlPartOf($mime);
+
+        // The 8-bit é is QP-escaped and long lines are soft-wrapped at <=76.
+        $this->assertStringContainsString('=C3=A9', $htmlPart);
+        foreach (explode("\r\n", rtrim($htmlPart)) as $line) {
+            $this->assertLessThanOrEqual(76, strlen($line));
+        }
+
+        // The encoding is lossless: decoding restores the original HTML (CRLF).
+        $expected = str_replace("\n", "\r\n", $html);
+        $this->assertSame($expected, quoted_printable_decode($htmlPart));
+    }
+
     public function testEncodesNonAsciiSubjectWithRfc2047(): void
     {
         $email = (new Email())
@@ -383,6 +413,25 @@ final class MessageRendererTest extends CIUnitTestCase
                 [, $content] = explode("\r\n\r\n", $part, 2);
 
                 return $content;
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * Extracts the text/html part body from a multipart/alternative message.
+     */
+    private function htmlPartOf(string $mime): string
+    {
+        preg_match('/boundary="(.+)"/', $mime, $matches);
+        $parts = explode('--' . $matches[1], $mime);
+
+        foreach ($parts as $part) {
+            if (str_contains($part, 'text/html')) {
+                [, $content] = explode("\r\n\r\n", $part, 2);
+
+                return rtrim($content, "\r\n");
             }
         }
 

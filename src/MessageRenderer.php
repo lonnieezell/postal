@@ -140,8 +140,10 @@ class MessageRenderer
             return [$contentHeaders, $this->wrapText((string) $email->textBody)];
         }
 
-        $text     = $this->wrapText($email->textBody ?? $this->htmlToText($email->htmlBody));
-        $html     = $this->toCrlf($email->htmlBody);
+        $text = $this->wrapText($email->textBody ?? $this->htmlToText($email->htmlBody));
+        // The HTML part is quoted-printable so long lines stay within the
+        // 998-octet SMTP limit without assuming an 8BITMIME-capable server.
+        $html     = quoted_printable_encode($this->toCrlf($email->htmlBody));
         $boundary = uniqid('B_ALT_', true);
 
         $contentHeaders = [
@@ -154,7 +156,7 @@ class MessageRenderer
             . $text . self::CRLF . self::CRLF
             . '--' . $boundary . self::CRLF
             . 'Content-Type: text/html; charset=' . self::CHARSET . self::CRLF
-            . 'Content-Transfer-Encoding: 8bit' . self::CRLF . self::CRLF
+            . 'Content-Transfer-Encoding: quoted-printable' . self::CRLF . self::CRLF
             . $html . self::CRLF . self::CRLF
             . '--' . $boundary . '--' . self::CRLF;
 
