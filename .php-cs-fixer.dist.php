@@ -39,6 +39,6 @@ $options = [
 
 return Factory::create(new CodeIgniter4(), $overrides, $options)->forLibrary(
     'Myth/Postal',
-    'Your Name',
-    'you@example.com',
+    'Lonnie Ezell',
+    'lonnieje@gmail.com',
 );

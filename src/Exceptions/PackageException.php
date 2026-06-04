@@ -21,4 +21,14 @@ class PackageException extends RuntimeException
     {
         return new self($message);
     }
+
+    public static function forUnknownMailer(string $name): self
+    {
+        return new self("No mailer named \"{$name}\" is defined in Config\\Email.");
+    }
+
+    public static function forUnknownTransport(string $name): self
+    {
+        return new self("No transport named \"{$name}\" is mapped in Config\\Email::\$transports.");
+    }
 }
