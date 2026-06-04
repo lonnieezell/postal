@@ -174,7 +174,7 @@ class MessageRenderer
         // blocks would dump their CSS/JS/metadata into the text. Remove them whole
         // before any other conversion.
         $html = preg_replace(
-            '#<(script|style|head)\b[^>]*>.*?</\1>#is',
+            '/<(script|style|head)\b[^>]*>.*?<\/\1>/is',
             '',
             $html,
         ) ?? $html;

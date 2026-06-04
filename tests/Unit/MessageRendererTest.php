@@ -320,6 +320,19 @@ final class MessageRendererTest extends CIUnitTestCase
         $this->assertStringContainsString('To: "Quote \\" and \\\\ slash" <a@b.com>', $mime);
     }
 
+    public function testQuotedDisplayNameCannotInjectHeaders(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('a@b.com', "Doe, John\r\nBcc: victim@example.com")
+            ->text('Hi');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        // A CRLF in the name must not open a new header line.
+        $this->assertStringNotContainsString("\r\nBcc: victim@example.com", $mime);
+    }
+
     public function testStillQEncodesNonAsciiDisplayNameWithoutQuoting(): void
     {
         $email = (new Email())
