@@ -116,4 +116,94 @@ final class MessageRendererTest extends CIUnitTestCase
 
         $this->assertStringNotContainsString('X-Priority:', (new MessageRenderer())->render($email));
     }
+
+    public function testRendersMultipartAlternativeWhenBothBodiesPresent(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->text('Plain version')
+            ->html('<p>HTML version</p>');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        $this->assertMatchesRegularExpression(
+            '/Content-Type: multipart\/alternative; boundary="(.+)"/',
+            $mime,
+        );
+
+        preg_match('/boundary="(.+)"/', $mime, $matches);
+        $boundary = $matches[1];
+
+        $this->assertStringContainsString('--' . $boundary, $mime);
+        $this->assertStringContainsString('--' . $boundary . '--', $mime);
+        $this->assertStringContainsString('Content-Type: text/plain; charset=UTF-8', $mime);
+        $this->assertStringContainsString('Content-Type: text/html; charset=UTF-8', $mime);
+
+        // The plain-text alternative must precede the HTML part per RFC 2046.
+        $this->assertLessThan(
+            strpos($mime, 'text/html'),
+            strpos($mime, 'text/plain'),
+        );
+
+        $this->assertStringContainsString('Plain version', $mime);
+        $this->assertStringContainsString('<p>HTML version</p>', $mime);
+    }
+
+    public function testHtmlOnlyGeneratesPlainTextFallbackPart(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->html('<p>Hello <a href="https://example.com">our site</a></p>');
+
+        $renderer = new MessageRenderer();
+        $mime      = $renderer->render($email);
+
+        // Still multipart/alternative even without an explicit text body.
+        $this->assertStringContainsString('Content-Type: multipart/alternative;', $mime);
+
+        $textPart = $this->textPartOf($mime);
+        $this->assertStringContainsString('Hello our site (https://example.com)', $textPart);
+        $this->assertStringNotContainsString('<a href', $textPart);
+        $this->assertStringNotContainsString('<p>', $textPart);
+
+        // The fallback must not be written back onto the Email.
+        $this->assertNull($email->textBody);
+    }
+
+    public function testHtmlToTextConvertsBlockTagsToNewlinesAndDecodesEntities(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->html('<h1>Title</h1><p>One &amp; two</p><br>Three');
+
+        $textPart = $this->textPartOf((new MessageRenderer())->render($email));
+
+        $this->assertStringContainsString('One & two', $textPart);
+        $this->assertStringNotContainsString('&amp;', $textPart);
+        // Block-level boundaries become line breaks, not run-together text.
+        $this->assertStringNotContainsString('TitleOne', $textPart);
+        $this->assertStringNotContainsString('twoThree', $textPart);
+    }
+
+    /**
+     * Extracts the text/plain part body from a multipart/alternative message.
+     */
+    private function textPartOf(string $mime): string
+    {
+        preg_match('/boundary="(.+)"/', $mime, $matches);
+        $parts = explode('--' . $matches[1], $mime);
+
+        foreach ($parts as $part) {
+            if (str_contains($part, 'text/plain')) {
+                [, $content] = explode("\r\n\r\n", $part, 2);
+
+                return $content;
+            }
+        }
+
+        return '';
+    }
 }

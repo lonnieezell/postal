@@ -121,18 +121,73 @@ class MessageRenderer
     }
 
     /**
-     * Builds the body and the content-related headers that describe it.
+     * Builds the body and the content-related headers that describe it. HTML
+     * always yields multipart/alternative; a plain-text fallback is generated
+     * from the HTML when none was supplied.
      *
      * @return array{0: array<string, string>, 1: string}
      */
     private function buildBody(Email $email): array
     {
+        if ($email->htmlBody === null) {
+            $contentHeaders = [
+                'Content-Type'              => 'text/plain; charset=' . self::CHARSET,
+                'Content-Transfer-Encoding' => '8bit',
+            ];
+
+            return [$contentHeaders, (string) $email->textBody];
+        }
+
+        $text     = $email->textBody ?? $this->htmlToText($email->htmlBody);
+        $boundary = uniqid('B_ALT_', true);
+
         $contentHeaders = [
-            'Content-Type'              => 'text/plain; charset=' . self::CHARSET,
-            'Content-Transfer-Encoding' => '8bit',
+            'Content-Type' => 'multipart/alternative; boundary="' . $boundary . '"',
         ];
 
-        return [$contentHeaders, (string) $email->textBody];
+        $body = '--' . $boundary . self::CRLF
+            . 'Content-Type: text/plain; charset=' . self::CHARSET . self::CRLF
+            . 'Content-Transfer-Encoding: 8bit' . self::CRLF . self::CRLF
+            . $text . self::CRLF . self::CRLF
+            . '--' . $boundary . self::CRLF
+            . 'Content-Type: text/html; charset=' . self::CHARSET . self::CRLF
+            . 'Content-Transfer-Encoding: 8bit' . self::CRLF . self::CRLF
+            . $email->htmlBody . self::CRLF . self::CRLF
+            . '--' . $boundary . '--' . self::CRLF;
+
+        return [$contentHeaders, $body];
+    }
+
+    /**
+     * Produces a basic plain-text rendering of an HTML body for the text part:
+     * anchors become "text (url)", block-level tags become line breaks, the
+     * remaining tags are stripped and HTML entities decoded.
+     */
+    private function htmlToText(string $html): string
+    {
+        // Anchors collapse to their label followed by the URL in parentheses.
+        $text = preg_replace_callback(
+            '/<a\b[^>]*\bhref=(["\'])(.*?)\1[^>]*>(.*?)<\/a>/is',
+            static fn (array $matches): string => trim(strip_tags($matches[3])) . ' (' . $matches[2] . ')',
+            $html,
+        ) ?? $html;
+
+        // Block-level tags (and <br>) mark line breaks in the plain-text view.
+        $text = preg_replace(
+            '/<\/?(?:p|div|br|h[1-6]|li|ul|ol|tr|table|blockquote|section|article|header|footer)\b[^>]*>/i',
+            "\n",
+            $text,
+        ) ?? $text;
+
+        $text = strip_tags($text);
+        $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, self::CHARSET);
+
+        // Tidy the whitespace left behind by the substitutions above.
+        $text = preg_replace('/[ \t]+/', ' ', $text) ?? $text;
+        $text = preg_replace('/ *\n */', "\n", $text) ?? $text;
+        $text = preg_replace('/\n{3,}/', "\n\n", $text) ?? $text;
+
+        return trim($text);
     }
 
     /**
