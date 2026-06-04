@@ -5,7 +5,7 @@ declare(strict_types=1);
 /**
  * This file is part of Myth/Postal.
  *
- * (c) Lonnie Ezell <lonnieje@gmail.com>
+ * (c) Your Name <you@example.com>
  *
  * For the full copyright and license information, please view
  * the LICENSE file that was distributed with this source code.
@@ -24,7 +24,7 @@ class Services extends BaseService
     public static function mailer(bool $getShared = true): MailerManager
     {
         if ($getShared) {
-            return self::getSharedInstance('mailer');
+            return static::getSharedInstance('mailer');
         }
 
         return new MailerManager();
