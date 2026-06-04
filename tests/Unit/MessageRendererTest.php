@@ -244,6 +244,7 @@ final class MessageRendererTest extends CIUnitTestCase
 
         // The 8-bit é is QP-escaped and long lines are soft-wrapped at <=76.
         $this->assertStringContainsString('=C3=A9', $htmlPart);
+
         foreach (explode("\r\n", rtrim($htmlPart)) as $line) {
             $this->assertLessThanOrEqual(76, strlen($line));
         }
