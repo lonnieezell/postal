@@ -54,4 +54,5 @@ nav:
   - The Sendmail & Mail Mailers: sendmail-mail-mailers.md
   - MIME Rendering: mime-rendering.md
   - Events: events.md
+  - Suppression & Unsubscribe: suppression-unsubscribe.md
   - Changelog: changelog.md
