@@ -633,7 +633,7 @@
 <h2 id="encoding">Encoding</h2>
 <p>Headers with non-ASCII characters — an accented subject, a display name like <code>Café Owner</code> — are encoded with RFC 2047 "Q" encoding. The address itself stays literal; only the display name is encoded. Pure-ASCII headers are left untouched.</p>
 <p>A pure-ASCII display name is wrapped in a quoted-string (<code>"Doe, John" &lt;a@b.com&gt;</code>), with quotes and backslashes escaped, so a comma or other special character can't split one recipient into two.</p>
-<p>Plain-text parts are word-wrapped at 76 characters, and every line ending is normalised to CRLF. The HTML part is encoded with <code>quoted-printable</code>, so even very long HTML lines stay within the 998-octet SMTP limit without requiring an <code>8BITMIME</code>-capable server.</p>
+<p>Both the plain-text and HTML parts are encoded with <code>quoted-printable</code>, with every line ending normalised to CRLF. Quoted-printable soft-wraps long lines at 76 characters, so even a very long unbroken line — or a non-ASCII body — stays within the 998-octet SMTP limit and the whole message is 7-bit clean, without requiring an <code>8BITMIME</code>-capable server.</p>
 <div class="admonition note">
 <p class="admonition-title">Current limitations</p>
 <p>The renderer is deliberately small for now. Very long non-ASCII header values aren't folded into multiple encoded-words. This is fine for the log mailer and typical messages; richer encoding will arrive with the SMTP transport.</p>

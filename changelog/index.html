@@ -564,8 +564,9 @@
   <code>text/plain</code>, or <code>multipart/alternative</code> whenever HTML is present (with an
   automatically generated HTML→text fallback when no text body is set). Emits
   custom headers, <code>Return-Path</code>/<code>Sender</code>, and non-default <code>X-Priority</code>; applies
-  RFC 2047 header encoding and word-wrap; strips CR/LF to prevent header
-  injection; exposes the rendered header set via <code>headers()</code>.</li>
+  RFC 2047 header encoding and quoted-printable body encoding (7-bit clean,
+  within the 998-octet SMTP limit); strips CR/LF to prevent header injection;
+  exposes the rendered header set via <code>headers()</code>.</li>
 <li><code>LogTransport</code> and the built-in <code>log</code> mailer, which render the message and
   write the full MIME to a PSR-3 log channel (default level <code>debug</code>) instead of
   delivering it.</li>
