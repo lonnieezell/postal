@@ -101,7 +101,7 @@ class Mailer
             return;
         }
 
-        $url = $this->unsubscribeUrl->urlFor($message->to[0]);
+        $url                                  = $this->unsubscribeUrl->urlFor($message->to[0]);
         $message->headers['List-Unsubscribe'] = '<' . $url . '>';
 
         if ($this->unsubscribeUrl->isOneClick()) {

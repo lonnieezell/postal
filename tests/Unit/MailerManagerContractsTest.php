@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/**
+ * This file is part of Myth/Postal.
+ *
+ * (c) Lonnie Ezell <lonnieje@gmail.com>
+ *
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ */
+
 namespace Tests\Unit;
 
 use CodeIgniter\Test\CIUnitTestCase;
@@ -21,7 +30,7 @@ final class MailerManagerContractsTest extends CIUnitTestCase
 {
     public function testManagerInjectsSuppressionListFromConfig(): void
     {
-        $config                 = new EmailConfig();
+        $config                  = new EmailConfig();
         $config->suppressionList = SuppressAllForTest::class;
 
         $manager = new MailerManager($config);
@@ -52,7 +61,7 @@ final class MailerManagerContractsTest extends CIUnitTestCase
 
     public function testNullContractsInConfigAreIgnored(): void
     {
-        $config                 = new EmailConfig();
+        $config                  = new EmailConfig();
         $config->suppressionList = null;
         $config->unsubscribeUrl  = null;
 
