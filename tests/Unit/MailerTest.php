@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use Closure;
 use CodeIgniter\Events\Events;
 use CodeIgniter\Test\CIUnitTestCase;
 use Myth\Postal\Email;
@@ -36,29 +37,19 @@ final class MailerTest extends CIUnitTestCase
     }
 
     /**
-     * A transport that records the message it received and appends 'transport'
-     * to the shared log so firing order can be asserted.
-     *
-     * @param list<string> $log
+     * A transport that invokes the given recorder with 'transport' when it
+     * runs, so the firing order relative to event listeners can be asserted.
      */
-    private function recordingTransport(array &$log): TransportInterface
+    private function recordingTransport(Closure $record): TransportInterface
     {
-        return new class ($log) implements TransportInterface {
-            public ?Email $received = null;
-            public bool $called     = false;
-
-            /**
-             * @param list<string> $log
-             */
-            public function __construct(private array &$log)
+        return new class ($record) implements TransportInterface {
+            public function __construct(private readonly Closure $record)
             {
             }
 
             public function send(Email $email): SendResult
             {
-                $this->received = $email;
-                $this->called   = true;
-                $this->log[]    = 'transport';
+                ($this->record)('transport');
 
                 return SendResult::ok('msg-1');
             }
@@ -69,6 +60,7 @@ final class MailerTest extends CIUnitTestCase
             }
         };
     }
+
     public function testSendDelegatesToTransport(): void
     {
         $email = (new Email())->from('me@example.com')->to('you@example.com');
@@ -108,32 +100,38 @@ final class MailerTest extends CIUnitTestCase
     {
         Events::on('email.sending', static fn (): bool => false);
 
-        $log       = [];
-        $transport = $this->recordingTransport($log);
+        $log    = [];
+        $record = static function (string $step) use (&$log): void {
+            $log[] = $step;
+        };
+        $transport = $this->recordingTransport($record);
         $email     = (new Email())->from('me@example.com')->to('you@example.com');
 
         $result = (new Mailer($transport))->send($email);
 
         $this->assertTrue($result->cancelled);
         $this->assertFalse($result->success);
-        $this->assertFalse($transport->called);
+        $this->assertNotContains('transport', $log);
     }
 
     public function testFiresComposingThenSendingThenTransportThenSent(): void
     {
-        $log = [];
+        $log    = [];
+        $record = static function (string $step) use (&$log): void {
+            $log[] = $step;
+        };
 
-        Events::on('email.composing', static function () use (&$log): void {
-            $log[] = 'composing';
+        Events::on('email.composing', static function () use ($record): void {
+            $record('composing');
         });
-        Events::on('email.sending', static function () use (&$log): void {
-            $log[] = 'sending';
+        Events::on('email.sending', static function () use ($record): void {
+            $record('sending');
         });
-        Events::on('email.sent', static function () use (&$log): void {
-            $log[] = 'sent';
+        Events::on('email.sent', static function () use ($record): void {
+            $record('sent');
         });
 
-        $transport = $this->recordingTransport($log);
+        $transport = $this->recordingTransport($record);
         $email     = (new Email())->from('me@example.com')->to('you@example.com');
 
         (new Mailer($transport))->send($email);
@@ -145,12 +143,11 @@ final class MailerTest extends CIUnitTestCase
     {
         $captured = null;
 
-        Events::on('email.sent', static function (Email $message, SendResult $result) use (&$captured): void {
+        Events::on('email.sent', static function (Email $message, ?SendResult $result = null) use (&$captured): void {
             $captured = [$message, $result];
         });
 
-        $log       = [];
-        $transport = $this->recordingTransport($log);
+        $transport = $this->recordingTransport(static function (string $step): void {});
         $email     = (new Email())->from('me@example.com')->to('you@example.com')->subject('Hi');
 
         (new Mailer($transport))->send($email);
@@ -165,7 +162,7 @@ final class MailerTest extends CIUnitTestCase
     {
         $captured = null;
 
-        Events::on('email.failed', static function (Email $message, SendResult $result) use (&$captured): void {
+        Events::on('email.failed', static function (Email $message, ?SendResult $result = null) use (&$captured): void {
             $captured = $result;
         });
         Events::on('email.sent', static function () use (&$captured): void {
@@ -206,14 +203,17 @@ final class MailerTest extends CIUnitTestCase
             });
         }
 
-        $log       = [];
-        $transport = $this->recordingTransport($log);
+        $log    = [];
+        $record = static function (string $step) use (&$log): void {
+            $log[] = $step;
+        };
+        $transport = $this->recordingTransport($record);
         $email     = (new Email())->from('me@example.com')->to('you@example.com');
 
         $result = (new Mailer($transport, fireEvents: false))->send($email);
 
         $this->assertSame([], $fired);
-        $this->assertTrue($transport->called);
+        $this->assertContains('transport', $log);
         $this->assertTrue($result->success);
         $this->assertFalse($result->cancelled);
     }
