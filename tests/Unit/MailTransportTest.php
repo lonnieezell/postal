@@ -135,6 +135,29 @@ final class MailTransportTest extends CIUnitTestCase
         $this->assertStringContainsString('@example.com', $result->messageId);
     }
 
+    public function testDeliversBccViaHeaderWithoutLeakingItIntoTheRecipientArgument(): void
+    {
+        $mail = new FakeMailFunction();
+
+        $this->transport($mail)->send(
+            $this->message()->bcc(['hidden@example.com', 'shadow@example.com']),
+        );
+
+        // mail() hands the Bcc header to the MTA, which delivers then strips it.
+        $this->assertStringContainsString('Bcc: hidden@example.com, shadow@example.com', (string) $mail->headers);
+        // Blind recipients must never appear in the visible To argument.
+        $this->assertSame('you@example.com', $mail->to);
+    }
+
+    public function testOmitsBccHeaderWhenThereAreNoBlindRecipients(): void
+    {
+        $mail = new FakeMailFunction();
+
+        $this->transport($mail)->send($this->message());
+
+        $this->assertStringNotContainsString('Bcc:', (string) $mail->headers);
+    }
+
     private function message(): Email
     {
         return (new Email())

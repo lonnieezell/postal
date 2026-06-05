@@ -104,6 +104,28 @@ final class SendmailTransportTest extends CIUnitTestCase
         $this->assertStringContainsString('@example.com', $result->messageId);
     }
 
+    public function testIncludesBccAsAHeaderSoMinusTDeliversIt(): void
+    {
+        $process = new FakeSendmailProcess();
+
+        // The renderer omits Bcc; the transport must add it so sendmail -t
+        // delivers to (and then strips) the blind recipients.
+        $this->transport($process)->send(
+            $this->message()->bcc(['hidden@example.com', 'shadow@example.com']),
+        );
+
+        $this->assertStringContainsString('Bcc: hidden@example.com, shadow@example.com', $process->written);
+    }
+
+    public function testOmitsBccHeaderWhenThereAreNoBlindRecipients(): void
+    {
+        $process = new FakeSendmailProcess();
+
+        $this->transport($process)->send($this->message());
+
+        $this->assertStringNotContainsString('Bcc:', $process->written);
+    }
+
     public function testRejectsShellMetacharactersInEnvelopeSender(): void
     {
         $process = new FakeSendmailProcess();

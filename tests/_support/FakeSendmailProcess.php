@@ -23,8 +23,8 @@ use Myth\Postal\Transport\SendmailProcess;
 final class FakeSendmailProcess implements SendmailProcess
 {
     public ?string $command = null;
-    public string $written   = '';
-    public bool $closed      = false;
+    public string $written  = '';
+    public bool $closed     = false;
 
     public function __construct(
         private readonly bool $openResult = true,

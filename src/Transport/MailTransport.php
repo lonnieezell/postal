@@ -28,7 +28,12 @@ final readonly class MailTransport implements TransportInterface
     private MailFunction $mail;
 
     /**
-     * @param array<string, mixed> $settings the mail transport reads no settings
+     * The mail transport reads no settings; $settings is accepted only so the
+     * MailerManager can construct every transport with the same call shape.
+     *
+     * @param array<string, mixed> $settings
+     *
+     * @phpstan-ignore constructor.unusedParameter
      */
     public function __construct(array $settings = [], ?MailFunction $mail = null)
     {
@@ -45,7 +50,7 @@ final readonly class MailTransport implements TransportInterface
             $this->recipients($email),
             $headers['Subject'] ?? '',
             $body,
-            $this->additionalHeaders($headers),
+            $this->additionalHeaders($headers, $email),
             $this->params($email),
         );
 
@@ -74,11 +79,14 @@ final readonly class MailTransport implements TransportInterface
 
     /**
      * The rendered headers rebuilt as a CRLF-joined block, dropping To and
-     * Subject which mail() supplies from its own arguments.
+     * Subject which mail() supplies from its own arguments. A Bcc header is
+     * appended when there are blind recipients: the renderer omits Bcc (it is
+     * envelope-only for SMTP), so the transport adds it here for the MTA to
+     * deliver to and then strip.
      *
      * @param array<string, string> $headers
      */
-    private function additionalHeaders(array $headers): string
+    private function additionalHeaders(array $headers, Email $email): string
     {
         $lines = [];
 
@@ -88,6 +96,11 @@ final readonly class MailTransport implements TransportInterface
             }
 
             $lines[] = $name . ': ' . $value;
+        }
+
+        if ($email->bcc !== []) {
+            $list    = implode(', ', array_map(static fn (Address $a): string => $a->email, $email->bcc));
+            $lines[] = 'Bcc: ' . str_replace(["\r", "\n"], '', $list);
         }
 
         return implode("\r\n", $lines);

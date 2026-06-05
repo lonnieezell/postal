@@ -23,10 +23,10 @@ use Myth\Postal\SendResult;
  * binary is invoked with -t, so it reads the recipients from the message
  * headers itself.
  */
-final class SendmailTransport implements TransportInterface
+final readonly class SendmailTransport implements TransportInterface
 {
-    private readonly string $path;
-    private readonly SendmailProcess $process;
+    private string $path;
+    private SendmailProcess $process;
 
     /**
      * @param array<string, mixed> $settings accepts an optional "path" key
@@ -40,7 +40,7 @@ final class SendmailTransport implements TransportInterface
     public function send(Email $email): SendResult
     {
         $renderer = new MessageRenderer();
-        $message  = $renderer->render($email);
+        $message  = $this->withBcc($renderer->render($email), $email);
 
         if (! $this->process->open($this->path . ' -oi' . $this->fromFlag($email) . ' -t')) {
             return SendResult::fail('Could not open the sendmail process.');
@@ -75,5 +75,22 @@ final class SendmailTransport implements TransportInterface
         }
 
         return ' -f ' . escapeshellarg($from);
+    }
+
+    /**
+     * Prepends a Bcc header to the rendered message when there are blind
+     * recipients. The renderer omits Bcc (it is envelope-only for SMTP), but
+     * sendmail -t reads recipients from the headers, so the Bcc must be present;
+     * sendmail delivers to and then strips it.
+     */
+    private function withBcc(string $message, Email $email): string
+    {
+        if ($email->bcc === []) {
+            return $message;
+        }
+
+        $list = implode(', ', array_map(static fn (Address $a): string => $a->email, $email->bcc));
+
+        return 'Bcc: ' . str_replace(["\r", "\n"], '', $list) . "\r\n" . $message;
     }
 }
