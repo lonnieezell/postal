@@ -126,9 +126,15 @@ final class SmtpTransport implements TransportInterface
     private function ensureReady(): void
     {
         if ($this->ready && $this->socket->isConnected()) {
-            $this->command('RSET', 250);
+            try {
+                $this->command('RSET', 250);
 
-            return;
+                return;
+            } catch (SmtpException) {
+                // The kept-alive connection went stale (idle timeout, peer
+                // close); drop it and fall through to open a fresh one.
+                $this->reset();
+            }
         }
 
         $address = $this->encryption === 'ssl' ? 'ssl://' . $this->host : $this->host;
@@ -212,20 +218,20 @@ final class SmtpTransport implements TransportInterface
         switch ($this->authType) {
             case 'login':
                 $this->command('AUTH LOGIN', 334);
-                $this->command(base64_encode((string) $this->username), 334);
-                $this->command(base64_encode((string) $this->password), 235);
+                $this->secret(base64_encode((string) $this->username), 'AUTH LOGIN (username)', 334);
+                $this->secret(base64_encode((string) $this->password), 'AUTH LOGIN (password)', 235);
                 break;
 
             case 'plain':
                 $credentials = base64_encode("\0" . $this->username . "\0" . $this->password);
-                $this->command('AUTH PLAIN ' . $credentials, 235);
+                $this->secret('AUTH PLAIN ' . $credentials, 'AUTH PLAIN', 235);
                 break;
 
             case 'xoauth2':
                 $token = base64_encode(
                     'user=' . $this->username . "\1auth=Bearer " . $this->password . "\1\1",
                 );
-                $this->command('AUTH XOAUTH2 ' . $token, 235);
+                $this->secret('AUTH XOAUTH2 ' . $token, 'AUTH XOAUTH2', 235);
                 break;
 
             default:
@@ -240,6 +246,9 @@ final class SmtpTransport implements TransportInterface
     {
         try {
             $this->command('QUIT', 221);
+        } catch (SmtpException) {
+            // The message is already accepted by this point; a noisy or missing
+            // QUIT reply must not turn a delivered message into a failed send.
         } finally {
             $this->reset();
         }
@@ -260,9 +269,33 @@ final class SmtpTransport implements TransportInterface
      */
     private function command(string $command, int ...$accepted): string
     {
+        return $this->writeLine($command, $command, ...$accepted);
+    }
+
+    /**
+     * Sends a command whose payload is sensitive (an auth credential), reporting
+     * errors against a safe label so credentials never reach an exception
+     * message or log.
+     */
+    private function secret(string $command, string $label, int ...$accepted): string
+    {
+        return $this->writeLine($command, $label, ...$accepted);
+    }
+
+    /**
+     * Writes a single command line and asserts the reply, reporting any failure
+     * against $label (which may redact the wire payload).
+     */
+    private function writeLine(string $command, string $label, int ...$accepted): string
+    {
+        // A command is a single line. Strip any embedded CR/LF so an attacker
+        // cannot smuggle extra SMTP commands through an address, HELO name, or
+        // DSN parameter (SMTP command injection).
+        $command = str_replace(["\r", "\n"], '', $command);
+
         $this->socket->write($command . self::CRLF);
 
-        return $this->expect($command, ...$accepted);
+        return $this->expect($label, ...$accepted);
     }
 
     /**

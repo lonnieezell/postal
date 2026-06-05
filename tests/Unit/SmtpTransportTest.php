@@ -139,6 +139,8 @@ final class SmtpTransportTest extends CIUnitTestCase
 
         $this->assertFalse($result->success);
         $this->assertStringContainsString('535', (string) $result->error);
+        // The base64 credential must never appear in the error (it would be logged).
+        $this->assertStringNotContainsString(base64_encode('wrong'), (string) $result->error);
     }
 
     public function testStartTlsUpgradesTheConnection(): void
@@ -200,6 +202,31 @@ final class SmtpTransportTest extends CIUnitTestCase
         $this->assertStringNotContainsString("QUIT\r\n", $socket->transcript());
     }
 
+    public function testKeepAliveReopensAStaleConnection(): void
+    {
+        $socket = new FakeSocket([
+            "220 mail.example.com ESMTP\r\n",
+            "250 mail.example.com\r\n", // EHLO (first connection)
+            "250 OK\r\n",               // send 1: MAIL
+            "250 OK\r\n",               // send 1: RCPT
+            "354 go\r\n",
+            "250 queued\r\n",
+            "421 idle timeout\r\n",     // send 2: RSET rejected -> stale
+            "220 mail.example.com ESMTP\r\n", // reconnect greeting
+            "250 mail.example.com\r\n", // reconnect EHLO
+            "250 OK\r\n",               // send 2: MAIL
+            "250 OK\r\n",               // send 2: RCPT
+            "354 go\r\n",
+            "250 queued\r\n",
+        ]);
+
+        $transport = $this->transport($socket, ['keepAlive' => true]);
+        $this->assertTrue($transport->send($this->message())->success);
+        $this->assertTrue($transport->send($this->message())->success, 'second send should reconnect');
+
+        $this->assertCount(2, $socket->connections);
+    }
+
     public function testSendsToCcAndBccRecipients(): void
     {
         $socket = new FakeSocket([
@@ -226,6 +253,23 @@ final class SmtpTransportTest extends CIUnitTestCase
         $this->assertStringContainsString('RCPT TO:<bcc@example.com>', $transcript);
         // Bcc must never appear as a header in the DATA payload.
         $this->assertStringNotContainsString('Bcc:', $transcript);
+    }
+
+    public function testStripsCrlfFromEnvelopeAddressesToPreventInjection(): void
+    {
+        $socket = $this->okSocket();
+
+        // A recipient address carrying CRLF must not inject a second command.
+        $email = $this->message()->to("victim@example.com>\r\nRSET\r\nMAIL FROM:<evil@example.com");
+        $this->transport($socket)->send($email);
+
+        $transcript = $socket->transcript();
+        $this->assertStringNotContainsString("RSET\r\n", $transcript);
+        // The CRLF is removed, collapsing the payload onto the single RCPT line.
+        $this->assertStringContainsString(
+            "RCPT TO:<victim@example.com>RSETMAIL FROM:<evil@example.com>\r\n",
+            $transcript,
+        );
     }
 
     public function testUsesReturnPathAsEnvelopeSender(): void
@@ -302,6 +346,21 @@ final class SmtpTransportTest extends CIUnitTestCase
 
         // The bare "." line must be escaped to ".." inside DATA.
         $this->assertStringContainsString("\r\n.. dot leads\r\n", $socket->transcript());
+    }
+
+    public function testNoisyQuitDoesNotFailADeliveredMessage(): void
+    {
+        $socket = new FakeSocket([
+            "220 mail.example.com ESMTP\r\n",
+            "250 mail.example.com\r\n",
+            "250 OK\r\n",     // MAIL
+            "250 OK\r\n",     // RCPT
+            "354 go\r\n",
+            "250 queued\r\n", // body accepted -> delivered
+            "451 try later\r\n", // QUIT botched by the server
+        ]);
+
+        $this->assertTrue($this->transport($socket)->send($this->message())->success);
     }
 
     public function testPingReturnsTrueOnSuccessfulHandshake(): void
