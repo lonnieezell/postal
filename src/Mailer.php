@@ -38,9 +38,9 @@ class Mailer
         $this->emit('email.composing', $message);
 
         if ($this->suppressionList !== null) {
-            $message->to  = $this->filterSuppressed($message->to, $message);
-            $message->cc  = $this->filterSuppressed($message->cc, $message);
-            $message->bcc = $this->filterSuppressed($message->bcc, $message);
+            $message->to  = $this->filterSuppressed($message->to);
+            $message->cc  = $this->filterSuppressed($message->cc);
+            $message->bcc = $this->filterSuppressed($message->bcc);
 
             if ($message->to === [] && $message->cc === [] && $message->bcc === []) {
                 return SendResult::cancelled('All recipients are suppressed');
@@ -67,7 +67,7 @@ class Mailer
      *
      * @return list<Address>
      */
-    private function filterSuppressed(array $bucket, Email $message): array
+    private function filterSuppressed(array $bucket): array
     {
         $kept = [];
 

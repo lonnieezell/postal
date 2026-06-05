@@ -32,36 +32,20 @@ final class MailerManagerContractsTest extends CIUnitTestCase
 
     public function testManagerInjectsUnsubscribeUrlFromConfig(): void
     {
-        $config              = new EmailConfig();
+        $config                 = new EmailConfig();
         $config->unsubscribeUrl = UnsubscribeUrlForTest::class;
-
-        $manager   = new MailerManager($config);
-        $email     = (new Email())->from('me@example.com')->to('a@example.com');
-        $transport = new class () implements \Myth\Postal\Transport\TransportInterface {
-            public ?Email $received = null;
-
-            public function send(Email $email): \Myth\Postal\SendResult
-            {
-                $this->received = $email;
-
-                return \Myth\Postal\SendResult::ok();
-            }
-
-            public function ping(): bool
-            {
-                return true;
-            }
-        };
-
-        // Override default transport to capture the message
-        $config->mailers    = ['null' => ['transport' => 'null']];
-        $config->transports = ['null' => \Myth\Postal\Transport\NullTransport::class];
+        $config->transports     = ['capturing' => CapturingTransportForTest::class];
+        $config->mailers        = ['default' => ['transport' => 'capturing']];
+        $config->default        = 'default';
 
         $manager = new MailerManager($config);
-        $result  = $manager->send($email);
+        $email   = (new Email())->from('me@example.com')->to('a@example.com');
 
-        // NullTransport succeeds, so we just check no exception and success
-        $this->assertTrue($result->success);
+        $manager->send($email);
+
+        $this->assertSame('<https://example.com/unsub>', CapturingTransportForTest::$lastReceived->headers['List-Unsubscribe'] ?? null);
+
+        CapturingTransportForTest::$lastReceived = null;
     }
 
     public function testNullContractsInConfigAreIgnored(): void
@@ -95,5 +79,22 @@ final class UnsubscribeUrlForTest implements UnsubscribeUrlInterface
     public function isOneClick(): bool
     {
         return false;
+    }
+}
+
+final class CapturingTransportForTest implements \Myth\Postal\Transport\TransportInterface
+{
+    public static ?Email $lastReceived = null;
+
+    public function send(Email $email): \Myth\Postal\SendResult
+    {
+        self::$lastReceived = $email;
+
+        return \Myth\Postal\SendResult::ok();
+    }
+
+    public function ping(): bool
+    {
+        return true;
     }
 }
