@@ -25,3 +25,10 @@
 - `LogTransport` and the built-in `log` mailer, which render the message and
   write the full MIME to a PSR-3 log channel (default level `debug`) instead of
   delivering it.
+- `SendmailTransport`/`MailTransport` and the `sendmail` and `mail` mailers,
+  which hand the rendered MIME to a local MTA: `sendmail` pipes it to the
+  configured binary (`path`) with `-oi -t`, and `mail` splits it across PHP's
+  native `mail()`. Both deliver `Bcc` via a header the MTA strips, set the
+  envelope sender (`-f`) from the return path or `From` (validated and
+  shell-escaped), and talk through the `SendmailProcess`/`MailFunction` seams
+  for testing.
