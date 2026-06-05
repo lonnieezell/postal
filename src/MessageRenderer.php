@@ -86,7 +86,14 @@ class MessageRenderer
     {
         // Seed with caller-supplied headers first so the structural headers
         // assigned below always take precedence over a colliding custom header.
-        $headers = $email->headers;
+        // Content-* headers are dropped: the renderer owns the content headers,
+        // and a stray custom one (e.g. Content-Transfer-Encoding) must not leak
+        // onto a multipart container, which carries none of its own.
+        $headers = array_filter(
+            $email->headers,
+            static fn (string $name): bool => ! str_starts_with(strtolower($name), 'content-'),
+            ARRAY_FILTER_USE_KEY,
+        );
 
         if ($email->from instanceof Address) {
             $headers['From'] = $this->renderAddress($email->from);
@@ -131,19 +138,19 @@ class MessageRenderer
      */
     private function buildBody(Email $email): array
     {
+        // Both parts are quoted-printable so long lines stay within the 998-octet
+        // SMTP limit and the message is 7-bit clean without an 8BITMIME server.
         if ($email->htmlBody === null) {
             $contentHeaders = [
                 'Content-Type'              => 'text/plain; charset=' . self::CHARSET,
-                'Content-Transfer-Encoding' => '8bit',
+                'Content-Transfer-Encoding' => 'quoted-printable',
             ];
 
-            return [$contentHeaders, $this->wrapText((string) $email->textBody)];
+            return [$contentHeaders, $this->quotedPrintable((string) $email->textBody)];
         }
 
-        $text = $this->wrapText($email->textBody ?? $this->htmlToText($email->htmlBody));
-        // The HTML part is quoted-printable so long lines stay within the
-        // 998-octet SMTP limit without assuming an 8BITMIME-capable server.
-        $html     = quoted_printable_encode($this->toCrlf($email->htmlBody));
+        $text     = $this->quotedPrintable($email->textBody ?? $this->htmlToText($email->htmlBody));
+        $html     = $this->quotedPrintable($email->htmlBody);
         $boundary = uniqid('B_ALT_', true);
 
         $contentHeaders = [
@@ -152,7 +159,7 @@ class MessageRenderer
 
         $body = '--' . $boundary . self::CRLF
             . 'Content-Type: text/plain; charset=' . self::CHARSET . self::CRLF
-            . 'Content-Transfer-Encoding: 8bit' . self::CRLF . self::CRLF
+            . 'Content-Transfer-Encoding: quoted-printable' . self::CRLF . self::CRLF
             . $text . self::CRLF . self::CRLF
             . '--' . $boundary . self::CRLF
             . 'Content-Type: text/html; charset=' . self::CHARSET . self::CRLF
@@ -180,9 +187,14 @@ class MessageRenderer
         ) ?? $html;
 
         // Anchors collapse to their label followed by the URL in parentheses.
+        // The href may be double-quoted, single-quoted, or bare.
         $text = preg_replace_callback(
-            '/<a\b[^>]*\bhref=(["\'])(.*?)\1[^>]*>(.*?)<\/a>/is',
-            static fn (array $matches): string => trim(strip_tags($matches[3])) . ' (' . $matches[2] . ')',
+            '/<a\b[^>]*\bhref=(?:(["\'])(.*?)\1|([^\s>]+))[^>]*>(.*?)<\/a>/is',
+            static function (array $matches): string {
+                $url = $matches[2] !== '' ? $matches[2] : $matches[3];
+
+                return trim(strip_tags($matches[4])) . ' (' . $url . ')';
+            },
             $html,
         ) ?? $html;
 
@@ -260,19 +272,13 @@ class MessageRenderer
     }
 
     /**
-     * Wraps text at 76 characters on word boundaries and normalises every line
-     * ending to CRLF as required by RFC 5322.
+     * Normalises line endings to CRLF and quoted-printable encodes the text, so
+     * every emitted line stays within the 998-octet SMTP limit (QP soft-wraps at
+     * 76) and the part is 7-bit clean regardless of the body's encoding.
      */
-    private function wrapText(string $text): string
+    private function quotedPrintable(string $text): string
     {
-        $normalised = (string) preg_replace('/\r\n|\r|\n/', "\n", $text);
-
-        $wrapped = implode("\n", array_map(
-            static fn (string $line): string => wordwrap($line, 76, "\n", false),
-            explode("\n", $normalised),
-        ));
-
-        return $this->toCrlf($wrapped);
+        return quoted_printable_encode($this->toCrlf($text));
     }
 
     /**

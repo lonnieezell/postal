@@ -19,8 +19,9 @@
   `text/plain`, or `multipart/alternative` whenever HTML is present (with an
   automatically generated HTML→text fallback when no text body is set). Emits
   custom headers, `Return-Path`/`Sender`, and non-default `X-Priority`; applies
-  RFC 2047 header encoding and word-wrap; strips CR/LF to prevent header
-  injection; exposes the rendered header set via `headers()`.
+  RFC 2047 header encoding and quoted-printable body encoding (7-bit clean,
+  within the 998-octet SMTP limit); strips CR/LF to prevent header injection;
+  exposes the rendered header set via `headers()`.
 - `LogTransport` and the built-in `log` mailer, which render the message and
   write the full MIME to a PSR-3 log channel (default level `debug`) instead of
   delivering it.

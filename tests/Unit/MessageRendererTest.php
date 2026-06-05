@@ -414,6 +414,85 @@ final class MessageRendererTest extends CIUnitTestCase
         $this->assertSame('text/plain; charset=UTF-8', $headers['Content-Type']);
     }
 
+    public function testTextOnlyPartIsQuotedPrintableEncoded(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->text('Café');
+
+        $mime     = (new MessageRenderer())->render($email);
+        [, $body] = explode("\r\n\r\n", $mime, 2);
+
+        $this->assertStringContainsString('Content-Transfer-Encoding: quoted-printable', $mime);
+        // The 8-bit é is QP-escaped, so the part no longer relies on 8BITMIME.
+        $this->assertStringContainsString('Caf=C3=A9', $body);
+        $this->assertSame('Café', quoted_printable_decode($body));
+    }
+
+    public function testTextPartUnbreakableLongTokenStaysWithinLineLimit(): void
+    {
+        // A single token with no spaces would overflow the 998-octet SMTP limit
+        // if it were shipped as raw 8bit; QP soft-wrapping must keep it in check.
+        $token = str_repeat('x', 1200);
+
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->text($token);
+
+        $mime     = (new MessageRenderer())->render($email);
+        [, $body] = explode("\r\n\r\n", $mime, 2);
+
+        foreach (explode("\r\n", rtrim($body)) as $line) {
+            $this->assertLessThanOrEqual(76, strlen($line));
+        }
+
+        $this->assertSame($token, quoted_printable_decode($body));
+    }
+
+    public function testMultipartTextPartIsQuotedPrintableEncoded(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->text('Café plain')
+            ->html('<p>hi</p>');
+
+        $textPart = $this->textPartOf((new MessageRenderer())->render($email));
+
+        $this->assertStringContainsString('Caf=C3=A9', $textPart);
+        $this->assertSame('Café plain', quoted_printable_decode(rtrim($textPart, "\r\n")));
+    }
+
+    public function testCustomContentHeaderCannotAppearOnMultipartContainer(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->html('<p>hi</p>')
+            ->header('Content-Transfer-Encoding', 'base64');
+
+        $mime          = (new MessageRenderer())->render($email);
+        [$headerBlock] = explode("\r\n\r\n", $mime, 2);
+
+        // A multipart container carries no top-level Content-Transfer-Encoding;
+        // a custom one must not leak onto it.
+        $this->assertStringNotContainsString('Content-Transfer-Encoding', $headerBlock);
+    }
+
+    public function testHtmlToTextHandlesUnquotedAnchorHref(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->html('<p>Visit <a href=https://example.com>our site</a></p>');
+
+        $textPart = $this->textPartOf((new MessageRenderer())->render($email));
+
+        $this->assertStringContainsString('our site (https://example.com)', $textPart);
+    }
+
     /**
      * Extracts the text/plain part body from a multipart/alternative message.
      */
