@@ -67,7 +67,7 @@ Headers with non-ASCII characters — an accented subject, a display name like `
 
 A pure-ASCII display name is wrapped in a quoted-string (`"Doe, John" <a@b.com>`), with quotes and backslashes escaped, so a comma or other special character can't split one recipient into two.
 
-Plain-text parts are word-wrapped at 76 characters, and every line ending is normalised to CRLF. The HTML part is encoded with `quoted-printable`, so even very long HTML lines stay within the 998-octet SMTP limit without requiring an `8BITMIME`-capable server.
+Both the plain-text and HTML parts are encoded with `quoted-printable`, with every line ending normalised to CRLF. Quoted-printable soft-wraps long lines at 76 characters, so even a very long unbroken line — or a non-ASCII body — stays within the 998-octet SMTP limit and the whole message is 7-bit clean, without requiring an `8BITMIME`-capable server.
 
 !!! note "Current limitations"
     The renderer is deliberately small for now. Very long non-ASCII header values aren't folded into multiple encoded-words. This is fine for the log mailer and typical messages; richer encoding will arrive with the SMTP transport.
