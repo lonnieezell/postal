@@ -49,6 +49,13 @@ class Email
     public int $priority       = 3;
     public ?string $returnPath = null;
 
+    /**
+     * When true, the renderer hard-wraps the plain-text part at $wrapChars so
+     * the wrap survives delivery (unlike quoted-printable soft wrapping).
+     */
+    public bool $wordWrap = false;
+    public int $wrapChars = 76;
+
     public function from(string $address, string $name = ''): static
     {
         $this->from = new Address($address, $name);
