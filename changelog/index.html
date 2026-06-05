@@ -11,7 +11,7 @@
       
       
       
-        <link rel="prev" href="../mime-rendering/">
+        <link rel="prev" href="../events/">
       
       
       
@@ -422,6 +422,33 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -624,6 +651,11 @@
 <li><code>LogTransport</code> and the built-in <code>log</code> mailer, which render the message and
   write the full MIME to a PSR-3 log channel (default level <code>debug</code>) instead of
   delivering it.</li>
+<li>Email lifecycle events fired around every send: <code>email.composing</code> (at the
+  start), <code>email.sending</code> (immediately before the transport — returning <code>false</code>
+  cancels the send and yields <code>SendResult::cancelled()</code>), and <code>email.sent</code> /
+  <code>email.failed</code> afterwards (each receiving the <code>Email</code> and <code>SendResult</code>). All
+  emission is gated behind <code>Config\Email::$fireEvents</code> (default <code>true</code>).</li>
 <li><code>SendmailTransport</code>/<code>MailTransport</code> and the <code>sendmail</code> and <code>mail</code> mailers,
   which hand the rendered MIME to a local MTA: <code>sendmail</code> pipes it to the
   configured binary (<code>path</code>) with <code>-oi -t</code>, and <code>mail</code> splits it across PHP's
@@ -667,7 +699,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../mime-rendering/" class="md-footer__link md-footer__link--prev" aria-label="Previous: MIME Rendering">
+          <a href="../events/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Events">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -677,7 +709,7 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                MIME Rendering
+                Events
               </div>
             </div>
           </a>
