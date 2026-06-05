@@ -47,7 +47,10 @@ class MailerManager
     {
         $name ??= $this->config->default;
 
-        return $this->mailers[$name] ??= new Mailer($this->resolveTransport($name));
+        return $this->mailers[$name] ??= new Mailer(
+            $this->resolveTransport($name),
+            $this->config->fireEvents,
+        );
     }
 
     /**
