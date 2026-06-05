@@ -32,6 +32,12 @@ class Email extends BaseConfig
     public string $default = 'null';
 
     /**
+     * Whether to fire the email lifecycle events (composing, sending, sent,
+     * failed) around each send. Set to false to suppress all of them.
+     */
+    public bool $fireEvents = true;
+
+    /**
      * Named mailers. Each entry selects a transport (by its key in $transports)
      * and carries that transport's settings.
      *

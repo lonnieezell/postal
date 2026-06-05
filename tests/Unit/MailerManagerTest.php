@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use CodeIgniter\Config\Services;
+use CodeIgniter\Events\Events;
 use CodeIgniter\Test\CIUnitTestCase;
 use Myth\Postal\Config\Email as EmailConfig;
 use Myth\Postal\Email;
@@ -27,6 +28,33 @@ use Stringable;
  */
 final class MailerManagerTest extends CIUnitTestCase
 {
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        Events::removeAllListeners('email.sending');
+    }
+
+    public function testConfigEnablesEventsByDefault(): void
+    {
+        $this->assertTrue((new EmailConfig())->fireEvents);
+    }
+
+    public function testManagerHonoursFireEventsFalse(): void
+    {
+        Events::on('email.sending', static fn (): bool => false);
+
+        $config             = new EmailConfig();
+        $config->fireEvents = false;
+
+        $manager = new MailerManager($config);
+        $email   = (new Email())->from('me@example.com')->to('you@example.com');
+
+        // With events suppressed, the cancelling listener is ignored and the
+        // default (null) transport reports success.
+        $this->assertTrue($manager->send($email)->success);
+    }
+
     public function testConfigShipsNullMailerAsDefault(): void
     {
         $config = new EmailConfig();
