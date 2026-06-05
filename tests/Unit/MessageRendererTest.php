@@ -55,7 +55,7 @@ final class MessageRendererTest extends CIUnitTestCase
         $mime = (new MessageRenderer())->render($email);
 
         $this->assertStringContainsString('Cc: boss@example.com', $mime);
-        $this->assertStringContainsString('Reply-To: Reply Desk <reply@example.com>', $mime);
+        $this->assertStringContainsString('Reply-To: "Reply Desk" <reply@example.com>', $mime);
     }
 
     public function testOmitsCcAndReplyToWhenUnset(): void
@@ -188,6 +188,72 @@ final class MessageRendererTest extends CIUnitTestCase
         $this->assertStringNotContainsString('twoThree', $textPart);
     }
 
+    public function testStripsStyleScriptAndHeadFromTextFallback(): void
+    {
+        $html = '<html><head><title>Page Title</title>'
+            . '<style>p{color:red;font-size:14px}</style></head>'
+            . '<body><script>alert("x");var y=1;</script>'
+            . '<p>Visible body</p></body></html>';
+
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->html($html);
+
+        $textPart = $this->textPartOf((new MessageRenderer())->render($email));
+
+        $this->assertStringContainsString('Visible body', $textPart);
+        // CSS, JS, and head metadata must never leak into the text part.
+        $this->assertStringNotContainsString('color:red', $textPart);
+        $this->assertStringNotContainsString('font-size', $textPart);
+        $this->assertStringNotContainsString('alert(', $textPart);
+        $this->assertStringNotContainsString('var y', $textPart);
+        $this->assertStringNotContainsString('Page Title', $textPart);
+    }
+
+    public function testStripsHtmlCommentsFromTextFallback(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->html('<p>Before<!-- secret internal note -->After</p>');
+
+        $textPart = $this->textPartOf((new MessageRenderer())->render($email));
+
+        $this->assertStringNotContainsString('secret internal note', $textPart);
+    }
+
+    public function testHtmlPartIsQuotedPrintableEncoded(): void
+    {
+        // An 8-bit char plus a line well over the 998-octet SMTP limit.
+        $html = '<p>caf&eacute; ' . str_repeat('x', 1200) . ' café</p>';
+
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->html($html);
+
+        $mime = (new MessageRenderer())->render($email);
+
+        $this->assertMatchesRegularExpression(
+            '/Content-Type: text\/html;[^\r\n]*\r\nContent-Transfer-Encoding: quoted-printable/',
+            $mime,
+        );
+
+        $htmlPart = $this->htmlPartOf($mime);
+
+        // The 8-bit é is QP-escaped and long lines are soft-wrapped at <=76.
+        $this->assertStringContainsString('=C3=A9', $htmlPart);
+
+        foreach (explode("\r\n", rtrim($htmlPart)) as $line) {
+            $this->assertLessThanOrEqual(76, strlen($line));
+        }
+
+        // The encoding is lossless: decoding restores the original HTML (CRLF).
+        $expected = str_replace("\n", "\r\n", $html);
+        $this->assertSame($expected, quoted_printable_decode($htmlPart));
+    }
+
     public function testEncodesNonAsciiSubjectWithRfc2047(): void
     {
         $email = (new Email())
@@ -227,6 +293,59 @@ final class MessageRendererTest extends CIUnitTestCase
 
         // The addr-spec must stay literal; only the display name is encoded.
         $this->assertMatchesRegularExpression('/From: =\?UTF-8\?Q\?.+\?= <me@example\.com>/', $mime);
+    }
+
+    public function testQuotesAsciiDisplayNameContainingComma(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('a@b.com', 'Doe, John')
+            ->text('Hi');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        // The name is wrapped in a quoted-string so the comma cannot split the
+        // address list into two recipients.
+        $this->assertStringContainsString('To: "Doe, John" <a@b.com>', $mime);
+    }
+
+    public function testEscapesQuotesAndBackslashesInAsciiDisplayName(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('a@b.com', 'Quote " and \\ slash')
+            ->text('Hi');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        $this->assertStringContainsString('To: "Quote \\" and \\\\ slash" <a@b.com>', $mime);
+    }
+
+    public function testQuotedDisplayNameCannotInjectHeaders(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('a@b.com', "Doe, John\r\nBcc: victim@example.com")
+            ->text('Hi');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        // A CRLF in the name must not open a new header line.
+        $this->assertStringNotContainsString("\r\nBcc: victim@example.com", $mime);
+    }
+
+    public function testStillQEncodesNonAsciiDisplayNameWithoutQuoting(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com', 'Café Owner')
+            ->to('you@example.com')
+            ->text('Hi');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        // Non-ASCII names use RFC 2047 Q-encoding, never the quoted-string form.
+        $this->assertMatchesRegularExpression('/From: =\?UTF-8\?Q\?.+\?= <me@example\.com>/', $mime);
+        $this->assertStringNotContainsString('From: "', $mime);
     }
 
     public function testWordWrapsLongTextBodyLines(): void
@@ -308,6 +427,25 @@ final class MessageRendererTest extends CIUnitTestCase
                 [, $content] = explode("\r\n\r\n", $part, 2);
 
                 return $content;
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * Extracts the text/html part body from a multipart/alternative message.
+     */
+    private function htmlPartOf(string $mime): string
+    {
+        preg_match('/boundary="(.+)"/', $mime, $matches);
+        $parts = explode('--' . $matches[1], $mime);
+
+        foreach ($parts as $part) {
+            if (str_contains($part, 'text/html')) {
+                [, $content] = explode("\r\n\r\n", $part, 2);
+
+                return rtrim($content, "\r\n");
             }
         }
 

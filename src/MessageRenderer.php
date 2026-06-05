@@ -140,8 +140,10 @@ class MessageRenderer
             return [$contentHeaders, $this->wrapText((string) $email->textBody)];
         }
 
-        $text     = $this->wrapText($email->textBody ?? $this->htmlToText($email->htmlBody));
-        $html     = $this->toCrlf($email->htmlBody);
+        $text = $this->wrapText($email->textBody ?? $this->htmlToText($email->htmlBody));
+        // The HTML part is quoted-printable so long lines stay within the
+        // 998-octet SMTP limit without assuming an 8BITMIME-capable server.
+        $html     = quoted_printable_encode($this->toCrlf($email->htmlBody));
         $boundary = uniqid('B_ALT_', true);
 
         $contentHeaders = [
@@ -154,7 +156,7 @@ class MessageRenderer
             . $text . self::CRLF . self::CRLF
             . '--' . $boundary . self::CRLF
             . 'Content-Type: text/html; charset=' . self::CHARSET . self::CRLF
-            . 'Content-Transfer-Encoding: 8bit' . self::CRLF . self::CRLF
+            . 'Content-Transfer-Encoding: quoted-printable' . self::CRLF . self::CRLF
             . $html . self::CRLF . self::CRLF
             . '--' . $boundary . '--' . self::CRLF;
 
@@ -168,6 +170,15 @@ class MessageRenderer
      */
     private function htmlToText(string $html): string
     {
+        // strip_tags() keeps the *contents* of removed tags, so script/style/head
+        // blocks would dump their CSS/JS/metadata into the text. Remove them whole
+        // before any other conversion.
+        $html = preg_replace(
+            '/<(script|style|head)\b[^>]*>.*?<\/\1>/is',
+            '',
+            $html,
+        ) ?? $html;
+
         // Anchors collapse to their label followed by the URL in parentheses.
         $text = preg_replace_callback(
             '/<a\b[^>]*\bhref=(["\'])(.*?)\1[^>]*>(.*?)<\/a>/is',
@@ -204,8 +215,9 @@ class MessageRenderer
     }
 
     /**
-     * Renders an address, RFC 2047-encoding the display name while leaving the
-     * addr-spec literal.
+     * Renders an address while leaving the addr-spec literal. A pure-ASCII
+     * display name is wrapped in an escaped quoted-string so specials such as a
+     * comma cannot split the address list; a non-ASCII name is RFC 2047-encoded.
      */
     private function renderAddress(Address $address): string
     {
@@ -213,7 +225,13 @@ class MessageRenderer
             return $address->email;
         }
 
-        return $this->encodeHeader($address->name) . ' <' . $address->email . '>';
+        if (preg_match('/[^\x20-\x7E]/', $address->name) === 1) {
+            $name = $this->encodeHeader($address->name);
+        } else {
+            $name = '"' . addcslashes($address->name, "\0..\37\177'\"\\") . '"';
+        }
+
+        return $name . ' <' . $address->email . '>';
     }
 
     /**
