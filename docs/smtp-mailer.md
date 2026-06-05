@@ -52,7 +52,7 @@ Every key in the mailer array beyond `transport` is an SMTP setting. Anything yo
 | `encryption` | *(none)* | `tls` for a STARTTLS upgrade, `ssl` for an implicit TLS connection. |
 | `timeout` | `30` | Connection timeout in seconds. |
 | `keepAlive` | `false` | Reuse one connection across multiple sends. See below. |
-| `helo` | `localhost` | The hostname announced in the EHLO command. |
+| `helo` | *(system hostname)* | The hostname announced in the EHLO command. Defaults to `gethostname()`. |
 | `dsn` | *(none)* | Delivery Status Notification options. See below. |
 
 ### Authentication
@@ -88,6 +88,9 @@ Two encryption modes, matching the two common ports:
     'encryption' => 'ssl',
     ```
     Negotiates TLS immediately, before the SMTP conversation begins.
+
+!!! tip "Port 465 is implicit TLS automatically"
+    Set `port => 465` and Postal uses implicit TLS even if you leave `encryption` unset, per [RFC 8314](https://www.rfc-editor.org/rfc/rfc8314). Setting `encryption => 'ssl'` is still fine — and is what forces implicit TLS on any other port.
 
 ## Keep-alive
 

@@ -64,10 +64,14 @@ final class SmtpTransport implements TransportInterface
      */
     public function __construct(array $settings = [], ?SmtpSocket $socket = null)
     {
-        $this->host       = (string) ($settings['host'] ?? 'localhost');
-        $this->port       = (int) ($settings['port'] ?? 25);
-        $this->timeout    = (int) ($settings['timeout'] ?? 30);
-        $this->helo       = (string) ($settings['helo'] ?? 'localhost');
+        $hostname = gethostname();
+
+        $this->host    = (string) ($settings['host'] ?? 'localhost');
+        $this->port    = (int) ($settings['port'] ?? 25);
+        $this->timeout = (int) ($settings['timeout'] ?? 30);
+        $this->helo    = isset($settings['helo'])
+            ? (string) $settings['helo']
+            : ($hostname !== false ? $hostname : 'localhost');
         $this->encryption = strtolower((string) ($settings['encryption'] ?? ''));
         $this->username   = isset($settings['username']) ? (string) $settings['username'] : null;
         $this->password   = isset($settings['password']) ? (string) $settings['password'] : null;
@@ -137,7 +141,12 @@ final class SmtpTransport implements TransportInterface
             }
         }
 
-        $address = $this->encryption === 'ssl' ? 'ssl://' . $this->host : $this->host;
+        // Port 465 is implicit TLS by default (RFC 8314); an explicit 'ssl' forces
+        // it on any port. 'tls' (STARTTLS) connects in the clear and upgrades below.
+        $implicitTls = $this->encryption === 'ssl'
+            || ($this->encryption === '' && $this->port === 465);
+
+        $address = $implicitTls ? 'ssl://' . $this->host : $this->host;
         $this->socket->connect($address, $this->port, $this->timeout);
         $this->expect('greeting', 220);
 

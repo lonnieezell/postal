@@ -176,6 +176,39 @@ final class SmtpTransportTest extends CIUnitTestCase
         $this->assertSame('ssl://mail.example.com', $socket->connections[0][0]);
     }
 
+    public function testPort465DefaultsToImplicitTls(): void
+    {
+        $socket = $this->okSocket();
+
+        // No encryption set, but port 465 means implicit TLS (RFC 8314).
+        $this->transport($socket, ['port' => 465])->send($this->message());
+
+        $this->assertSame('ssl://mail.example.com', $socket->connections[0][0]);
+        $this->assertStringNotContainsString('STARTTLS', $socket->transcript());
+    }
+
+    public function testEhloUsesConfiguredHeloName(): void
+    {
+        $socket = $this->okSocket();
+
+        $this->transport($socket, ['helo' => 'mail.app.test'])->send($this->message());
+
+        $this->assertStringContainsString("EHLO mail.app.test\r\n", $socket->transcript());
+    }
+
+    public function testEhloDefaultsToTheSystemHostname(): void
+    {
+        $socket = $this->okSocket();
+
+        $hostname = gethostname();
+        $expected = $hostname !== false ? $hostname : 'localhost';
+
+        // The transport() helper sets no helo, so the default applies.
+        $this->transport($socket)->send($this->message());
+
+        $this->assertStringContainsString("EHLO {$expected}\r\n", $socket->transcript());
+    }
+
     public function testKeepAliveReusesTheConnectionAcrossSends(): void
     {
         $socket = new FakeSocket([
