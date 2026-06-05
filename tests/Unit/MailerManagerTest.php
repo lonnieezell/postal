@@ -18,6 +18,7 @@ use CodeIgniter\Test\CIUnitTestCase;
 use Myth\Postal\Config\Email as EmailConfig;
 use Myth\Postal\Email;
 use Myth\Postal\Exceptions\PackageException;
+use Myth\Postal\Mailer;
 use Myth\Postal\MailerManager;
 use Psr\Log\AbstractLogger;
 use Stringable;
@@ -42,6 +43,27 @@ final class MailerManagerTest extends CIUnitTestCase
 
         $this->assertArrayHasKey('log', $config->mailers);
         $this->assertArrayHasKey('log', $config->transports);
+    }
+
+    public function testConfigShipsSmtpTransport(): void
+    {
+        $this->assertArrayHasKey('smtp', (new EmailConfig())->transports);
+    }
+
+    public function testResolvesSmtpMailerFromSettings(): void
+    {
+        $config          = new EmailConfig();
+        $config->mailers = [
+            'smtp' => [
+                'transport' => 'smtp',
+                'host'      => 'smtp.example.com',
+                'port'      => 587,
+            ],
+        ];
+
+        // Resolution must build the transport from its settings without throwing
+        // (no connection is opened until send()).
+        $this->assertInstanceOf(Mailer::class, (new MailerManager($config))->mailer('smtp'));
     }
 
     public function testMailerInstancesAreCached(): void

@@ -34,7 +34,7 @@ final class LogTransportTest extends CIUnitTestCase
             ->subject('Greetings')
             ->html('<p>Hello</p>');
 
-        $result = (new LogTransport($logger, 'debug'))->send($email);
+        $result = (new LogTransport([], $logger))->send($email);
 
         $this->assertTrue($result->success);
         $this->assertFalse($result->cancelled);
@@ -48,14 +48,14 @@ final class LogTransportTest extends CIUnitTestCase
     {
         $logger = $this->spyLogger();
 
-        (new LogTransport($logger, 'info'))->send((new Email())->from('me@example.com')->to('you@example.com')->text('Hi'));
+        (new LogTransport(['level' => 'info'], $logger))->send((new Email())->from('me@example.com')->to('you@example.com')->text('Hi'));
 
         $this->assertSame('info', $logger->level);
     }
 
     public function testPingReturnsTrue(): void
     {
-        $this->assertTrue((new LogTransport($this->spyLogger()))->ping());
+        $this->assertTrue((new LogTransport([], $this->spyLogger()))->ping());
     }
 
     /**

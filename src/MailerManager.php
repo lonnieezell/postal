@@ -75,6 +75,8 @@ class MailerManager
 
         $class = $this->config->transports[$transportName];
 
-        return new $class();
+        // The whole mailer entry is the transport's settings; each transport
+        // reads the keys it understands (host, level, …) and ignores the rest.
+        return new $class($this->config->mailers[$name]);
     }
 }

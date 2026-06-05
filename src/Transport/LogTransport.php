@@ -25,10 +25,15 @@ use Psr\Log\LoggerInterface;
 final readonly class LogTransport implements TransportInterface
 {
     private LoggerInterface $logger;
+    private string $level;
 
-    public function __construct(?LoggerInterface $logger = null, private string $level = 'debug')
+    /**
+     * @param array<string, mixed> $settings accepts an optional "level" key
+     */
+    public function __construct(array $settings = [], ?LoggerInterface $logger = null)
     {
         $this->logger = $logger ?? service('logger');
+        $this->level  = is_string($settings['level'] ?? null) ? $settings['level'] : 'debug';
     }
 
     public function send(Email $email): SendResult
