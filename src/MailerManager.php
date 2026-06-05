@@ -50,6 +50,8 @@ class MailerManager
         return $this->mailers[$name] ??= new Mailer(
             $this->resolveTransport($name),
             $this->config->fireEvents,
+            $this->config->suppressionList !== null ? new ($this->config->suppressionList)() : null,
+            $this->config->unsubscribeUrl !== null ? new ($this->config->unsubscribeUrl)() : null,
         );
     }
 
