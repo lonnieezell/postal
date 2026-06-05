@@ -50,5 +50,6 @@ nav:
   - Home: index.md
   - Installation: installation.md
   - The Log Mailer: log-mailer.md
+  - The SMTP Mailer: smtp-mailer.md
   - MIME Rendering: mime-rendering.md
   - Changelog: changelog.md

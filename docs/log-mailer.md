@@ -32,18 +32,24 @@ Now `service('mailer')->send($email)` logs instead of sends — no per-call chan
 
 ## Choosing the log level
 
-`LogTransport` writes at the `debug` level by default. That keeps full message dumps out of your production `info`-and-above logs. You can pick a different level when you construct the transport yourself:
+`LogTransport` writes at the `debug` level by default. That keeps full message dumps out of your production `info`-and-above logs. Pick a different level with the `level` key on the `log` mailer in your `Config\Email`:
+
+```php
+'log' => ['transport' => 'log', 'level' => 'info'],
+```
+
+Or set it when you construct the transport yourself — settings come first as an array:
 
 ```php
 use Myth\Postal\Transport\LogTransport;
 
-$transport = new LogTransport(level: 'info');
+$transport = new LogTransport(['level' => 'info']);
 ```
 
-By default the transport uses CodeIgniter's shared logger (`service('logger')`). You can pass any PSR-3 `LoggerInterface` as the first argument — handy for directing mail to a dedicated channel or for asserting on it in tests.
+By default the transport uses CodeIgniter's shared logger (`service('logger')`). Pass any PSR-3 `LoggerInterface` as the second argument — handy for directing mail to a dedicated channel or for asserting on it in tests.
 
 ```php
-$transport = new LogTransport($myPsr3Logger, 'debug');
+$transport = new LogTransport(['level' => 'debug'], $myPsr3Logger);
 ```
 
 ## What gets written
