@@ -59,25 +59,6 @@ final class MailerSuppressionTest extends CIUnitTestCase
         };
     }
 
-    private function capturingTransport(): TransportInterface
-    {
-        return new class () implements TransportInterface {
-            public bool $called = false;
-
-            public function send(Email $email): SendResult
-            {
-                $this->called = true;
-
-                return SendResult::ok();
-            }
-
-            public function ping(): bool
-            {
-                return true;
-            }
-        };
-    }
-
     public function testNoSuppressionListPassesAllRecipients(): void
     {
         $email = (new Email())
@@ -92,8 +73,23 @@ final class MailerSuppressionTest extends CIUnitTestCase
 
     public function testSuppressedToRecipientIsRemoved(): void
     {
-        $transport = $this->capturingTransport();
-        $email     = (new Email())
+        $transport = new class () implements TransportInterface {
+            public bool $called = false;
+
+            public function send(Email $email): SendResult
+            {
+                $this->called = true;
+
+                return SendResult::ok();
+            }
+
+            public function ping(): bool
+            {
+                return true;
+            }
+        };
+
+        $email = (new Email())
             ->from('me@example.com')
             ->to('keep@example.com')
             ->to('suppressed@example.com');
@@ -184,7 +180,21 @@ final class MailerSuppressionTest extends CIUnitTestCase
 
     public function testAllRecipientsSupressedDoesNotCallTransport(): void
     {
-        $transport = $this->capturingTransport();
+        $transport = new class () implements TransportInterface {
+            public bool $called = false;
+
+            public function send(Email $email): SendResult
+            {
+                $this->called = true;
+
+                return SendResult::ok();
+            }
+
+            public function ping(): bool
+            {
+                return true;
+            }
+        };
 
         $email = (new Email())
             ->from('me@example.com')

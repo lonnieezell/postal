@@ -9,7 +9,6 @@ use Myth\Postal\Address;
 use Myth\Postal\Email;
 use Myth\Postal\Mailer;
 use Myth\Postal\SendResult;
-use Myth\Postal\Transport\NullTransport;
 use Myth\Postal\Transport\TransportInterface;
 use Myth\Postal\UnsubscribeUrlInterface;
 
@@ -18,25 +17,6 @@ use Myth\Postal\UnsubscribeUrlInterface;
  */
 final class MailerUnsubscribeTest extends CIUnitTestCase
 {
-    private function capturingTransport(): TransportInterface
-    {
-        return new class () implements TransportInterface {
-            public ?Email $received = null;
-
-            public function send(Email $email): SendResult
-            {
-                $this->received = $email;
-
-                return SendResult::ok();
-            }
-
-            public function ping(): bool
-            {
-                return true;
-            }
-        };
-    }
-
     private function simpleUnsubscribe(bool $oneClick = false): UnsubscribeUrlInterface
     {
         return new class ($oneClick) implements UnsubscribeUrlInterface {
@@ -58,7 +38,7 @@ final class MailerUnsubscribeTest extends CIUnitTestCase
 
     public function testNoUnsubscribeInterfaceDoesNotInjectHeader(): void
     {
-        $transport = $this->capturingTransport();
+        $transport = new CapturingHeaderTransport();
         $email     = (new Email())->from('me@example.com')->to('a@example.com');
 
         (new Mailer($transport))->send($email);
@@ -68,7 +48,7 @@ final class MailerUnsubscribeTest extends CIUnitTestCase
 
     public function testSingleRecipientInjectsListUnsubscribeHeader(): void
     {
-        $transport = $this->capturingTransport();
+        $transport = new CapturingHeaderTransport();
         $email     = (new Email())->from('me@example.com')->to('a@example.com');
 
         (new Mailer($transport, unsubscribeUrl: $this->simpleUnsubscribe()))->send($email);
@@ -79,7 +59,7 @@ final class MailerUnsubscribeTest extends CIUnitTestCase
 
     public function testMultipleRecipientsSkipsAutoInjection(): void
     {
-        $transport = $this->capturingTransport();
+        $transport = new CapturingHeaderTransport();
         $email     = (new Email())
             ->from('me@example.com')
             ->to('a@example.com')
@@ -92,7 +72,7 @@ final class MailerUnsubscribeTest extends CIUnitTestCase
 
     public function testExplicitListUnsubscribeHeaderWins(): void
     {
-        $transport = $this->capturingTransport();
+        $transport = new CapturingHeaderTransport();
         $email     = (new Email())
             ->from('me@example.com')
             ->to('a@example.com')
@@ -105,7 +85,7 @@ final class MailerUnsubscribeTest extends CIUnitTestCase
 
     public function testOneClickInjectsBothHeaders(): void
     {
-        $transport = $this->capturingTransport();
+        $transport = new CapturingHeaderTransport();
         $email     = (new Email())->from('me@example.com')->to('a@example.com');
 
         (new Mailer($transport, unsubscribeUrl: $this->simpleUnsubscribe(oneClick: true)))->send($email);
@@ -117,7 +97,7 @@ final class MailerUnsubscribeTest extends CIUnitTestCase
 
     public function testNonOneClickDoesNotInjectPostHeader(): void
     {
-        $transport = $this->capturingTransport();
+        $transport = new CapturingHeaderTransport();
         $email     = (new Email())->from('me@example.com')->to('a@example.com');
 
         (new Mailer($transport, unsubscribeUrl: $this->simpleUnsubscribe(oneClick: false)))->send($email);
@@ -128,7 +108,7 @@ final class MailerUnsubscribeTest extends CIUnitTestCase
 
     public function testListUnsubscribeHeaderFormattedWithAngleBrackets(): void
     {
-        $transport = $this->capturingTransport();
+        $transport = new CapturingHeaderTransport();
         $email     = (new Email())->from('me@example.com')->to('a@example.com');
 
         (new Mailer($transport, unsubscribeUrl: $this->simpleUnsubscribe()))->send($email);
@@ -136,5 +116,22 @@ final class MailerUnsubscribeTest extends CIUnitTestCase
         $header = $transport->received->headers['List-Unsubscribe'];
         $this->assertStringStartsWith('<', $header);
         $this->assertStringEndsWith('>', $header);
+    }
+}
+
+final class CapturingHeaderTransport implements TransportInterface
+{
+    public ?Email $received = null;
+
+    public function send(Email $email): SendResult
+    {
+        $this->received = $email;
+
+        return SendResult::ok();
+    }
+
+    public function ping(): bool
+    {
+        return true;
     }
 }

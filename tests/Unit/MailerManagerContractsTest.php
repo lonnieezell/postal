@@ -9,7 +9,9 @@ use Myth\Postal\Address;
 use Myth\Postal\Config\Email as EmailConfig;
 use Myth\Postal\Email;
 use Myth\Postal\MailerManager;
+use Myth\Postal\SendResult;
 use Myth\Postal\SuppressionListInterface;
+use Myth\Postal\Transport\TransportInterface;
 use Myth\Postal\UnsubscribeUrlInterface;
 
 /**
@@ -82,15 +84,15 @@ final class UnsubscribeUrlForTest implements UnsubscribeUrlInterface
     }
 }
 
-final class CapturingTransportForTest implements \Myth\Postal\Transport\TransportInterface
+final class CapturingTransportForTest implements TransportInterface
 {
     public static ?Email $lastReceived = null;
 
-    public function send(Email $email): \Myth\Postal\SendResult
+    public function send(Email $email): SendResult
     {
         self::$lastReceived = $email;
 
-        return \Myth\Postal\SendResult::ok();
+        return SendResult::ok();
     }
 
     public function ping(): bool
