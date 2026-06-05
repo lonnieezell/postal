@@ -44,10 +44,10 @@ final readonly class SendResult
     }
 
     /**
-     * A send cancelled before dispatch (e.g. by an event listener).
+     * A send cancelled before dispatch (e.g. by an event listener or suppression).
      */
-    public static function cancelled(): self
+    public static function cancelled(?string $reason = null): self
     {
-        return new self(success: false, cancelled: true);
+        return new self(success: false, cancelled: true, error: $reason);
     }
 }

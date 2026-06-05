@@ -136,6 +136,17 @@ class Email
     }
 
     /**
+     * Sets the List-Unsubscribe header explicitly. This value always takes
+     * precedence over any auto-injected header from UnsubscribeUrlInterface.
+     */
+    public function listUnsubscribe(string $url): static
+    {
+        $this->headers['List-Unsubscribe'] = '<' . $url . '>';
+
+        return $this;
+    }
+
+    /**
      * Appends one or more recipients to the given list. A string with a name
      * uses the name; an array is treated as a list of "Name <email>" or bare
      * address strings.

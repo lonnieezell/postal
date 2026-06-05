@@ -61,4 +61,13 @@ final class SendResultTest extends CIUnitTestCase
         $this->assertNull($result->error);
         $this->assertNull($result->messageId);
     }
+
+    public function testCancelledWithReasonExposesReasonAsError(): void
+    {
+        $result = SendResult::cancelled('All recipients are suppressed');
+
+        $this->assertFalse($result->success);
+        $this->assertTrue($result->cancelled);
+        $this->assertSame('All recipients are suppressed', $result->error);
+    }
 }

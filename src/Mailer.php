@@ -17,14 +17,17 @@ use CodeIgniter\Events\Events;
 use Myth\Postal\Transport\TransportInterface;
 
 /**
- * Orchestrates a send: clones the message at the dispatch boundary, fires the
- * email lifecycle events around it, and hands it to the bound transport.
+ * Orchestrates a send: clones the message at the dispatch boundary, applies
+ * suppression filtering and unsubscribe header injection, fires the email
+ * lifecycle events, and hands the message to the bound transport.
  */
 class Mailer
 {
     public function __construct(
         private readonly TransportInterface $transport,
         private readonly bool $fireEvents = true,
+        private readonly ?SuppressionListInterface $suppressionList = null,
+        private readonly ?UnsubscribeUrlInterface $unsubscribeUrl = null,
     ) {
     }
 
@@ -33,6 +36,18 @@ class Mailer
         $message = clone $email;
 
         $this->emit('email.composing', $message);
+
+        if ($this->suppressionList !== null) {
+            $message->to  = $this->filterSuppressed($message->to);
+            $message->cc  = $this->filterSuppressed($message->cc);
+            $message->bcc = $this->filterSuppressed($message->bcc);
+
+            if ($message->to === [] && $message->cc === [] && $message->bcc === []) {
+                return SendResult::cancelled('All recipients are suppressed');
+            }
+        }
+
+        $this->injectUnsubscribeHeaders($message);
 
         if ($this->emit('email.sending', $message) === false) {
             return SendResult::cancelled();
@@ -43,6 +58,55 @@ class Mailer
         $this->emit($result->success ? 'email.sent' : 'email.failed', $message, $result);
 
         return $result;
+    }
+
+    /**
+     * Removes suppressed addresses from $bucket, emitting email.suppressed per removal.
+     *
+     * @param list<Address> $bucket
+     *
+     * @return list<Address>
+     */
+    private function filterSuppressed(array $bucket): array
+    {
+        $kept = [];
+
+        foreach ($bucket as $address) {
+            if ($this->suppressionList->isSuppressed($address)) {
+                $this->emit('email.suppressed', $address);
+            } else {
+                $kept[] = $address;
+            }
+        }
+
+        return $kept;
+    }
+
+    /**
+     * Auto-injects List-Unsubscribe (and List-Unsubscribe-Post for one-click)
+     * when a URL provider is bound, the message has exactly one To recipient,
+     * and the header has not already been set explicitly.
+     */
+    private function injectUnsubscribeHeaders(Email $message): void
+    {
+        if ($this->unsubscribeUrl === null) {
+            return;
+        }
+
+        if (count($message->to) !== 1) {
+            return;
+        }
+
+        if (isset($message->headers['List-Unsubscribe'])) {
+            return;
+        }
+
+        $url                                  = $this->unsubscribeUrl->urlFor($message->to[0]);
+        $message->headers['List-Unsubscribe'] = '<' . $url . '>';
+
+        if ($this->unsubscribeUrl->isOneClick()) {
+            $message->headers['List-Unsubscribe-Post'] = 'List-Unsubscribe=One-Click';
+        }
     }
 
     /**
