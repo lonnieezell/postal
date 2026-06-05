@@ -371,6 +371,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../sendmail-mail-mailers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Sendmail & Mail Mailers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../mime-rendering/" class="md-nav__link">
         
   
@@ -597,6 +624,13 @@
 <li><code>LogTransport</code> and the built-in <code>log</code> mailer, which render the message and
   write the full MIME to a PSR-3 log channel (default level <code>debug</code>) instead of
   delivering it.</li>
+<li><code>SendmailTransport</code>/<code>MailTransport</code> and the <code>sendmail</code> and <code>mail</code> mailers,
+  which hand the rendered MIME to a local MTA: <code>sendmail</code> pipes it to the
+  configured binary (<code>path</code>) with <code>-oi -t</code>, and <code>mail</code> splits it across PHP's
+  native <code>mail()</code>. Both deliver <code>Bcc</code> via a header the MTA strips, set the
+  envelope sender (<code>-f</code>) from the return path or <code>From</code> (validated and
+  shell-escaped), and talk through the <code>SendmailProcess</code>/<code>MailFunction</code> seams
+  for testing.</li>
 </ul>
 
 

@@ -11,10 +11,10 @@
       
       
       
-        <link rel="prev" href="..">
+        <link rel="prev" href="../smtp-mailer/">
       
       
-        <link rel="next" href="../log-mailer/">
+        <link rel="next" href="../mime-rendering/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Installation - Postal</title>
+        <title>The Sendmail & Mail Mailers - Postal</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#installation" class="md-skip">
+        <a href="#the-sendmail-mail-mailers" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Installation
+              The Sendmail & Mail Mailers
             
           </span>
         </div>
@@ -289,37 +289,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Installation
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
         
   
   
@@ -335,70 +308,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Requirements
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#install-via-composer" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Install via Composer
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#verify-the-install" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Verify the install
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configuration
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -461,10 +370,37 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../sendmail-mail-mailers/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Sendmail & Mail Mailers
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -480,6 +416,120 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-sendmail-mailer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Sendmail mailer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Sendmail mailer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration reference
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-mail-mailer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Mail mailer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#blind-recipients-bcc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Blind recipients (Bcc)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-envelope-sender" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The envelope sender
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-without-the-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing without the system
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -565,10 +615,38 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
+  <a href="#the-sendmail-mailer" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Requirements
+        The Sendmail mailer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Sendmail mailer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration reference
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-mail-mailer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Mail mailer
       
     </span>
   </a>
@@ -576,10 +654,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#install-via-composer" class="md-nav__link">
+  <a href="#blind-recipients-bcc" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Install via Composer
+        Blind recipients (Bcc)
       
     </span>
   </a>
@@ -587,10 +665,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#verify-the-install" class="md-nav__link">
+  <a href="#the-envelope-sender" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Verify the install
+        The envelope sender
       
     </span>
   </a>
@@ -598,10 +676,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
+  <a href="#testing-without-the-system" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration
+        Testing without the system
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next steps
       
     </span>
   </a>
@@ -625,7 +725,7 @@
 
 
   
-    <a href="https://github.com/lonnieezell/postal/edit/main/docs/installation.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/lonnieezell/postal/edit/main/docs/sendmail-mail-mailers.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -633,48 +733,101 @@
   
 
 
-<h1 id="installation">Installation</h1>
-<h2 id="requirements">Requirements</h2>
+<h1 id="the-sendmail-mail-mailers">The Sendmail &amp; Mail Mailers</h1>
+<p>Not every app talks SMTP directly. When your server already runs a mail transfer agent — Postfix, Exim, or a <code>sendmail</code> shim — the quickest path to the outbox is to hand the message to it and let it do the delivery. Postal offers two transports for exactly that: <code>sendmail</code> pipes the rendered message to a sendmail binary, and <code>mail</code> passes it through PHP's native <code>mail()</code> function.</p>
+<p>Both are thin wrappers around the same rendered MIME the <code>smtp</code> transport produces. Reach for them when a local MTA is already configured; reach for <a href="../smtp-mailer/">the SMTP mailer</a> when you need to authenticate to a remote server, use encryption, or keep a connection alive across a batch.</p>
+<h2 id="the-sendmail-mailer">The Sendmail mailer</h2>
+<p>The <code>sendmail</code> transport opens the configured binary and writes the complete message to it. It invokes the binary with <code>-t</code>, so sendmail reads the recipients straight from the message headers.</p>
+<p>Add a named mailer pointing at the <code>sendmail</code> transport and tell it where the binary lives:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="x">public array $mailers = [</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="x">    &#39;sendmail&#39; =&gt; [</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="x">        &#39;transport&#39; =&gt; &#39;sendmail&#39;,</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="x">        &#39;path&#39;      =&gt; &#39;/usr/sbin/sendmail&#39;,</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="x">    ],</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="x">];</span>
+</code></pre></div>
+<p>Send through it by name, exactly like any other mailer:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="x">use Myth\Postal\Email;</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="x">$email = (new Email())</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="x">    -&gt;from(&#39;you@example.com&#39;, &#39;Your Name&#39;)</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="x">    -&gt;to(&#39;user@example.com&#39;)</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="x">    -&gt;subject(&#39;Welcome aboard&#39;)</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="x">    -&gt;html(&#39;&lt;p&gt;Glad to have you with us.&lt;/p&gt;&#39;);</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="x">$result = service(&#39;mailer&#39;)-&gt;mailer(&#39;sendmail&#39;)-&gt;send($email);</span>
+</code></pre></div>
+<h3 id="configuration-reference">Configuration reference</h3>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td><code>/usr/sbin/sendmail</code></td>
+<td>Absolute path to the sendmail binary.</td>
+</tr>
+</tbody>
+</table>
+<p>That's the only setting. The binary is run as <code>sendmail -oi -t</code>, with <code>-oi</code> so a lone <code>.</code> in the body never ends the message early, and <code>-t</code> so recipients come from the <code>To</code>, <code>Cc</code>, and <code>Bcc</code> headers.</p>
+<h2 id="the-mail-mailer">The Mail mailer</h2>
+<p>The <code>mail</code> transport delivers through PHP's built-in <code>mail()</code>. It renders the message, then splits it so the recipients and subject go in as <code>mail()</code>'s own arguments and the remaining headers and body follow — the shape <code>mail()</code> expects.</p>
+<p>It takes no settings, so the mailer entry is just the transport name:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="x">public array $mailers = [</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="x">    &#39;mail&#39; =&gt; [&#39;transport&#39; =&gt; &#39;mail&#39;],</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="x">];</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="x">$result = service(&#39;mailer&#39;)-&gt;mailer(&#39;mail&#39;)-&gt;send($email);</span>
+</code></pre></div>
+<p>Whether <code>mail()</code> itself reaches a real MTA is a matter of your PHP configuration (<code>sendmail_path</code> in <code>php.ini</code>). Postal hands the message off correctly; the rest is up to your server.</p>
+<div class="admonition note">
+<p class="admonition-title">Make either one the default</p>
+<p>Set <code>public string $default = 'sendmail';</code> (or <code>'mail'</code>) in your <code>Config\Email</code> to route every <code>service('mailer')-&gt;send($email)</code> call through it without naming the mailer each time.</p>
+</div>
+<h2 id="blind-recipients-bcc">Blind recipients (Bcc)</h2>
+<p>Both transports deliver to <code>Bcc</code> recipients. Because they let the MTA fan out the envelope, the blind addresses travel as a <code>Bcc</code> header that the MTA delivers to and then strips before the message goes on the wire — so the recipients each receive their copy without ever seeing one another.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="x">$email-&gt;bcc(&#39;audit@example.com&#39;);</span>
+</code></pre></div>
+<p>Nothing extra to configure: add blind recipients to the message and they're handled.</p>
+<h2 id="the-envelope-sender">The envelope sender</h2>
+<p>Both transports set the envelope sender (the bounce address) with sendmail's <code>-f</code> flag. The address is your message's return path when you set one, falling back to the <code>From</code> address otherwise:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="x">$email-&gt;from(&#39;you@example.com&#39;)</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="x">    -&gt;returnPath(&#39;bounces@example.com&#39;); // -f bounces@example.com</span>
+</code></pre></div>
+<p>The address is validated and shell-escaped before it reaches the command line, so it can't inject extra arguments. An address that isn't a valid email is dropped rather than passed through, and the MTA falls back to its own default sender.</p>
+<h2 id="testing-without-the-system">Testing without the system</h2>
+<p>Neither transport touches the real <code>popen</code>/<code>mail()</code> machinery directly — each talks through a small seam, so the delivery logic is fully unit-testable.</p>
 <ul>
-<li>PHP 8.2+</li>
-<li>CodeIgniter 4.7+</li>
-<li>Extensions: <code>ext-openssl</code>, <code>ext-mbstring</code> (and <code>ext-curl</code> for the HTTP API transports)</li>
+<li><strong>Sendmail</strong> writes through <code>Myth\Postal\Transport\SendmailProcess</code>. The shipped <code>PopenProcess</code> opens the real binary; pass your own implementation as the transport's second argument to capture what would have been written.</li>
+<li><strong>Mail</strong> calls through <code>Myth\Postal\Transport\MailFunction</code>. The shipped <code>NativeMailFunction</code> invokes <code>mail()</code>; pass your own to assert on the arguments.</li>
 </ul>
-<h2 id="install-via-composer">Install via Composer</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>composer<span class="w"> </span>require<span class="w"> </span>myth/postal
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="x">use Myth\Postal\Transport\MailTransport;</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="x">use Myth\Postal\Transport\SendmailTransport;</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="x">$sendmail = new SendmailTransport([&#39;path&#39; =&gt; &#39;/usr/sbin/sendmail&#39;], $myFakeProcess);</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="x">$mail     = new MailTransport([], $myFakeMail);</span>
 </code></pre></div>
-<p>CodeIgniter auto-discovers the package through Composer — no manual registration is required.</p>
-<h2 id="verify-the-install">Verify the install</h2>
-<p>Send a test message through the default transport:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>php<span class="w"> </span>spark<span class="w"> </span>email:test<span class="w"> </span>you@example.com
-</code></pre></div>
-<p>The command runs the full send pipeline and prints the result (provider message ID, or the
-error if it failed).</p>
-<h2 id="configuration">Configuration</h2>
-<p>Transports are defined as named <strong>mailers</strong> in <code>Config\Email</code>, with a <code>$default</code> chosen per
-environment:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="x">public string $default = match (ENVIRONMENT) {</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="x">    &#39;production&#39; =&gt; &#39;ses&#39;,</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="x">    &#39;testing&#39;    =&gt; &#39;null&#39;,</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="x">    default      =&gt; &#39;log&#39;,</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="x">};</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="x">public array $mailers = [</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="x">    &#39;smtp&#39; =&gt; [</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="x">        &#39;transport&#39;  =&gt; &#39;smtp&#39;,</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="x">        &#39;host&#39;       =&gt; &#39;localhost&#39;,</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="x">        &#39;port&#39;       =&gt; 587,</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="x">        &#39;encryption&#39; =&gt; &#39;tls&#39;,</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="x">        &#39;username&#39;   =&gt; &#39;&#39;,</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="x">        &#39;password&#39;   =&gt; &#39;&#39;,</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="x">    ],</span>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="x">    &#39;log&#39;  =&gt; [&#39;transport&#39; =&gt; &#39;log&#39;],</span>
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="x">    &#39;null&#39; =&gt; [&#39;transport&#39; =&gt; &#39;null&#39;],</span>
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="x">];</span>
-</code></pre></div>
-<p>To override the defaults in your application, copy the config into <code>app/Config/Email.php</code> (in
-your application's namespace) and adjust the values. The full configuration reference is
-covered in later sections of the documentation.</p>
+<p>Postal's own suite uses doubles for exactly this. They live in the package's <code>tests/</code> directory — internal test plumbing, not public API, so don't rely on them from your application.</p>
+<h2 id="security">Security</h2>
+<div class="admonition danger">
+<p class="admonition-title">Trust the MTA, not the input</p>
+<ul>
+<li><strong>Shell injection is blocked.</strong> The envelope sender is validated and escaped before it reaches the command line; only the configured binary <code>path</code> (which you control) is used verbatim. Keep <code>path</code> out of user input.</li>
+<li><strong>Header injection is blocked.</strong> CR/LF is stripped from every rendered header and recipient, so an address or subject can't smuggle extra headers. Still, validate addresses at your application boundary.</li>
+<li><strong><code>mail()</code> reaches a shell.</strong> On most systems PHP's <code>mail()</code> ultimately runs sendmail. The same envelope-sender escaping applies, but treat the whole path as security-sensitive and never feed it unvalidated input.</li>
+</ul>
+</div>
+<h2 id="next-steps">Next steps</h2>
+<ul>
+<li><a href="../smtp-mailer/">The SMTP Mailer</a> — authenticate to a remote server with encryption and keep-alive</li>
+<li><a href="../log-mailer/">The Log Mailer</a> — inspect messages in development without sending them</li>
+<li><a href="../mime-rendering/">MIME Rendering</a> — what the message body looks like on the wire</li>
+</ul>
 
 
 
@@ -710,7 +863,7 @@ covered in later sections of the documentation.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: Home">
+          <a href="../smtp-mailer/" class="md-footer__link md-footer__link--prev" aria-label="Previous: The SMTP Mailer">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -720,20 +873,20 @@ covered in later sections of the documentation.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Home
+                The SMTP Mailer
               </div>
             </div>
           </a>
         
         
           
-          <a href="../log-mailer/" class="md-footer__link md-footer__link--next" aria-label="Next: The Log Mailer">
+          <a href="../mime-rendering/" class="md-footer__link md-footer__link--next" aria-label="Next: MIME Rendering">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                The Log Mailer
+                MIME Rendering
               </div>
             </div>
             <div class="md-footer__button md-icon">
