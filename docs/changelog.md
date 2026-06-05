@@ -25,6 +25,11 @@
 - `LogTransport` and the built-in `log` mailer, which render the message and
   write the full MIME to a PSR-3 log channel (default level `debug`) instead of
   delivering it.
+- Email lifecycle events fired around every send: `email.composing` (at the
+  start), `email.sending` (immediately before the transport — returning `false`
+  cancels the send and yields `SendResult::cancelled()`), and `email.sent` /
+  `email.failed` afterwards (each receiving the `Email` and `SendResult`). All
+  emission is gated behind `Config\Email::$fireEvents` (default `true`).
 - `SendmailTransport`/`MailTransport` and the `sendmail` and `mail` mailers,
   which hand the rendered MIME to a local MTA: `sendmail` pipes it to the
   configured binary (`path`) with `-oi -t`, and `mail` splits it across PHP's
