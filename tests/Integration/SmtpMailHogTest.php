@@ -37,9 +37,9 @@ final class SmtpMailHogTest extends CIUnitTestCase
     {
         parent::setUp();
 
-        $this->host     = getenv('MAILHOG_HOST') ?: '127.0.0.1';
-        $this->smtpPort = (int) (getenv('MAILHOG_SMTP_PORT') ?: 1025);
-        $this->apiPort  = (int) (getenv('MAILHOG_API_PORT') ?: 8025);
+        $this->host     = (string) env('MAILHOG_HOST', '127.0.0.1');
+        $this->smtpPort = (int) env('MAILHOG_SMTP_PORT', 1025);
+        $this->apiPort  = (int) env('MAILHOG_API_PORT', 8025);
 
         $probe = @fsockopen($this->host, $this->smtpPort, $errno, $errstr, 1);
 
@@ -119,9 +119,11 @@ final class SmtpMailHogTest extends CIUnitTestCase
     {
         $json = (string) @file_get_contents("http://{$this->host}:{$this->apiPort}/api/v2/messages");
 
-        /** @var array<string, mixed> $decoded */
-        $decoded = json_decode($json, true) ?: [];
+        $decoded = json_decode($json, true);
 
-        return $decoded;
+        /** @var array<string, mixed> $messages */
+        $messages = is_array($decoded) ? $decoded : [];
+
+        return $messages;
     }
 }

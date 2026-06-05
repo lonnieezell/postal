@@ -54,7 +54,7 @@ final class SmtpTransportTest extends CIUnitTestCase
         $result = $this->transport($this->okSocket())->send($this->message());
 
         $this->assertNotNull($result->messageId);
-        $this->assertStringContainsString('@example.com', (string) $result->messageId);
+        $this->assertStringContainsString('@example.com', $result->messageId);
     }
 
     public function testParsesMultilineEhloAndAuthsWithLogin(): void

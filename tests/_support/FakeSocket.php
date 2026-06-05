@@ -24,14 +24,6 @@ use Myth\Postal\Transport\SmtpSocket;
 final class FakeSocket implements SmtpSocket
 {
     /**
-     * Server reply lines to hand back from readLine(), in order. Each entry is
-     * one line and should include its trailing CRLF.
-     *
-     * @var list<string>
-     */
-    private array $script;
-
-    /**
      * Every chunk written by the transport, in order.
      *
      * @var list<string>
@@ -57,9 +49,14 @@ final class FakeSocket implements SmtpSocket
     /**
      * @param list<string> $script server reply lines, each ending in CRLF
      */
-    public function __construct(array $script = [], private readonly bool $cryptoResult = true)
-    {
-        $this->script = $script;
+    public function __construct(
+        /**
+         * Server reply lines to hand back from readLine(), in order. Each entry is
+         * one line and should include its trailing CRLF.
+         */
+        private array $script = [],
+        private readonly bool $cryptoResult = true,
+    ) {
     }
 
     public function connect(string $host, int $port, int $timeout): void

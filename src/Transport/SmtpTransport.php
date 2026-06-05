@@ -75,8 +75,8 @@ final class SmtpTransport implements TransportInterface
         $this->keepAlive  = (bool) ($settings['keepAlive'] ?? false);
 
         /** @var array<string, string> $dsn */
-        $dsn        = is_array($settings['dsn'] ?? null) ? $settings['dsn'] : [];
-        $this->dsn  = $dsn;
+        $dsn          = is_array($settings['dsn'] ?? null) ? $settings['dsn'] : [];
+        $this->dsn    = $dsn;
         $this->socket = $socket ?? new StreamSocket();
     }
 
@@ -159,7 +159,7 @@ final class SmtpTransport implements TransportInterface
      */
     private function transaction(Email $email, string $message): void
     {
-        $from = $email->returnPath ?? $email->from?->email ?? '';
+        $from = $email->returnPath ?? ($email->from instanceof Address ? $email->from->email : '');
         $this->command('MAIL FROM:<' . $from . '>' . $this->mailParams(), 250);
 
         foreach ($this->recipients($email) as $recipient) {
@@ -321,9 +321,9 @@ final class SmtpTransport implements TransportInterface
         $reply = '';
 
         do {
-            $line  = $this->socket->readLine();
+            $line = $this->socket->readLine();
             $reply .= $line;
-            $line  = rtrim($line, "\r\n");
+            $line = rtrim($line, "\r\n");
             // A hyphen in the 4th position marks a continuation line.
             $continued = strlen($line) >= 4 && $line[3] === '-';
         } while ($continued);
@@ -403,8 +403,7 @@ final class SmtpTransport implements TransportInterface
     private function prepareData(string $message): string
     {
         $message = (string) preg_replace('/\r\n|\r|\n/', self::CRLF, $message);
-        $message = (string) preg_replace('/^\./m', '..', $message);
 
-        return $message;
+        return (string) preg_replace('/^\./m', '..', $message);
     }
 }

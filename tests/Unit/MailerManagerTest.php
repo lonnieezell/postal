@@ -18,7 +18,6 @@ use CodeIgniter\Test\CIUnitTestCase;
 use Myth\Postal\Config\Email as EmailConfig;
 use Myth\Postal\Email;
 use Myth\Postal\Exceptions\PackageException;
-use Myth\Postal\Mailer;
 use Myth\Postal\MailerManager;
 use Psr\Log\AbstractLogger;
 use Stringable;
@@ -62,8 +61,10 @@ final class MailerManagerTest extends CIUnitTestCase
         ];
 
         // Resolution must build the transport from its settings without throwing
-        // (no connection is opened until send()).
-        $this->assertInstanceOf(Mailer::class, (new MailerManager($config))->mailer('smtp'));
+        // (no connection is opened until send()); a stable cached instance proves
+        // the smtp mailer resolved.
+        $manager = new MailerManager($config);
+        $this->assertSame($manager->mailer('smtp'), $manager->mailer('smtp'));
     }
 
     public function testMailerInstancesAreCached(): void
