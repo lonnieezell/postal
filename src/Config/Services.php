@@ -13,11 +13,45 @@ declare(strict_types=1);
 
 namespace Myth\Postal\Config;
 
+use Config\Email as LegacyEmailConfig;
 use CodeIgniter\Config\BaseService;
+use Myth\Postal\LegacyEmailAdapter;
 use Myth\Postal\MailerManager;
 
 class Services extends BaseService
 {
+    /**
+     * A drop-in replacement for the framework's email service. Returns the
+     * legacy adapter so existing service('email') code keeps working on top of
+     * the new mailer.
+     *
+     * Note: the shared instance is cached directly in the service registry
+     * rather than through getSharedInstance(), which would construct via the
+     * framework's email service and bypass this override.
+     *
+     * @param array<string, mixed>|LegacyEmailConfig|null $config
+     */
+    public static function email($config = null, bool $getShared = true): LegacyEmailAdapter
+    {
+        if ($getShared) {
+            if (! (static::$instances['email'] ?? null) instanceof LegacyEmailAdapter) {
+                static::$instances['email'] = static::email($config, false);
+            }
+
+            return static::$instances['email'];
+        }
+
+        $adapter = $config instanceof LegacyEmailConfig
+            ? new LegacyEmailAdapter($config)
+            : new LegacyEmailAdapter();
+
+        if (is_array($config)) {
+            $adapter->initialize($config);
+        }
+
+        return $adapter;
+    }
+
     /**
      * The Postal mailer manager, entry point for composing and sending mail.
      */

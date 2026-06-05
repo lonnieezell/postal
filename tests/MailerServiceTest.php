@@ -13,8 +13,11 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use CodeIgniter\Config\Services as FrameworkServices;
 use CodeIgniter\Test\CIUnitTestCase;
+use Myth\Postal\Config\Services as PostalServices;
 use Myth\Postal\Email;
+use Myth\Postal\LegacyEmailAdapter;
 
 /**
  * @internal
@@ -37,5 +40,30 @@ final class MailerServiceTest extends CIUnitTestCase
 
         $this->assertTrue($result->success);
         $this->assertFalse($result->cancelled);
+    }
+
+    public function testEmailServiceReturnsLegacyAdapter(): void
+    {
+        // CIUnitTestCase injects a MockEmail for the 'email' service in setUp;
+        // drop it so discovery resolves this package's override (as it would in
+        // a real application, where mockEmail() never runs).
+        FrameworkServices::resetSingle('email');
+
+        $this->assertInstanceOf(LegacyEmailAdapter::class, service('email'));
+    }
+
+    public function testEmailServiceIsShared(): void
+    {
+        FrameworkServices::resetSingle('email');
+
+        $this->assertSame(service('email'), service('email'));
+    }
+
+    public function testEmailServiceNonSharedReturnsFreshAdapter(): void
+    {
+        $this->assertNotSame(
+            PostalServices::email(null, false),
+            PostalServices::email(null, false),
+        );
     }
 }
