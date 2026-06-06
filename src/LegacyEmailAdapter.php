@@ -30,21 +30,30 @@ class LegacyEmailAdapter
     use LegacyEmailCompat;
 
     private readonly LegacyConfig $config;
-    private readonly ?TransportInterface $transportOverride;
 
-    /** The message under construction. */
+    /**
+     * The message under construction.
+     */
     private Email $email;
 
-    /** Raw body, routed to the HTML or text part by $mailType at send time. */
+    /**
+     * Raw body, routed to the HTML or text part by $mailType at send time.
+     */
     private string $body = '';
 
-    /** The plain-text alternative for an HTML message. */
+    /**
+     * The plain-text alternative for an HTML message.
+     */
     private string $altMessage = '';
 
-    /** 'text' or 'html'. */
+    /**
+     * 'text' or 'html'.
+     */
     private string $mailType;
 
-    /** 'mail', 'sendmail' or 'smtp'. */
+    /**
+     * 'mail', 'sendmail' or 'smtp'.
+     */
     private string $protocol;
 
     private bool $wordWrap;
@@ -66,21 +75,22 @@ class LegacyEmailAdapter
      */
     private array $debugMessage = [];
 
-    /** Set when an address failed validation; forces send() to return false. */
+    /**
+     * Set when an address failed validation; forces send() to return false.
+     */
     private bool $validationFailed = false;
 
     private ?Email $lastEmail       = null;
     private ?SendResult $lastResult = null;
 
     /**
-     * @param TransportInterface|null $transport optional override used for testing;
-     *                                           when null the transport is resolved from the protocol
+     * @param TransportInterface|null $transportOverride optional override used for testing;
+     *                                                   when null the transport is resolved from the protocol
      */
-    public function __construct(?LegacyConfig $config = null, ?TransportInterface $transport = null)
+    public function __construct(?LegacyConfig $config = null, private readonly ?TransportInterface $transportOverride = null)
     {
-        // @phpstan-ignore codeigniter.factoriesClassConstFetch
-        $this->config            = $config ?? config(LegacyConfig::class);
-        $this->transportOverride = $transport;
+        // Clone so initialize()'s flat-key merge never mutates the shared config.
+        $this->config = clone ($config ?? config(LegacyConfig::class));
 
         $this->protocol = in_array($this->config->protocol, ['mail', 'sendmail', 'smtp'], true)
             ? $this->config->protocol
@@ -249,7 +259,9 @@ class LegacyEmailAdapter
         $messages = '';
 
         foreach ($this->debugMessage as $line) {
-            $messages .= $line . '<br>';
+            // Lines may embed user-supplied addresses; escape so the debugger
+            // output cannot be used as a reflected-XSS vector.
+            $messages .= htmlspecialchars($line) . '<br>';
         }
 
         return $messages . ($raw === '' ? '' : '<pre>' . $raw . '</pre>');
@@ -326,9 +338,9 @@ class LegacyEmailAdapter
      */
     private function dispatch(Mailer $mailer, Email $email): bool
     {
-        $result            = $mailer->send($email);
-        $this->lastEmail   = $email;
-        $this->lastResult  = $result;
+        $result           = $mailer->send($email);
+        $this->lastEmail  = $email;
+        $this->lastResult = $result;
 
         if (! $result->success && $result->error !== null) {
             $this->fail($result->error);

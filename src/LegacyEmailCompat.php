@@ -211,9 +211,9 @@ trait LegacyEmailCompat
     {
         foreach ($this->attachments as $i => $attachment) {
             if ($attachment['name'][0] === $filename || $attachment['name'][1] === $filename) {
-                $base                          = basename((string) ($attachment['name'][1] ?? $attachment['name'][0]));
-                $cid                           = uniqid($base . '@', true);
-                $this->attachments[$i]['cid']  = $cid;
+                $base                         = basename((string) ($attachment['name'][1] ?? $attachment['name'][0]));
+                $cid                          = uniqid($base . '@', true);
+                $this->attachments[$i]['cid'] = $cid;
 
                 return $cid;
             }
@@ -323,7 +323,9 @@ trait LegacyEmailCompat
         }
 
         if (str_contains($email, ',')) {
-            return preg_split('/[\s,]/', $email, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+            $parts = preg_split('/[\s,]/', $email, -1, PREG_SPLIT_NO_EMPTY);
+
+            return $parts === false ? [] : $parts;
         }
 
         return [trim($email)];

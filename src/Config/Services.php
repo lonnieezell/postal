@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Myth\Postal\Config;
 
-use Config\Email as LegacyEmailConfig;
 use CodeIgniter\Config\BaseService;
+use Config\Email as LegacyEmailConfig;
 use Myth\Postal\LegacyEmailAdapter;
 use Myth\Postal\MailerManager;
 

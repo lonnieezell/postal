@@ -397,6 +397,23 @@ final class LegacyEmailAdapterTest extends CIUnitTestCase
         );
     }
 
+    public function testPrintDebuggerEscapesUserInputInErrorLines(): void
+    {
+        $transport = new RecordingTransport();
+
+        $adapter = $this->adapter($transport)
+            ->setFrom('me@example.com')
+            ->setTo('<script>alert(1)</script>')
+            ->setMessage('Hi');
+
+        $adapter->send();
+        $debug = $adapter->printDebugger();
+
+        // The malicious address must not survive as live markup in the output.
+        $this->assertStringNotContainsString('<script>alert(1)</script>', $debug);
+        $this->assertStringContainsString('&lt;script&gt;', $debug);
+    }
+
     public function testRetainsLastResultAndEmail(): void
     {
         $transport = new RecordingTransport();

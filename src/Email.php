@@ -54,6 +54,7 @@ class Email
      * the wrap survives delivery (unlike quoted-printable soft wrapping).
      */
     public bool $wordWrap = false;
+
     public int $wrapChars = 76;
 
     public function from(string $address, string $name = ''): static

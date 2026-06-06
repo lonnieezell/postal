@@ -49,6 +49,9 @@ final class MailerServiceTest extends CIUnitTestCase
         // a real application, where mockEmail() never runs).
         FrameworkServices::resetSingle('email');
 
+        // Verifies runtime service discovery resolves the override; the static
+        // type is certain from additionalServices, but the resolution is not.
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertInstanceOf(LegacyEmailAdapter::class, service('email'));
     }
 
