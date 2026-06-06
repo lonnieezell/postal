@@ -11,8 +11,10 @@
       
       
       
-        <link rel="prev" href="../legacy-compatibility/">
+        <link rel="prev" href="../suppression-unsubscribe/">
       
+      
+        <link rel="next" href="../legacy-compatibility/">
       
       
         
@@ -23,7 +25,7 @@
     
     
       
-        <title>Changelog - Postal</title>
+        <title>Testing Mail - Postal</title>
       
     
     
@@ -74,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#changelog" class="md-skip">
+        <a href="#testing-mail" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Changelog
+              Testing Mail
             
           </span>
         </div>
@@ -476,10 +478,37 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../testing/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing Mail
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -495,6 +524,131 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#faking-sends" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Faking sends
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inspecting-what-was-sent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inspecting what was sent
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#assertions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Assertions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Assertions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#assertsentclosure-callback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        assertSent(Closure $callback)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#assertsenttostring-email" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        assertSentTo(string $email)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#assertnotsentclosure-callback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        assertNotSent(Closure $callback)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#assertnothingsent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        assertNothingSent()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#assertsentcountint-count" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        assertSentCount(int $count)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -530,37 +684,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Changelog
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../changelog/" class="md-nav__link">
         
   
   
@@ -576,54 +703,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#unreleased" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        [Unreleased]
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="[Unreleased]">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#added" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Added
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -655,22 +734,88 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#unreleased" class="md-nav__link">
+  <a href="#faking-sends" class="md-nav__link">
     <span class="md-ellipsis">
       
-        [Unreleased]
+        Faking sends
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="[Unreleased]">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inspecting-what-was-sent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inspecting what was sent
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#assertions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Assertions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Assertions">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#added" class="md-nav__link">
+  <a href="#assertsentclosure-callback" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Added
+        assertSent(Closure $callback)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#assertsenttostring-email" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        assertSentTo(string $email)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#assertnotsentclosure-callback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        assertNotSent(Closure $callback)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#assertnothingsent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        assertNothingSent()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#assertsentcountint-count" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        assertSentCount(int $count)
       
     </span>
   </a>
@@ -679,6 +824,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next steps
+      
+    </span>
+  </a>
   
 </li>
       
@@ -699,7 +855,7 @@
 
 
   
-    <a href="https://github.com/lonnieezell/postal/edit/main/docs/changelog.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/lonnieezell/postal/edit/main/docs/testing.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -707,65 +863,67 @@
   
 
 
-<h1 id="changelog">Changelog</h1>
-<h2 id="unreleased">[Unreleased]</h2>
-<h3 id="added">Added</h3>
+<h1 id="testing-mail">Testing Mail</h1>
+<p>Postal ships an in-memory test double so you can assert on what your application <em>would have</em> sent without ever touching a real transport or the network. Call <code>Mailer::fake()</code> at the top of a test; it swaps the bound <code>service('mailer')</code> for a recorder and hands that recorder back to you.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="x">use Myth\Postal\Mailer;</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="x">$fake = Mailer::fake();</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="x">// ...exercise the code under test, which sends as usual...</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="x">service(&#39;mailer&#39;)-&gt;send($email);</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="x">$fake-&gt;assertSentTo(&#39;user@example.com&#39;);</span>
+</code></pre></div>
+<p>Every mailer resolved from <code>service('mailer')</code> — the default and any named mailer — routes through the same double, so you don't need to know which mailer your code reaches for.</p>
+<h2 id="faking-sends">Faking sends</h2>
+<p><code>Mailer::fake()</code> returns a <code>FakeTransport</code>. From that point on, no message leaves your application: each send is recorded in memory and reports success, so the code under test behaves as though delivery worked.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="x">$fake = Mailer::fake();</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="x">(new WelcomeEmailService())-&gt;sendTo($user);</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="x">$fake-&gt;assertSentCount(1);</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Reset between tests</p>
+<p>The swap lives in the service container for the rest of the test. If your test case doesn't already reset services, call <code>Services::reset()</code> in <code>tearDown()</code> so one test's fake doesn't leak into the next.</p>
+</div>
+<h2 id="inspecting-what-was-sent">Inspecting what was sent</h2>
+<p><code>sent()</code> returns the recorded messages as an array of <code>Email</code> objects, in the order they were sent:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="x">$messages = $fake-&gt;sent();</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="x">$this-&gt;assertSame(&#39;Welcome!&#39;, $messages[0]-&gt;subject);</span>
+</code></pre></div>
+<p>Pass a content matcher — a closure that receives an <code>Email</code> and returns a bool — to filter:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="x">$welcomes = $fake-&gt;sent(static fn (Email $email): bool =&gt; $email-&gt;subject === &#39;Welcome!&#39;);</span>
+</code></pre></div>
+<h2 id="assertions">Assertions</h2>
+<p>All assertions integrate with PHPUnit, so a failure fails the test with a readable message.</p>
+<h3 id="assertsentclosure-callback"><code>assertSent(Closure $callback)</code></h3>
+<p>Passes when at least one recorded message satisfies the matcher:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="x">$fake-&gt;assertSent(static fn (Email $email): bool =&gt;</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="x">    $email-&gt;subject === &#39;Welcome!&#39;</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="x">    &amp;&amp; str_contains((string) $email-&gt;htmlBody, &#39;Thanks for joining&#39;));</span>
+</code></pre></div>
+<h3 id="assertsenttostring-email"><code>assertSentTo(string $email)</code></h3>
+<p>Passes when at least one recorded message was addressed to the given email — in any of the <code>To</code>, <code>Cc</code>, or <code>Bcc</code> buckets. The match is case-insensitive:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="x">$fake-&gt;assertSentTo(&#39;user@example.com&#39;);</span>
+</code></pre></div>
+<h3 id="assertnotsentclosure-callback"><code>assertNotSent(Closure $callback)</code></h3>
+<p>Passes when <strong>no</strong> recorded message satisfies the matcher:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="x">$fake-&gt;assertNotSent(static fn (Email $email): bool =&gt; $email-&gt;subject === &#39;Password reset&#39;);</span>
+</code></pre></div>
+<h3 id="assertnothingsent"><code>assertNothingSent()</code></h3>
+<p>Passes when no message was recorded at all:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="x">$fake-&gt;assertNothingSent();</span>
+</code></pre></div>
+<h3 id="assertsentcountint-count"><code>assertSentCount(int $count)</code></h3>
+<p>Passes when exactly the given number of messages were recorded:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="x">$fake-&gt;assertSentCount(3);</span>
+</code></pre></div>
+<h2 id="next-steps">Next steps</h2>
 <ul>
-<li>Core send pipeline: compose an <code>Email</code> and send it through a transport via
-  <code>service('mailer')</code>, receiving a <code>SendResult</code>.</li>
-<li><code>Email</code> message builder with <code>from</code>/<code>replyTo</code>/<code>to</code>/<code>cc</code>/<code>bcc</code>/<code>subject</code>/<code>html</code>/<code>text</code>/
-  <code>header</code>/<code>priority</code>/<code>returnPath</code> (mutable, chainable).</li>
-<li><code>Address</code> value object that parses and renders <code>"Name &lt;email&gt;"</code>.</li>
-<li><code>SendResult</code> with <code>ok()</code>/<code>fail()</code>/<code>cancelled()</code> factories.</li>
-<li><code>TransportInterface</code> and the <code>NullTransport</code> implementation.</li>
-<li><code>MailerManager</code> (resolves the default and named mailers from <code>Config\Email</code> via an
-  extensible transport map, lazily and cached) and a minimal <code>Mailer</code> that clones the
-  message at the dispatch boundary.</li>
-<li><code>Config\Email</code> configuration and the <code>service('mailer')</code> service.</li>
-<li><code>MessageRenderer</code> that serialises an <code>Email</code> into a raw RFC 5322 / MIME string:
-  <code>text/plain</code>, or <code>multipart/alternative</code> whenever HTML is present (with an
-  automatically generated HTML→text fallback when no text body is set). Emits
-  custom headers, <code>Return-Path</code>/<code>Sender</code>, and non-default <code>X-Priority</code>; applies
-  RFC 2047 header encoding and quoted-printable body encoding (7-bit clean,
-  within the 998-octet SMTP limit); strips CR/LF to prevent header injection;
-  exposes the rendered header set via <code>headers()</code>.</li>
-<li><code>LogTransport</code> and the built-in <code>log</code> mailer, which render the message and
-  write the full MIME to a PSR-3 log channel (default level <code>debug</code>) instead of
-  delivering it.</li>
-<li>Email lifecycle events fired around every send: <code>email.composing</code> (at the
-  start), <code>email.sending</code> (immediately before the transport — returning <code>false</code>
-  cancels the send and yields <code>SendResult::cancelled()</code>), and <code>email.sent</code> /
-  <code>email.failed</code> afterwards (each receiving the <code>Email</code> and <code>SendResult</code>). All
-  emission is gated behind <code>Config\Email::$fireEvents</code> (default <code>true</code>).</li>
-<li><code>SendmailTransport</code>/<code>MailTransport</code> and the <code>sendmail</code> and <code>mail</code> mailers,
-  which hand the rendered MIME to a local MTA: <code>sendmail</code> pipes it to the
-  configured binary (<code>path</code>) with <code>-oi -t</code>, and <code>mail</code> splits it across PHP's
-  native <code>mail()</code>. Both deliver <code>Bcc</code> via a header the MTA strips, set the
-  envelope sender (<code>-f</code>) from the return path or <code>From</code> (validated and
-  shell-escaped), and talk through the <code>SendmailProcess</code>/<code>MailFunction</code> seams
-  for testing.</li>
-<li><code>LegacyEmailAdapter</code>, a drop-in replacement for CodeIgniter 4's email service.
-  <code>service('email')</code> now returns the adapter, which exposes the full legacy
-  fluent API (<code>setFrom</code>/<code>setTo</code>/<code>setCC</code>/<code>setBCC</code>/<code>setSubject</code>/<code>setMessage</code>/
-  <code>setAltMessage</code>/<code>setMailType</code>/<code>setHeader</code>/<code>setPriority</code>/<code>setWordWrap</code>/
-  <code>setProtocol</code>/<code>attach</code>/<code>send</code>/<code>printDebugger</code>/<code>batchBCCSend</code>/validation
-  helpers) on top of the new <code>Email</code> builder and <code>Mailer</code>. Honors the legacy
-  flat <code>Config\Email</code> keys (<code>protocol</code>, <code>SMTP*</code>, <code>mailPath</code>, <code>mailType</code>,
-  <code>wordWrap</code>/<code>wrapChars</code>, <code>priority</code>, <code>BCCBatch*</code>, <code>DSN</code>) so existing apps need
-  no configuration changes. Invalid addresses are swallowed (<code>send()</code> returns
-  <code>false</code> and never throws). For CI4 parity, <code>Return-Path</code> and <code>Reply-To</code>
-  default to <code>From</code>, and sends flow through the event pipeline (a
-  <code>email.sending</code> listener can cancel). See
-  <a href="../legacy-compatibility/">Legacy Compatibility</a>.</li>
-<li>Optional hard word-wrap for the plain-text part: set <code>Email::$wordWrap</code> (and
-  <code>$wrapChars</code>, default 76) and <code>MessageRenderer</code> wraps at word boundaries,
-  leaving long space-less tokens (e.g. URLs) intact.</li>
-<li><code>Mailer::fake()</code> and the <code>FakeTransport</code> test double: swaps the bound
-  <code>service('mailer')</code> for an in-memory recorder (no network, no real transport)
-  and returns it. Exposes content-matcher assertions — <code>assertSent()</code>,
-  <code>assertSentTo()</code>, <code>assertNotSent()</code>, <code>assertNothingSent()</code>, <code>assertSentCount()</code>
-  — and <code>sent()</code> for inspecting the recorded messages. See
-  <a href="../testing/">Testing Mail</a>.</li>
+<li><a href="../events/">Events</a> — the lifecycle events that still fire through the faked mailer</li>
+<li><a href="../log-mailer/">The Log Mailer</a> — render messages to a log channel instead of delivering them</li>
 </ul>
 
 
@@ -802,7 +960,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../legacy-compatibility/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Legacy Compatibility">
+          <a href="../suppression-unsubscribe/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Suppression &amp; Unsubscribe">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -812,11 +970,27 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Legacy Compatibility
+                Suppression & Unsubscribe
               </div>
             </div>
           </a>
         
+        
+          
+          <a href="../legacy-compatibility/" class="md-footer__link md-footer__link--next" aria-label="Next: Legacy Compatibility">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Legacy Compatibility
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
         
       </nav>
     
