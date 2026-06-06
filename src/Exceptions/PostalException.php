@@ -15,13 +15,8 @@ namespace Myth\Postal\Exceptions;
 
 use RuntimeException;
 
-class PackageException extends RuntimeException
+class PostalException extends RuntimeException
 {
-    public static function forExample(string $message): self
-    {
-        return new self($message);
-    }
-
     public static function forUnknownMailer(string $name): self
     {
         return new self("No mailer named \"{$name}\" is defined in Config\\Email.");

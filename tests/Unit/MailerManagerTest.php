@@ -18,7 +18,7 @@ use CodeIgniter\Events\Events;
 use CodeIgniter\Test\CIUnitTestCase;
 use Myth\Postal\Config\Email as EmailConfig;
 use Myth\Postal\Email;
-use Myth\Postal\Exceptions\PackageException;
+use Myth\Postal\Exceptions\PostalException;
 use Myth\Postal\MailerManager;
 use Psr\Log\AbstractLogger;
 use Stringable;
@@ -145,7 +145,7 @@ final class MailerManagerTest extends CIUnitTestCase
     {
         $manager = new MailerManager(new EmailConfig());
 
-        $this->expectException(PackageException::class);
+        $this->expectException(PostalException::class);
         $manager->mailer('does-not-exist');
     }
 
@@ -157,7 +157,7 @@ final class MailerManagerTest extends CIUnitTestCase
 
         $manager = new MailerManager($config);
 
-        $this->expectException(PackageException::class);
+        $this->expectException(PostalException::class);
         $manager->mailer();
     }
 }

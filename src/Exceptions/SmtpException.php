@@ -17,7 +17,7 @@ namespace Myth\Postal\Exceptions;
  * Raised for SMTP connection and protocol failures. The SMTP transport catches
  * these during a conversation and reports them as a failed SendResult.
  */
-class SmtpException extends PackageException
+class SmtpException extends PostalException
 {
     public static function forConnectionFailure(string $host, int $port, string $error): self
     {
