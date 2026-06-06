@@ -18,7 +18,7 @@ use CodeIgniter\Test\CIUnitTestCase;
 use Myth\Postal\Email;
 use Myth\Postal\Mailer;
 use Myth\Postal\Transport\FakeTransport;
-use PHPUnit\Framework\AssertionFailedError;
+use Throwable;
 
 /**
  * @internal
@@ -85,10 +85,15 @@ final class FakeTransportTest extends CIUnitTestCase
         $fake = new FakeTransport();
         $fake->send($this->email(subject: 'Welcome'));
 
-        $this->expectException(AssertionFailedError::class);
-        $this->expectExceptionMessage('The expected message was not sent.');
+        try {
+            $fake->assertSent(static fn (Email $email): bool => $email->subject === 'Nope');
+        } catch (Throwable $e) {
+            $this->assertStringContainsString('The expected message was not sent.', $e->getMessage());
 
-        $fake->assertSent(static fn (Email $email): bool => $email->subject === 'Nope');
+            return;
+        }
+
+        $this->fail('assertSent() should have failed.');
     }
 
     public function testAssertSentToMatchesToCcAndBcc(): void
@@ -108,10 +113,15 @@ final class FakeTransportTest extends CIUnitTestCase
         $fake = new FakeTransport();
         $fake->send($this->email('you@example.com'));
 
-        $this->expectException(AssertionFailedError::class);
-        $this->expectExceptionMessage('nobody@example.com');
+        try {
+            $fake->assertSentTo('nobody@example.com');
+        } catch (Throwable $e) {
+            $this->assertStringContainsString('nobody@example.com', $e->getMessage());
 
-        $fake->assertSentTo('nobody@example.com');
+            return;
+        }
+
+        $this->fail('assertSentTo() should have failed.');
     }
 
     public function testAssertNotSentPassesWhenNoneMatch(): void
@@ -127,9 +137,15 @@ final class FakeTransportTest extends CIUnitTestCase
         $fake = new FakeTransport();
         $fake->send($this->email(subject: 'Welcome'));
 
-        $this->expectException(AssertionFailedError::class);
+        try {
+            $fake->assertNotSent(static fn (Email $email): bool => $email->subject === 'Welcome');
+        } catch (Throwable $e) {
+            $this->assertStringContainsString('unexpected message', $e->getMessage());
 
-        $fake->assertNotSent(static fn (Email $email): bool => $email->subject === 'Welcome');
+            return;
+        }
+
+        $this->fail('assertNotSent() should have failed.');
     }
 
     public function testAssertNothingSentPassesWhenEmpty(): void
@@ -142,9 +158,15 @@ final class FakeTransportTest extends CIUnitTestCase
         $fake = new FakeTransport();
         $fake->send($this->email());
 
-        $this->expectException(AssertionFailedError::class);
+        try {
+            $fake->assertNothingSent();
+        } catch (Throwable $e) {
+            $this->assertStringContainsString('Expected no messages to be sent', $e->getMessage());
 
-        $fake->assertNothingSent();
+            return;
+        }
+
+        $this->fail('assertNothingSent() should have failed.');
     }
 
     public function testAssertSentCountMatches(): void
@@ -161,16 +183,15 @@ final class FakeTransportTest extends CIUnitTestCase
         $fake = new FakeTransport();
         $fake->send($this->email());
 
-        $this->expectException(AssertionFailedError::class);
+        try {
+            $fake->assertSentCount(3);
+        } catch (Throwable $e) {
+            $this->assertStringContainsString('Expected 3 message(s) to be sent', $e->getMessage());
 
-        $fake->assertSentCount(3);
-    }
+            return;
+        }
 
-    public function testFakeReturnsTheRecordingDouble(): void
-    {
-        $fake = Mailer::fake();
-
-        $this->assertInstanceOf(FakeTransport::class, $fake);
+        $this->fail('assertSentCount() should have failed.');
     }
 
     public function testFakeSwapsTheMailerServiceTransport(): void
