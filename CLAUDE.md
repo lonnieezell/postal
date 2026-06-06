@@ -58,7 +58,7 @@ composer docker:shell     # bash shell inside container
 
 - `src/Config/Registrar.php` — registers filter aliases and other CI4 config hooks; CI4 calls static methods on this class during bootstrap
 - `src/Config/Services.php` — extends `BaseService` to register package services available via `service('name')`
-- `src/Exceptions/PackageException.php` — base exception class for the package
+- `src/Exceptions/PostalException.php` — base exception class for the package
 
 **Namespace**: `Myth\Postal\` maps to `src/`. Test namespace `Tests\` maps to `tests/`, `Tests\Support\` maps to `tests/_support/`.
 

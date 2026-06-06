@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Myth\Postal;
 
 use Myth\Postal\Config\Email as EmailConfig;
-use Myth\Postal\Exceptions\PackageException;
+use Myth\Postal\Exceptions\PostalException;
 use Myth\Postal\Transport\TransportInterface;
 
 /**
@@ -69,13 +69,13 @@ class MailerManager
     private function resolveTransport(string $name): TransportInterface
     {
         if (! isset($this->config->mailers[$name])) {
-            throw PackageException::forUnknownMailer($name);
+            throw PostalException::forUnknownMailer($name);
         }
 
         $transportName = $this->config->mailers[$name]['transport'] ?? '';
 
         if (! isset($this->config->transports[$transportName])) {
-            throw PackageException::forUnknownTransport((string) $transportName);
+            throw PostalException::forUnknownTransport((string) $transportName);
         }
 
         $class = $this->config->transports[$transportName];

@@ -53,3 +53,9 @@
 - Optional hard word-wrap for the plain-text part: set `Email::$wordWrap` (and
   `$wrapChars`, default 76) and `MessageRenderer` wraps at word boundaries,
   leaving long space-less tokens (e.g. URLs) intact.
+- `Mailer::fake()` and the `FakeTransport` test double: swaps the bound
+  `service('mailer')` for an in-memory recorder (no network, no real transport)
+  and returns it. Exposes content-matcher assertions — `assertSent()`,
+  `assertSentTo()`, `assertNotSent()`, `assertNothingSent()`, `assertSentCount()`
+  — and `sent()` for inspecting the recorded messages. See
+  [Testing Mail](testing.md).
