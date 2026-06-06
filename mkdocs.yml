@@ -55,5 +55,6 @@ nav:
   - MIME Rendering: mime-rendering.md
   - Events: events.md
   - Suppression & Unsubscribe: suppression-unsubscribe.md
+  - Testing Mail: testing.md
   - Legacy Compatibility: legacy-compatibility.md
   - Changelog: changelog.md
