@@ -11,7 +11,7 @@
       
       
       
-        <link rel="prev" href="../suppression-unsubscribe/">
+        <link rel="prev" href="../mailables/">
       
       
         <link rel="next" href="../legacy-compatibility/">
@@ -478,6 +478,33 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../mailables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mailables
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -579,6 +606,17 @@
     <span class="md-ellipsis">
       
         assertSent(Closure $callback)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#by-mailable-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        By Mailable class
       
     </span>
   </a>
@@ -779,6 +817,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#by-mailable-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        By Mailable class
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#assertsenttostring-email" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -896,29 +945,42 @@
 <p>Pass a content matcher — a closure that receives an <code>Email</code> and returns a bool — to filter:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="x">$welcomes = $fake-&gt;sent(static fn (Email $email): bool =&gt; $email-&gt;subject === &#39;Welcome!&#39;);</span>
 </code></pre></div>
+<p>If you send <a href="../mailables/">Mailables</a>, pass the class name instead to get just the messages that came from that Mailable:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="x">$welcomes = $fake-&gt;sent(WelcomeEmail::class);</span>
+</code></pre></div>
 <h2 id="assertions">Assertions</h2>
 <p>All assertions integrate with PHPUnit, so a failure fails the test with a readable message.</p>
 <h3 id="assertsentclosure-callback"><code>assertSent(Closure $callback)</code></h3>
 <p>Passes when at least one recorded message satisfies the matcher:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="x">$fake-&gt;assertSent(static fn (Email $email): bool =&gt;</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="x">    $email-&gt;subject === &#39;Welcome!&#39;</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="x">    &amp;&amp; str_contains((string) $email-&gt;htmlBody, &#39;Thanks for joining&#39;));</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="x">$fake-&gt;assertSent(static fn (Email $email): bool =&gt;</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="x">    $email-&gt;subject === &#39;Welcome!&#39;</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="x">    &amp;&amp; str_contains((string) $email-&gt;htmlBody, &#39;Thanks for joining&#39;));</span>
+</code></pre></div>
+<h3 id="by-mailable-class">By Mailable class</h3>
+<p>When you send a <a href="../mailables/">Mailable</a>, <code>send()</code> tags the message with its class, so you can assert on the type instead of matching content. Pass the class name to <code>assertSent()</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="x">$fake-&gt;assertSent(WelcomeEmail::class);</span>
+</code></pre></div>
+<p>Add a closure as a second argument to narrow it further — both must match:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="x">$fake-&gt;assertSent(</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="x">    WelcomeEmail::class,</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="x">    static fn (Email $email): bool =&gt; $email-&gt;subject === &#39;Welcome aboard&#39;,</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="x">);</span>
 </code></pre></div>
 <h3 id="assertsenttostring-email"><code>assertSentTo(string $email)</code></h3>
 <p>Passes when at least one recorded message was addressed to the given email — in any of the <code>To</code>, <code>Cc</code>, or <code>Bcc</code> buckets. The match is case-insensitive:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="x">$fake-&gt;assertSentTo(&#39;user@example.com&#39;);</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="x">$fake-&gt;assertSentTo(&#39;user@example.com&#39;);</span>
 </code></pre></div>
 <h3 id="assertnotsentclosure-callback"><code>assertNotSent(Closure $callback)</code></h3>
 <p>Passes when <strong>no</strong> recorded message satisfies the matcher:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="x">$fake-&gt;assertNotSent(static fn (Email $email): bool =&gt; $email-&gt;subject === &#39;Password reset&#39;);</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="x">$fake-&gt;assertNotSent(static fn (Email $email): bool =&gt; $email-&gt;subject === &#39;Password reset&#39;);</span>
 </code></pre></div>
 <h3 id="assertnothingsent"><code>assertNothingSent()</code></h3>
 <p>Passes when no message was recorded at all:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="x">$fake-&gt;assertNothingSent();</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="x">$fake-&gt;assertNothingSent();</span>
 </code></pre></div>
 <h3 id="assertsentcountint-count"><code>assertSentCount(int $count)</code></h3>
 <p>Passes when exactly the given number of messages were recorded:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="x">$fake-&gt;assertSentCount(3);</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="x">$fake-&gt;assertSentCount(3);</span>
 </code></pre></div>
 <h2 id="next-steps">Next steps</h2>
 <ul>
@@ -960,7 +1022,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../suppression-unsubscribe/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Suppression &amp; Unsubscribe">
+          <a href="../mailables/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Mailables">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -970,7 +1032,7 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Suppression & Unsubscribe
+                Mailables
               </div>
             </div>
           </a>

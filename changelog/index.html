@@ -479,6 +479,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../mailables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mailables
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../testing/" class="md-nav__link">
         
   
@@ -766,6 +793,14 @@
   <code>assertSentTo()</code>, <code>assertNotSent()</code>, <code>assertNothingSent()</code>, <code>assertSentCount()</code>
   — and <code>sent()</code> for inspecting the recorded messages. See
   <a href="../testing/">Testing Mail</a>.</li>
+<li><code>Mailable</code>, an abstract class-based email definition: compose the message in
+  <code>build()</code> (which runs lazily at send time) via protected <code>from</code>/<code>to</code>/<code>subject</code>/
+  <code>html</code>/<code>text</code> helpers, pick a named mailer with <code>transport()</code>, and <code>send()</code> to
+  route through <code>service('mailer')</code>. Each send tags the message with the
+  Mailable's class. The <code>make:mailable</code> Spark command scaffolds a class into
+  <code>app/Mails/</code> (<code>--force</code> overwrites). <code>FakeTransport::sent()</code> and <code>assertSent()</code>
+  now also accept a Mailable class-string (with an optional closure filter) so
+  tests can assert by type. See <a href="../mailables/">Mailables</a>.</li>
 </ul>
 
 
