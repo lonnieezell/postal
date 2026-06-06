@@ -18,6 +18,7 @@ use CodeIgniter\Test\CIUnitTestCase;
 use Myth\Postal\Email;
 use Myth\Postal\Mailer;
 use Myth\Postal\Transport\FakeTransport;
+use Tests\Support\Mailables\WelcomeEmail;
 use Throwable;
 
 /**
@@ -192,6 +193,80 @@ final class FakeTransportTest extends CIUnitTestCase
         }
 
         $this->fail('assertSentCount() should have failed.');
+    }
+
+    private function taggedEmail(string $mailableClass, string $subject = 'Hi'): Email
+    {
+        $email                = $this->email(subject: $subject);
+        $email->mailableClass = $mailableClass;
+
+        return $email;
+    }
+
+    public function testSentFiltersByMailableClass(): void
+    {
+        $fake = new FakeTransport();
+        $fake->send($this->taggedEmail(WelcomeEmail::class));
+        $fake->send($this->email());
+
+        $matches = $fake->sent(WelcomeEmail::class);
+
+        $this->assertCount(1, $matches);
+        $this->assertSame(WelcomeEmail::class, $matches[0]->mailableClass);
+    }
+
+    public function testAssertSentPassesForMailableClass(): void
+    {
+        $fake = new FakeTransport();
+        $fake->send($this->taggedEmail(WelcomeEmail::class));
+
+        $fake->assertSent(WelcomeEmail::class);
+    }
+
+    public function testAssertSentFailsWhenMailableClassNotSent(): void
+    {
+        $fake = new FakeTransport();
+        $fake->send($this->email());
+
+        try {
+            $fake->assertSent(WelcomeEmail::class);
+        } catch (Throwable $e) {
+            $this->assertStringContainsString(WelcomeEmail::class, $e->getMessage());
+
+            return;
+        }
+
+        $this->fail('assertSent() should have failed.');
+    }
+
+    public function testAssertSentForMailableClassWithMatchingFilter(): void
+    {
+        $fake = new FakeTransport();
+        $fake->send($this->taggedEmail(WelcomeEmail::class, 'Welcome'));
+
+        $fake->assertSent(
+            WelcomeEmail::class,
+            static fn (Email $email): bool => $email->subject === 'Welcome',
+        );
+    }
+
+    public function testAssertSentForMailableClassFailsWhenFilterRejects(): void
+    {
+        $fake = new FakeTransport();
+        $fake->send($this->taggedEmail(WelcomeEmail::class, 'Welcome'));
+
+        try {
+            $fake->assertSent(
+                WelcomeEmail::class,
+                static fn (Email $email): bool => $email->subject === 'Nope',
+            );
+        } catch (Throwable $e) {
+            $this->assertStringContainsString(WelcomeEmail::class, $e->getMessage());
+
+            return;
+        }
+
+        $this->fail('assertSent() should have failed.');
     }
 
     public function testFakeSwapsTheMailerServiceTransport(): void
