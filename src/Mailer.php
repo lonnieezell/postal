@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace Myth\Postal;
 
 use CodeIgniter\Events\Events;
+use Myth\Postal\Config\Services;
+use Myth\Postal\Transport\FakeTransport;
 use Myth\Postal\Transport\TransportInterface;
 
 /**
@@ -29,6 +31,30 @@ class Mailer
         private readonly ?SuppressionListInterface $suppressionList = null,
         private readonly ?UnsubscribeUrlInterface $unsubscribeUrl = null,
     ) {
+    }
+
+    /**
+     * Swaps the bound mailer service for an in-memory double so tests can assert
+     * on what would have been sent without touching a real transport. Every
+     * mailer resolved from service('mailer') routes through the returned double.
+     */
+    public static function fake(): FakeTransport
+    {
+        $transport = new FakeTransport();
+        $mailer    = new self($transport);
+
+        Services::injectMock('mailer', new class ($mailer) extends MailerManager {
+            public function __construct(private readonly Mailer $fakeMailer)
+            {
+            }
+
+            public function mailer(?string $name = null): Mailer
+            {
+                return $this->fakeMailer;
+            }
+        });
+
+        return $transport;
     }
 
     public function send(Email $email): SendResult
