@@ -59,3 +59,11 @@
   `assertSentTo()`, `assertNotSent()`, `assertNothingSent()`, `assertSentCount()`
   — and `sent()` for inspecting the recorded messages. See
   [Testing Mail](testing.md).
+- `Mailable`, an abstract class-based email definition: compose the message in
+  `build()` (which runs lazily at send time) via protected `from`/`to`/`subject`/
+  `html`/`text` helpers, pick a named mailer with `transport()`, and `send()` to
+  route through `service('mailer')`. Each send tags the message with the
+  Mailable's class. The `make:mailable` Spark command scaffolds a class into
+  `app/Mails/` (`--force` overwrites). `FakeTransport::sent()` and `assertSent()`
+  now also accept a Mailable class-string (with an optional closure filter) so
+  tests can assert by type. See [Mailables](mailables.md).

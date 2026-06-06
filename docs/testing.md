@@ -46,6 +46,12 @@ Pass a content matcher — a closure that receives an `Email` and returns a bool
 $welcomes = $fake->sent(static fn (Email $email): bool => $email->subject === 'Welcome!');
 ```
 
+If you send [Mailables](mailables.md), pass the class name instead to get just the messages that came from that Mailable:
+
+```php
+$welcomes = $fake->sent(WelcomeEmail::class);
+```
+
 ## Assertions
 
 All assertions integrate with PHPUnit, so a failure fails the test with a readable message.
@@ -58,6 +64,23 @@ Passes when at least one recorded message satisfies the matcher:
 $fake->assertSent(static fn (Email $email): bool =>
     $email->subject === 'Welcome!'
     && str_contains((string) $email->htmlBody, 'Thanks for joining'));
+```
+
+### By Mailable class
+
+When you send a [Mailable](mailables.md), `send()` tags the message with its class, so you can assert on the type instead of matching content. Pass the class name to `assertSent()`:
+
+```php
+$fake->assertSent(WelcomeEmail::class);
+```
+
+Add a closure as a second argument to narrow it further — both must match:
+
+```php
+$fake->assertSent(
+    WelcomeEmail::class,
+    static fn (Email $email): bool => $email->subject === 'Welcome aboard',
+);
 ```
 
 ### `assertSentTo(string $email)`
