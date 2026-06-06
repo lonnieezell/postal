@@ -69,6 +69,10 @@ A pure-ASCII display name is wrapped in a quoted-string (`"Doe, John" <a@b.com>`
 
 Both the plain-text and HTML parts are encoded with `quoted-printable`, with every line ending normalised to CRLF. Quoted-printable soft-wraps long lines at 76 characters, so even a very long unbroken line — or a non-ASCII body — stays within the 998-octet SMTP limit and the whole message is 7-bit clean, without requiring an `8BITMIME`-capable server.
 
+### Word wrap
+
+Quoted-printable soft wrapping is invisible to the reader — it decodes away on delivery. When you want the plain-text part to *stay* wrapped in the recipient's client, set `Email::$wordWrap = true` (and `$wrapChars`, default 76). The renderer then hard-wraps the text at word boundaries before encoding, leaving long space-less tokens such as URLs intact. Word wrap is off by default; the legacy `setWordWrap()` adapter method drives it.
+
 !!! note "Current limitations"
     The renderer is deliberately small for now. Very long non-ASCII header values aren't folded into multiple encoded-words. This is fine for the log mailer and typical messages; richer encoding will arrive with the SMTP transport.
 

@@ -146,10 +146,10 @@ class MessageRenderer
                 'Content-Transfer-Encoding' => 'quoted-printable',
             ];
 
-            return [$contentHeaders, $this->quotedPrintable((string) $email->textBody)];
+            return [$contentHeaders, $this->quotedPrintable($this->wrap((string) $email->textBody, $email))];
         }
 
-        $text     = $this->quotedPrintable($email->textBody ?? $this->htmlToText($email->htmlBody));
+        $text     = $this->quotedPrintable($this->wrap($email->textBody ?? $this->htmlToText($email->htmlBody), $email));
         $html     = $this->quotedPrintable($email->htmlBody);
         $boundary = uniqid('B_ALT_', true);
 
@@ -269,6 +269,22 @@ class MessageRenderer
         }
 
         return '=?' . self::CHARSET . '?Q?' . $encoded . '?=';
+    }
+
+    /**
+     * Hard-wraps the plain-text content at the email's wrapChars when word wrap
+     * is enabled, leaving long space-less tokens (e.g. URLs) intact. When word
+     * wrap is off the text is returned unchanged.
+     */
+    private function wrap(string $text, Email $email): string
+    {
+        if (! $email->wordWrap) {
+            return $text;
+        }
+
+        $chars = $email->wrapChars > 0 ? $email->wrapChars : 76;
+
+        return wordwrap($text, $chars, "\n", false);
     }
 
     /**

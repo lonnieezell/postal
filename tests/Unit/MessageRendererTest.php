@@ -365,6 +365,66 @@ final class MessageRendererTest extends CIUnitTestCase
         }
     }
 
+    public function testDoesNotHardWrapTextBodyByDefault(): void
+    {
+        $longLine = str_repeat('word ', 40); // ~200 chars, no newlines
+
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->text($longLine);
+
+        $mime     = (new MessageRenderer())->render($email);
+        [, $body] = explode("\r\n\r\n", $mime, 2);
+
+        // QP soft-wrapping decodes away, so the delivered text is unchanged: a
+        // single long line with no hard line breaks introduced by the renderer.
+        $this->assertSame(rtrim($longLine), rtrim(quoted_printable_decode($body)));
+    }
+
+    public function testHardWrapsTextBodyWhenWordWrapEnabled(): void
+    {
+        $longLine = str_repeat('word ', 40); // ~200 chars, no newlines
+
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->text($longLine);
+        $email->wordWrap  = true;
+        $email->wrapChars = 30;
+
+        $mime     = (new MessageRenderer())->render($email);
+        [, $body] = explode("\r\n\r\n", $mime, 2);
+
+        $decoded = quoted_printable_decode($body);
+        $lines   = explode("\r\n", rtrim($decoded));
+
+        // The wrap survives QP decoding (hard newlines), unlike the soft wrap.
+        $this->assertGreaterThan(1, count($lines));
+
+        foreach ($lines as $line) {
+            $this->assertLessThanOrEqual(30, strlen($line));
+        }
+    }
+
+    public function testWordWrapDoesNotBreakLongUnbrokenTokens(): void
+    {
+        $token = str_repeat('x', 120); // a single word longer than wrapChars
+
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->text($token);
+        $email->wordWrap  = true;
+        $email->wrapChars = 30;
+
+        $mime     = (new MessageRenderer())->render($email);
+        [, $body] = explode("\r\n\r\n", $mime, 2);
+
+        // A long, space-less token (e.g. a URL) is left intact rather than cut.
+        $this->assertSame($token, rtrim(quoted_printable_decode($body)));
+    }
+
     public function testStripsCrlfFromHeaderValuesToPreventInjection(): void
     {
         $email = (new Email())
