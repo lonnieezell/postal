@@ -46,7 +46,10 @@
   flat `Config\Email` keys (`protocol`, `SMTP*`, `mailPath`, `mailType`,
   `wordWrap`/`wrapChars`, `priority`, `BCCBatch*`, `DSN`) so existing apps need
   no configuration changes. Invalid addresses are swallowed (`send()` returns
-  `false` and never throws). See [Legacy Compatibility](legacy-compatibility.md).
+  `false` and never throws). For CI4 parity, `Return-Path` and `Reply-To`
+  default to `From`, and sends flow through the event pipeline (a
+  `email.sending` listener can cancel). See
+  [Legacy Compatibility](legacy-compatibility.md).
 - Optional hard word-wrap for the plain-text part: set `Email::$wordWrap` (and
   `$wrapChars`, default 76) and `MessageRenderer` wraps at word boundaries,
   leaving long space-less tokens (e.g. URLs) intact.

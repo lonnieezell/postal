@@ -50,6 +50,8 @@ The adapter maps your existing `app/Config/Email.php` onto the new mailer:
 ## Behavioural notes
 
 - **Invalid addresses are swallowed.** Regardless of the `validate` setting, a malformed address is never thrown — it is recorded in the debugger and skipped, and `send()` returns `false`.
+- **Header defaults match CI4.** The envelope sender (`Return-Path`) defaults to the `From` address when you don't pass a return path to `setFrom()`, and `Reply-To` defaults to `From` when you don't set one.
+- **Events fire.** Adapter sends flow through Postal's [event pipeline](events.md): a listener on `email.sending` can cancel the send (which then returns `false`).
 - **BCC batch mode** loops the blind recipients in `BCCBatchSize` chunks; the result is the logical AND of every batch.
 - **`printDebugger()`** renders the current message (headers, subject, body) through `MessageRenderer` and prepends any recorded errors. The output is compatible with the legacy debugger, though not byte-identical, and user-supplied values are HTML-escaped.
 - **Word wrap** maps to the renderer's hard wrap (see [MIME Rendering](mime-rendering.md)).

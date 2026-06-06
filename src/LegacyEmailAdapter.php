@@ -198,6 +198,11 @@ class LegacyEmailAdapter
             return false;
         }
 
+        // CI4 parity: Reply-To defaults to From when none was set.
+        if ($this->email->replyTo === null) {
+            $this->email->replyTo = $this->email->from;
+        }
+
         $this->prepareEmail();
         $mailer = $this->buildMailer();
 
@@ -330,7 +335,9 @@ class LegacyEmailAdapter
 
     private function buildMailer(): Mailer
     {
-        return new Mailer($this->resolveTransport(), fireEvents: false);
+        // Participate in Postal's event pipeline so adapter sends behave like
+        // any other send (a listener may cancel via email.sending).
+        return new Mailer($this->resolveTransport(), fireEvents: true);
     }
 
     /**

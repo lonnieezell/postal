@@ -40,9 +40,10 @@ trait LegacyEmailCompat
 
         $this->email->from = new Address($from, $name);
 
-        if ($returnPath !== null && $returnPath !== '') {
-            $this->email->returnPath = $this->extractAddress($returnPath);
-        }
+        // CI4 parity: the envelope sender defaults to the From address.
+        $this->email->returnPath = ($returnPath !== null && $returnPath !== '')
+            ? $this->extractAddress($returnPath)
+            : $from;
 
         return $this;
     }

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use CodeIgniter\Events\Events;
 use CodeIgniter\Test\CIUnitTestCase;
 use Config\Email as LegacyConfig;
 use Myth\Postal\LegacyEmailAdapter;
@@ -26,6 +27,15 @@ use Tests\Support\RecordingTransport;
  */
 final class LegacyEmailAdapterTest extends CIUnitTestCase
 {
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        foreach (['email.composing', 'email.sending', 'email.sent', 'email.failed'] as $event) {
+            Events::removeAllListeners($event);
+        }
+    }
+
     private function adapter(RecordingTransport $transport, ?LegacyConfig $config = null): LegacyEmailAdapter
     {
         return new LegacyEmailAdapter($config ?? new LegacyConfig(), $transport);
@@ -431,6 +441,94 @@ final class LegacyEmailAdapterTest extends CIUnitTestCase
         $this->assertNotNull($adapter->lastResult());
         $this->assertTrue($adapter->lastResult()->success);
         $this->assertSame('Hello', $adapter->lastEmail()->subject);
+    }
+
+    public function testSetFromDefaultsReturnPathToFrom(): void
+    {
+        $transport = new RecordingTransport();
+
+        $this->adapter($transport)
+            ->setFrom('me@example.com', 'Me')
+            ->setTo('you@example.com')
+            ->setMessage('Hi')
+            ->send();
+
+        // CI4 parity: Return-Path defaults to the From address when omitted.
+        $this->assertSame('me@example.com', $transport->sent[0]->returnPath);
+    }
+
+    public function testExplicitReturnPathWins(): void
+    {
+        $transport = new RecordingTransport();
+
+        $this->adapter($transport)
+            ->setFrom('me@example.com', 'Me', 'bounce@example.com')
+            ->setTo('you@example.com')
+            ->setMessage('Hi')
+            ->send();
+
+        $this->assertSame('bounce@example.com', $transport->sent[0]->returnPath);
+    }
+
+    public function testSendDefaultsReplyToToFrom(): void
+    {
+        $transport = new RecordingTransport();
+
+        $this->adapter($transport)
+            ->setFrom('me@example.com', 'Me')
+            ->setTo('you@example.com')
+            ->setMessage('Hi')
+            ->send();
+
+        // CI4 parity: Reply-To defaults to From when none was set.
+        $this->assertNotNull($transport->sent[0]->replyTo);
+        $this->assertSame('me@example.com', $transport->sent[0]->replyTo->email);
+    }
+
+    public function testExplicitReplyToIsNotOverwritten(): void
+    {
+        $transport = new RecordingTransport();
+
+        $this->adapter($transport)
+            ->setFrom('me@example.com')
+            ->setReplyTo('desk@example.com', 'Desk')
+            ->setTo('you@example.com')
+            ->setMessage('Hi')
+            ->send();
+
+        $this->assertSame('desk@example.com', $transport->sent[0]->replyTo->email);
+    }
+
+    public function testAdapterSendFiresEventPipeline(): void
+    {
+        $sent = false;
+        Events::on('email.sent', static function () use (&$sent): void {
+            $sent = true;
+        });
+
+        $this->adapter(new RecordingTransport())
+            ->setFrom('me@example.com')
+            ->setTo('you@example.com')
+            ->setMessage('Hi')
+            ->send();
+
+        $this->assertTrue($sent);
+    }
+
+    public function testSendingListenerCanCancelAdapterSend(): void
+    {
+        Events::on('email.sending', static fn (): bool => false);
+
+        $transport = new RecordingTransport();
+
+        $result = $this->adapter($transport)
+            ->setFrom('me@example.com')
+            ->setTo('you@example.com')
+            ->setMessage('Hi')
+            ->send();
+
+        $this->assertFalse($result);
+        $this->assertCount(0, $transport->sent);
     }
 
     public function testSetNewlineAndSetCrlfAreAcceptedAsNoOps(): void
