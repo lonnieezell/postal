@@ -50,6 +50,12 @@ class Email
     public ?string $returnPath = null;
 
     /**
+     * The Mailable class that composed this message, set by Mailable::send().
+     * Lets the fake transport filter recorded messages by mailable type.
+     */
+    public ?string $mailableClass = null;
+
+    /**
      * When true, the renderer hard-wraps the plain-text part at $wrapChars so
      * the wrap survives delivery (unlike quoted-printable soft wrapping).
      */
