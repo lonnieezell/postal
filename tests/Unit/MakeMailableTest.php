@@ -13,10 +13,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use CodeIgniter\CLI\CLI;
 use CodeIgniter\Config\Services;
 use CodeIgniter\Test\CIUnitTestCase;
-use CodeIgniter\Test\Mock\MockInputOutput;
 use Myth\Postal\Mailable;
 use Myth\Postal\Mailer;
 
@@ -27,18 +25,10 @@ final class MakeMailableTest extends CIUnitTestCase
 {
     private string $target = APPPATH . 'Mails/Welcome.php';
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        CLI::setInputOutput(new MockInputOutput());
-    }
-
     protected function tearDown(): void
     {
         parent::tearDown();
 
-        CLI::resetInputOutput();
         Services::reset();
 
         if (is_file($this->target)) {
@@ -56,8 +46,8 @@ final class MakeMailableTest extends CIUnitTestCase
         $this->assertFileExists($this->target);
 
         $contents = file_get_contents($this->target);
-        $this->assertStringContainsString('namespace App\Mails;', $contents);
-        $this->assertStringContainsString('class Welcome extends Mailable', $contents);
+        $this->assertStringContainsString('namespace App\Mails;', (string) $contents);
+        $this->assertStringContainsString('class Welcome extends Mailable', (string) $contents);
     }
 
     public function testGeneratedClassIsRunnable(): void

@@ -47,7 +47,7 @@ final class FakeTransport implements TransportInterface
      * given matcher. The matcher may be a content closure or a Mailable
      * class-string (matching messages tagged with that mailable).
      *
-     * @param (Closure(Email): bool)|class-string|null $callback
+     * @param class-string|(Closure(Email): bool)|null $callback
      *
      * @return list<Email>
      */
@@ -65,7 +65,7 @@ final class FakeTransport implements TransportInterface
      * content closure, or a Mailable class-string with an optional closure to
      * further filter messages tagged with that mailable.
      *
-     * @param (Closure(Email): bool)|class-string $callback
+     * @param class-string|(Closure(Email): bool) $callback
      * @param (Closure(Email): bool)|null         $filter
      */
     public function assertSent(Closure|string $callback, ?Closure $filter = null): void
@@ -138,7 +138,7 @@ final class FakeTransport implements TransportInterface
      * Resolves a matcher into a predicate. A closure is used as-is; a
      * class-string matches messages tagged with that Mailable class.
      *
-     * @param (Closure(Email): bool)|class-string $callback
+     * @param class-string|(Closure(Email): bool) $callback
      *
      * @return Closure(Email): bool
      */

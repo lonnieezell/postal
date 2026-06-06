@@ -40,13 +40,11 @@ final class MailableTest extends CIUnitTestCase
 
         (new WelcomeEmail('Ada'))->send();
 
-        $fake->assertSent(static function (Email $email): bool {
-            return $email->subject === 'Welcome, Ada'
-                && $email->from?->email === 'me@example.com'
-                && $email->to[0]->email === 'you@example.com'
-                && $email->htmlBody === '<p>Hello Ada</p>'
-                && $email->textBody === 'Hello Ada';
-        });
+        $fake->assertSent(static fn (Email $email): bool => $email->subject === 'Welcome, Ada'
+            && $email->from?->email === 'me@example.com'
+            && $email->to[0]->email === 'you@example.com'
+            && $email->htmlBody === '<p>Hello Ada</p>'
+            && $email->textBody === 'Hello Ada');
     }
 
     public function testSendTagsTheMailableClass(): void
