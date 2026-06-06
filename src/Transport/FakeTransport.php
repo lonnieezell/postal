@@ -44,31 +44,43 @@ final class FakeTransport implements TransportInterface
 
     /**
      * Returns the recorded messages, optionally filtered to those matching the
-     * given content matcher.
+     * given matcher. The matcher may be a content closure or a Mailable
+     * class-string (matching messages tagged with that mailable).
      *
-     * @param (Closure(Email): bool)|null $callback
+     * @param class-string|(Closure(Email): bool)|null $callback
      *
      * @return list<Email>
      */
-    public function sent(?Closure $callback = null): array
+    public function sent(Closure|string|null $callback = null): array
     {
         if ($callback === null) {
             return $this->sent;
         }
 
-        return array_values(array_filter($this->sent, $callback));
+        return array_values(array_filter($this->sent, $this->matcher($callback)));
     }
 
     /**
-     * Asserts at least one recorded message satisfies the content matcher.
+     * Asserts at least one recorded message satisfies the matcher. Pass a
+     * content closure, or a Mailable class-string with an optional closure to
+     * further filter messages tagged with that mailable.
      *
-     * @param Closure(Email): bool $callback
+     * @param class-string|(Closure(Email): bool) $callback
+     * @param (Closure(Email): bool)|null         $filter
      */
-    public function assertSent(Closure $callback): void
+    public function assertSent(Closure|string $callback, ?Closure $filter = null): void
     {
+        $matched = $this->sent($callback);
+
+        if ($filter !== null) {
+            $matched = array_values(array_filter($matched, $filter));
+        }
+
         Assert::assertNotEmpty(
-            $this->sent($callback),
-            'The expected message was not sent.',
+            $matched,
+            is_string($callback)
+                ? "No [{$callback}] message matching the given expectations was sent."
+                : 'The expected message was not sent.',
         );
     }
 
@@ -120,6 +132,23 @@ final class FakeTransport implements TransportInterface
             $this->sent,
             sprintf('Expected %d message(s) to be sent, but %d were.', $count, count($this->sent)),
         );
+    }
+
+    /**
+     * Resolves a matcher into a predicate. A closure is used as-is; a
+     * class-string matches messages tagged with that Mailable class.
+     *
+     * @param class-string|(Closure(Email): bool) $callback
+     *
+     * @return Closure(Email): bool
+     */
+    private function matcher(Closure|string $callback): Closure
+    {
+        if ($callback instanceof Closure) {
+            return $callback;
+        }
+
+        return static fn (Email $email): bool => $email->mailableClass === $callback;
     }
 
     /**
