@@ -11,7 +11,7 @@
       
       
       
-        <link rel="prev" href="../suppression-unsubscribe/">
+        <link rel="prev" href="../legacy-compatibility/">
       
       
       
@@ -476,6 +476,33 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../legacy-compatibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Legacy Compatibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -690,6 +717,22 @@
   envelope sender (<code>-f</code>) from the return path or <code>From</code> (validated and
   shell-escaped), and talk through the <code>SendmailProcess</code>/<code>MailFunction</code> seams
   for testing.</li>
+<li><code>LegacyEmailAdapter</code>, a drop-in replacement for CodeIgniter 4's email service.
+  <code>service('email')</code> now returns the adapter, which exposes the full legacy
+  fluent API (<code>setFrom</code>/<code>setTo</code>/<code>setCC</code>/<code>setBCC</code>/<code>setSubject</code>/<code>setMessage</code>/
+  <code>setAltMessage</code>/<code>setMailType</code>/<code>setHeader</code>/<code>setPriority</code>/<code>setWordWrap</code>/
+  <code>setProtocol</code>/<code>attach</code>/<code>send</code>/<code>printDebugger</code>/<code>batchBCCSend</code>/validation
+  helpers) on top of the new <code>Email</code> builder and <code>Mailer</code>. Honors the legacy
+  flat <code>Config\Email</code> keys (<code>protocol</code>, <code>SMTP*</code>, <code>mailPath</code>, <code>mailType</code>,
+  <code>wordWrap</code>/<code>wrapChars</code>, <code>priority</code>, <code>BCCBatch*</code>, <code>DSN</code>) so existing apps need
+  no configuration changes. Invalid addresses are swallowed (<code>send()</code> returns
+  <code>false</code> and never throws). For CI4 parity, <code>Return-Path</code> and <code>Reply-To</code>
+  default to <code>From</code>, and sends flow through the event pipeline (a
+  <code>email.sending</code> listener can cancel). See
+  <a href="../legacy-compatibility/">Legacy Compatibility</a>.</li>
+<li>Optional hard word-wrap for the plain-text part: set <code>Email::$wordWrap</code> (and
+  <code>$wrapChars</code>, default 76) and <code>MessageRenderer</code> wraps at word boundaries,
+  leaving long space-less tokens (e.g. URLs) intact.</li>
 </ul>
 
 
@@ -726,7 +769,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../suppression-unsubscribe/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Suppression &amp; Unsubscribe">
+          <a href="../legacy-compatibility/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Legacy Compatibility">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -736,7 +779,7 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Suppression & Unsubscribe
+                Legacy Compatibility
               </div>
             </div>
           </a>
