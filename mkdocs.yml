@@ -57,5 +57,6 @@ nav:
   - Suppression & Unsubscribe: suppression-unsubscribe.md
   - Mailables: mailables.md
   - Testing Mail: testing.md
+  - CLI Commands: cli-commands.md
   - Legacy Compatibility: legacy-compatibility.md
   - Changelog: changelog.md
