@@ -28,7 +28,7 @@ final class DkimSigningTransportTest extends CIUnitTestCase
 
     public function testSignsAndDelegatesToInnerTransport(): void
     {
-        $inner = new RawRecordingTransport();
+        $inner  = new RawRecordingTransport();
         $result = $this->transport($inner)->send($this->message());
 
         $this->assertTrue($result->success);
@@ -205,7 +205,7 @@ final class DkimSigningTransportTest extends CIUnitTestCase
     private function findHeader(array $lines, string $name): string
     {
         foreach ($lines as $line) {
-            if (stripos($line, $name . ':') === 0) {
+            if (str_starts_with(strtolower($line), strtolower($name . ':'))) {
                 return substr($line, strlen($name) + 1);
             }
         }

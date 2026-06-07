@@ -20,10 +20,10 @@ use Myth\Postal\Config\Email as EmailConfig;
 use Myth\Postal\Email;
 use Myth\Postal\Exceptions\PostalException;
 use Myth\Postal\MailerManager;
-use Psr\Log\AbstractLogger;
-use Stringable;
 use Myth\Postal\Transport\DkimSigningTransport;
 use Myth\Postal\Transport\FailoverTransport;
+use Psr\Log\AbstractLogger;
+use Stringable;
 use Tests\Support\AlwaysFailsTransport;
 
 /**

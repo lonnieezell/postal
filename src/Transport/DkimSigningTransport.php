@@ -108,7 +108,7 @@ final readonly class DkimSigningTransport implements TransportInterface
 
         openssl_sign($input, $signature, $this->privateKey, OPENSSL_ALGO_SHA256);
 
-        return 'DKIM-Signature: ' . $template . base64_encode($signature) . self::CRLF . $message;
+        return 'DKIM-Signature: ' . $template . base64_encode((string) $signature) . self::CRLF . $message;
     }
 
     /**
