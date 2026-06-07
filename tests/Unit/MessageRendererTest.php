@@ -15,6 +15,7 @@ namespace Tests\Unit;
 
 use CodeIgniter\Test\CIUnitTestCase;
 use Myth\Postal\Email;
+use Myth\Postal\Exceptions\PostalException;
 use Myth\Postal\MessageRenderer;
 
 /**
@@ -705,6 +706,18 @@ final class MessageRendererTest extends CIUnitTestCase
 
         // A CRLF embedded in the filename must not open a new header line.
         $this->assertStringNotContainsString("\r\nContent-Type: text/evil", $mime);
+    }
+
+    public function testMissingAttachmentPathThrowsAtRender(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->text('hi')
+            ->attach('/no/such/file.pdf');
+
+        $this->expectException(PostalException::class);
+        (new MessageRenderer())->render($email);
     }
 
     public function testNoAttachmentsLeavesMessageUnwrapped(): void
