@@ -35,7 +35,7 @@ final class FailoverTransportTest extends CIUnitTestCase
 
     public function testReturnsFirstChildSuccess(): void
     {
-        $failover = new FailoverTransport([], [
+        $failover = new FailoverTransport([
             new RecordingTransport(succeed: true),
             new RecordingTransport(succeed: true),
         ]);
@@ -48,7 +48,7 @@ final class FailoverTransportTest extends CIUnitTestCase
         $primary   = new RecordingTransport(succeed: false, error: 'primary down');
         $secondary = new RecordingTransport(succeed: true);
 
-        $failover = new FailoverTransport([], [$primary, $secondary]);
+        $failover = new FailoverTransport([$primary, $secondary]);
 
         $result = $failover->send($this->email());
 
@@ -63,7 +63,7 @@ final class FailoverTransportTest extends CIUnitTestCase
         $primary   = new RecordingTransport(succeed: true);
         $secondary = new RecordingTransport(succeed: true);
 
-        (new FailoverTransport([], [$primary, $secondary]))->send($this->email());
+        (new FailoverTransport([$primary, $secondary]))->send($this->email());
 
         // The secondary is never tried once the primary succeeds.
         $this->assertCount(1, $primary->sent);
@@ -79,14 +79,14 @@ final class FailoverTransportTest extends CIUnitTestCase
         $second = $this->recordingOrder('second', $calls, succeed: false);
         $third  = $this->recordingOrder('third', $calls, succeed: true);
 
-        (new FailoverTransport([], [$first, $second, $third]))->send($this->email());
+        (new FailoverTransport([$first, $second, $third]))->send($this->email());
 
         $this->assertSame(['first', 'second', 'third'], $calls->getArrayCopy());
     }
 
     public function testReturnsFailureWhenAllChildrenFail(): void
     {
-        $failover = new FailoverTransport([], [
+        $failover = new FailoverTransport([
             new RecordingTransport(succeed: false, error: 'first failed'),
             new RecordingTransport(succeed: false, error: 'second failed'),
         ]);
@@ -95,8 +95,8 @@ final class FailoverTransportTest extends CIUnitTestCase
 
         $this->assertFalse($result->success);
         $this->assertNotNull($result->error);
-        $this->assertStringContainsString('first failed', (string) $result->error);
-        $this->assertStringContainsString('second failed', (string) $result->error);
+        $this->assertStringContainsString('first failed', $result->error);
+        $this->assertStringContainsString('second failed', $result->error);
     }
 
     public function testTreatsThrowingChildAsFailureAndAdvances(): void
@@ -115,7 +115,7 @@ final class FailoverTransportTest extends CIUnitTestCase
 
         $secondary = new RecordingTransport(succeed: true);
 
-        $result = (new FailoverTransport([], [$throwing, $secondary]))->send($this->email());
+        $result = (new FailoverTransport([$throwing, $secondary]))->send($this->email());
 
         $this->assertTrue($result->success);
         $this->assertCount(1, $secondary->sent);
@@ -135,7 +135,7 @@ final class FailoverTransportTest extends CIUnitTestCase
             }
         };
 
-        $result = (new FailoverTransport([], [$throwing]))->send($this->email());
+        $result = (new FailoverTransport([$throwing]))->send($this->email());
 
         $this->assertFalse($result->success);
         $this->assertStringContainsString('connection refused', (string) $result->error);
@@ -145,7 +145,7 @@ final class FailoverTransportTest extends CIUnitTestCase
     {
         $this->expectException(PostalException::class);
 
-        new FailoverTransport([], []);
+        new FailoverTransport([]);
     }
 
     public function testPingTrueWhenAnyChildPings(): void
@@ -162,7 +162,7 @@ final class FailoverTransportTest extends CIUnitTestCase
             }
         };
 
-        $failover = new FailoverTransport([], [$down, new RecordingTransport()]);
+        $failover = new FailoverTransport([$down, new RecordingTransport()]);
 
         $this->assertTrue($failover->ping());
     }
@@ -181,7 +181,7 @@ final class FailoverTransportTest extends CIUnitTestCase
             }
         };
 
-        $failover = new FailoverTransport([], [$down(), $down()]);
+        $failover = new FailoverTransport([$down(), $down()]);
 
         $this->assertFalse($failover->ping());
     }

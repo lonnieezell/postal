@@ -22,13 +22,6 @@ use Myth\Postal\Transport\TransportInterface;
  */
 final class AlwaysFailsTransport implements TransportInterface
 {
-    /**
-     * @param array<string, mixed> $settings ignored; matches the uniform transport constructor
-     */
-    public function __construct(array $settings = [])
-    {
-    }
-
     public function send(Email $email): SendResult
     {
         return SendResult::fail('always fails');

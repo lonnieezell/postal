@@ -85,7 +85,7 @@ class MailerManager
         // and hand them to the FailoverTransport. Children are resolved through
         // the same path, so each carries its own transport's settings.
         if (is_a($class, FailoverTransport::class, true)) {
-            return new $class($this->config->mailers[$name], $this->resolveFailoverChildren($name));
+            return new $class($this->resolveFailoverChildren($name));
         }
 
         // The whole mailer entry is the transport's settings; each transport

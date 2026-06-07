@@ -80,8 +80,8 @@ The transport composes plain `TransportInterface` instances, so in a unit test y
 ```php
 use Myth\Postal\Transport\FailoverTransport;
 
-$failover = new FailoverTransport([], [
-    $aTransportThatFails,   // primary is down
+$failover = new FailoverTransport([
+    $aTransportThatFails,    // primary is down
     $aTransportThatSucceeds, // backup takes over
 ]);
 
@@ -89,7 +89,7 @@ $result = $failover->send($email);
 $this->assertTrue($result->success);
 ```
 
-The first argument is the settings array every transport receives; the failover ignores it and uses only the ordered children in the second argument.
+The constructor takes only the ordered children; the failover renders and delivers nothing itself, so it needs no settings of its own.
 
 ## Next steps
 

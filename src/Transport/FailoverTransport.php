@@ -26,10 +26,9 @@ use Throwable;
 final readonly class FailoverTransport implements TransportInterface
 {
     /**
-     * @param array<string, mixed>   $settings ignored; kept for the uniform transport constructor
      * @param list<TransportInterface> $children the ordered child transports to try
      */
-    public function __construct(array $settings = [], private array $children = [])
+    public function __construct(private array $children = [])
     {
         if ($this->children === []) {
             throw PostalException::forEmptyFailover();
