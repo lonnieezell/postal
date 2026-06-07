@@ -19,6 +19,7 @@ use Myth\Postal\Transport\LogTransport;
 use Myth\Postal\Transport\MailTransport;
 use Myth\Postal\Transport\NullTransport;
 use Myth\Postal\Transport\SendmailTransport;
+use Myth\Postal\Transport\SesTransport;
 use Myth\Postal\Transport\SmtpTransport;
 use Myth\Postal\Transport\TransportInterface;
 use Myth\Postal\UnsubscribeUrlInterface;
@@ -80,5 +81,6 @@ class Email extends BaseConfig
         'smtp'     => SmtpTransport::class,
         'sendmail' => SendmailTransport::class,
         'mail'     => MailTransport::class,
+        'ses'      => SesTransport::class,
     ];
 }
