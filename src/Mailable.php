@@ -39,6 +39,17 @@ abstract class Mailable
     abstract protected function build(): void;
 
     /**
+     * Runs build() and returns the composed Email without sending it. The
+     * build-without-send seam used by the preview tooling.
+     */
+    public function render(): Email
+    {
+        $this->build();
+
+        return $this->email;
+    }
+
+    /**
      * Builds the message (if not already built) and sends it through the
      * configured mailer, tagging the message with this mailable's class.
      */

@@ -50,6 +50,17 @@ final class MakeMailableTest extends CIUnitTestCase
         $this->assertStringContainsString('class Welcome extends Mailable', (string) $contents);
     }
 
+    public function testGeneratedClassScaffoldsThePreviewableStub(): void
+    {
+        command('make:mailable Welcome');
+
+        $contents = (string) file_get_contents($this->target);
+        $this->assertStringContainsString('use Myth\Postal\Previewable;', $contents);
+        $this->assertStringContainsString('implements Previewable', $contents);
+        $this->assertStringContainsString('public static function previewInstance(): static', $contents);
+        $this->assertStringContainsString('return new static();', $contents);
+    }
+
     public function testGeneratedClassIsRunnable(): void
     {
         command('make:mailable Welcome');

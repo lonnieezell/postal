@@ -77,6 +77,17 @@ final class MailableTest extends CIUnitTestCase
         $fake->assertSentCount(1);
     }
 
+    public function testRenderReturnsTheBuiltEmailWithoutSending(): void
+    {
+        $fake = Mailer::fake();
+
+        $email = (new WelcomeEmail('Ada'))->render();
+
+        $this->assertSame('Welcome, Ada', $email->subject);
+        $this->assertSame('<p>Hello Ada</p>', $email->htmlBody);
+        $fake->assertNothingSent();
+    }
+
     public function testTransportSelectsTheNamedMailer(): void
     {
         $recorder = new class (new Mailer(new FakeTransport())) extends MailerManager {
