@@ -15,6 +15,7 @@ namespace Myth\Postal\Controllers;
 
 use CodeIgniter\Controller;
 use CodeIgniter\Exceptions\PageNotFoundException;
+use Myth\Postal\Attachment;
 use Myth\Postal\Config\Postal;
 use Myth\Postal\Mailable;
 use Myth\Postal\MessageRenderer;
@@ -69,9 +70,18 @@ class PreviewController extends Controller
      */
     public function show(string $class): string
     {
-        $class = urldecode($class);
+        $class = rawurldecode($class);
 
-        if (! class_exists($class) || ! is_subclass_of($class, Mailable::class) || ! is_a($class, Previewable::class, true)) {
+        // Validate the FQCN shape before class_exists() so a malformed segment
+        // (e.g. one containing ".." path components) never reaches the autoloader.
+        $identifier = '[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*';
+
+        if (
+            preg_match('/^' . $identifier . '(\\\\' . $identifier . ')*$/', $class) !== 1
+            || ! class_exists($class)
+            || ! is_subclass_of($class, Mailable::class)
+            || ! is_a($class, Previewable::class, true)
+        ) {
             throw PageNotFoundException::forPageNotFound('Unknown previewable Mailable: ' . $class);
         }
 
@@ -98,7 +108,7 @@ class PreviewController extends Controller
             'text'        => $text,
             'textAuto'    => $textAuto,
             'rawMime'     => $renderer->render($email),
-            'attachments' => array_map(static fn ($a): string => $a->name, $email->attachments),
+            'attachments' => array_map(static fn (Attachment $a): string => $a->name, $email->attachments),
         ]);
     }
 

@@ -122,6 +122,15 @@ final class PreviewControllerTest extends CIUnitTestCase
         $this->controller()->show(rawurlencode('App\Mails\DoesNotExist'));
     }
 
+    public function testShowReturns404ForAMalformedClassString(): void
+    {
+        $this->expectException(PageNotFoundException::class);
+
+        // A path-traversal-shaped segment must be rejected before it ever
+        // reaches the autoloader.
+        $this->controller()->show(rawurlencode('App\\..\\..\\etc\\passwd'));
+    }
+
     public function testShowReturns404ForANonPreviewableMailable(): void
     {
         $this->expectException(PageNotFoundException::class);
