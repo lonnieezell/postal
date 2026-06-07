@@ -144,6 +144,43 @@ final class SesTransportTest extends CIUnitTestCase
         $this->assertArrayNotHasKey('Raw', $this->captured['Content']);
     }
 
+    public function testAutoEmbeddableImagesSwitchSimpleToRaw(): void
+    {
+        // An HTML+text message with a data: image has no explicit attachment, so
+        // it would otherwise go Simple — but auto-embedding produces an inline
+        // part Simple content can't carry, so it must switch to raw.
+        $this->transport($this->mock())->send(
+            (new Email())
+                ->from('me@example.com')
+                ->to('you@example.com')
+                ->subject('Hi')
+                ->text('Hello')
+                ->html('<p><img src="data:image/png;base64,' . base64_encode('PNGDATA') . '"></p>'),
+        );
+
+        $this->assertArrayNotHasKey('Simple', $this->captured['Content']);
+        $raw = (string) $this->captured['Content']['Raw']['Data'];
+        $this->assertStringContainsString('multipart/related', $raw);
+        $this->assertStringContainsString('Content-ID: <', $raw);
+    }
+
+    public function testDisabledAutoEmbedKeepsDataUriImageInSimpleContent(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->subject('Hi')
+            ->text('Hello')
+            ->html('<p><img src="data:image/png;base64,' . base64_encode('PNGDATA') . '"></p>');
+
+        $email->autoEmbedImages = false;
+
+        $this->transport($this->mock())->send($email);
+
+        $this->assertArrayHasKey('Simple', $this->captured['Content']);
+        $this->assertArrayNotHasKey('Raw', $this->captured['Content']);
+    }
+
     public function testForceRawSettingSelectsRawWithoutAttachments(): void
     {
         $this->transport($this->mock(), ['forceRaw' => true])->send($this->message());

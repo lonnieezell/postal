@@ -85,8 +85,12 @@ class MessageRenderer
      * (http/https) and existing cid: sources are left untouched. Returns a clone
      * carrying the rewritten body and the extra attachments, or the original
      * email when the feature is off or nothing was embedded.
+     *
+     * render() applies this itself; it is public so a transport can apply it up
+     * front to decide how to carry the message. The pass is idempotent — a body
+     * whose images are already cid: references yields no further attachments.
      */
-    private function embedInlineImages(Email $email): Email
+    public function embedInlineImages(Email $email): Email
     {
         if (! $email->autoEmbedImages || $email->htmlBody === null) {
             return $email;

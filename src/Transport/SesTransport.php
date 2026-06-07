@@ -128,6 +128,12 @@ final readonly class SesTransport implements TransportInterface
      */
     private function content(Email $email): array
     {
+        // Apply the renderer's auto-embed pass first: a message that gains inline
+        // image parts (from data: URIs or local files in the HTML) can no longer
+        // be carried as Simple content. render() re-applies this idempotently.
+        $renderer = new MessageRenderer();
+        $email    = $renderer->embedInlineImages($email);
+
         // Raw mode for attachments/inline parts, when forced, and for HTML
         // without an explicit text part: only the renderer can synthesise the
         // plain-text alternative that keeps HTML mail off the bare-HTML spam
@@ -135,7 +141,7 @@ final readonly class SesTransport implements TransportInterface
         $htmlNeedsFallback = $email->htmlBody !== null && $email->textBody === null;
 
         if ($this->forceRaw || $email->attachments !== [] || $htmlNeedsFallback) {
-            return ['Raw' => ['Data' => (new MessageRenderer())->render($email)]];
+            return ['Raw' => ['Data' => $renderer->render($email)]];
         }
 
         $body = [];
