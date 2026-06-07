@@ -46,6 +46,13 @@ class Email
      */
     public array $headers = [];
 
+    /**
+     * File attachments and inline images, rendered at send time.
+     *
+     * @var list<Attachment>
+     */
+    public array $attachments = [];
+
     public int $priority       = 3;
     public ?string $returnPath = null;
 
@@ -145,6 +152,38 @@ class Email
     public function returnPath(string $address): static
     {
         $this->returnPath = $address;
+
+        return $this;
+    }
+
+    /**
+     * Attaches a file by path. The file is read lazily at render time, so it
+     * must exist when the message is sent rather than when this is called.
+     */
+    public function attach(string $path, string $name = '', string $mime = ''): static
+    {
+        $this->attachments[] = Attachment::fromPath($path, $name === '' ? null : $name, $mime === '' ? null : $mime);
+
+        return $this;
+    }
+
+    /**
+     * Attaches raw bytes carried in memory under the given filename.
+     */
+    public function attachData(string $data, string $name, string $mime = ''): static
+    {
+        $this->attachments[] = Attachment::fromData($data, $name, $mime === '' ? null : $mime);
+
+        return $this;
+    }
+
+    /**
+     * Embeds an image by path as an inline part referenceable from the HTML body
+     * with a "cid:<cid>" URL. The file is read lazily at render time.
+     */
+    public function embedImage(string $path, string $cid, string $name = '', string $mime = ''): static
+    {
+        $this->attachments[] = Attachment::embed($path, $cid, $name === '' ? null : $name, $mime === '' ? null : $mime);
 
         return $this;
     }

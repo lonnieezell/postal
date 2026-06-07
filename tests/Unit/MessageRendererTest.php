@@ -15,6 +15,7 @@ namespace Tests\Unit;
 
 use CodeIgniter\Test\CIUnitTestCase;
 use Myth\Postal\Email;
+use Myth\Postal\Exceptions\PostalException;
 use Myth\Postal\MessageRenderer;
 
 /**
@@ -551,6 +552,212 @@ final class MessageRendererTest extends CIUnitTestCase
         $textPart = $this->textPartOf((new MessageRenderer())->render($email));
 
         $this->assertStringContainsString('our site (https://example.com)', $textPart);
+    }
+
+    public function testAttachmentProducesMultipartMixedWithBase64Part(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->text('See attached')
+            ->attachData('PDF-BYTES', 'doc.pdf', 'application/pdf');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        $this->assertStringContainsString('Content-Type: multipart/mixed;', $mime);
+
+        $mixed = $this->boundaryOf($mime, 'multipart/mixed');
+        $this->assertNotSame('', $mixed);
+
+        // The textual body and the attachment are sibling parts of the mixed container.
+        $this->assertStringContainsString('Content-Type: application/pdf; name="doc.pdf"', $mime);
+        $this->assertStringContainsString('Content-Transfer-Encoding: base64', $mime);
+        $this->assertStringContainsString('Content-Disposition: attachment; filename="doc.pdf"', $mime);
+
+        $part = $this->partWith($mime, $mixed, 'application/pdf');
+        $this->assertSame('PDF-BYTES', base64_decode($part, true));
+
+        // The plain-text body survives as the first part of the mixed container.
+        $this->assertStringContainsString('See attached', quoted_printable_decode($this->partWith($mime, $mixed, 'text/plain')));
+    }
+
+    public function testEmbeddedImageProducesMultipartRelatedWithContentId(): void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'postal');
+        file_put_contents($path, 'PNGDATA');
+
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->html('<p><img src="cid:logo123"></p>')
+            ->embedImage($path, 'logo123', 'logo.png', 'image/png');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        $this->assertStringContainsString('Content-Type: multipart/related;', $mime);
+        $this->assertStringContainsString('Content-ID: <logo123>', $mime);
+        $this->assertStringContainsString('Content-Disposition: inline; filename="logo.png"', $mime);
+
+        $related = $this->boundaryOf($mime, 'multipart/related');
+        $this->assertSame('PNGDATA', base64_decode($this->partWith($mime, $related, 'image/png'), true));
+
+        unlink($path);
+    }
+
+    public function testRelatedNestsAlternativeAsItsRootPart(): void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'postal');
+        file_put_contents($path, 'PNGDATA');
+
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->text('plain')
+            ->html('<p><img src="cid:logo123"></p>')
+            ->embedImage($path, 'logo123', 'logo.png', 'image/png');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        // multipart/related declares its root type and wraps the alternative.
+        $this->assertMatchesRegularExpression('#Content-Type: multipart/related;[^\r\n]*type="multipart/alternative"#', $mime);
+        $this->assertStringContainsString('Content-Type: multipart/alternative;', $mime);
+        // The alternative container appears before the inline image inside related.
+        $this->assertLessThan(strpos($mime, 'image/png'), strpos($mime, 'multipart/alternative'));
+
+        unlink($path);
+    }
+
+    public function testAttachmentAndInlineImageNestMixedAroundRelated(): void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'postal');
+        file_put_contents($path, 'PNGDATA');
+
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->html('<p><img src="cid:logo123"></p>')
+            ->embedImage($path, 'logo123', 'logo.png', 'image/png')
+            ->attachData('PDF-BYTES', 'doc.pdf', 'application/pdf');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        // mixed { related { alternative }, attachment }. Per RFC 2046 the mixed
+        // container carries no type parameter; only the related one does (RFC 2387).
+        $this->assertStringContainsString('Content-Type: multipart/mixed; boundary="', $mime);
+        $this->assertMatchesRegularExpression('#Content-Type: multipart/related;[^\r\n]*type="multipart/alternative"#', $mime);
+
+        // The related container (with the inline image) precedes the attachment.
+        $this->assertLessThan(strpos($mime, 'application/pdf'), strpos($mime, 'multipart/related'));
+        $this->assertLessThan(strpos($mime, 'application/pdf'), strpos($mime, 'image/png'));
+
+        unlink($path);
+    }
+
+    public function testBase64BinaryPartIsChunkedAtSeventySixColumns(): void
+    {
+        $data = random_bytes(200); // base64 ~268 chars, must wrap
+
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->text('hi')
+            ->attachData($data, 'blob.bin', 'application/octet-stream');
+
+        $mime  = (new MessageRenderer())->render($email);
+        $mixed = $this->boundaryOf($mime, 'multipart/mixed');
+        $part  = $this->partWith($mime, $mixed, 'application/octet-stream');
+
+        foreach (explode("\r\n", rtrim($part)) as $line) {
+            $this->assertLessThanOrEqual(76, strlen($line));
+        }
+
+        // Chunking is lossless: decoding the whole part restores the bytes.
+        $this->assertSame($data, base64_decode(str_replace("\r\n", '', $part), true));
+    }
+
+    public function testPathAttachmentIsReadLazilyAtRender(): void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'postal');
+        file_put_contents($path, 'ON-DISK');
+
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->text('hi')
+            ->attach($path, 'data.txt', 'text/plain');
+
+        $mime  = (new MessageRenderer())->render($email);
+        $mixed = $this->boundaryOf($mime, 'multipart/mixed');
+
+        $this->assertSame('ON-DISK', base64_decode($this->partWith($mime, $mixed, 'data.txt'), true));
+
+        unlink($path);
+    }
+
+    public function testAttachmentFilenameCannotInjectPartHeaders(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->text('hi')
+            ->attachData('x', "evil.txt\r\nContent-Type: text/evil", 'text/plain');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        // A CRLF embedded in the filename must not open a new header line.
+        $this->assertStringNotContainsString("\r\nContent-Type: text/evil", $mime);
+    }
+
+    public function testMissingAttachmentPathThrowsAtRender(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->text('hi')
+            ->attach('/no/such/file.pdf');
+
+        $this->expectException(PostalException::class);
+        (new MessageRenderer())->render($email);
+    }
+
+    public function testNoAttachmentsLeavesMessageUnwrapped(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->text('hi');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        $this->assertStringNotContainsString('multipart/mixed', $mime);
+        $this->assertStringNotContainsString('multipart/related', $mime);
+    }
+
+    /**
+     * Returns the boundary declared for the given multipart content subtype.
+     */
+    private function boundaryOf(string $mime, string $type): string
+    {
+        preg_match('#Content-Type: ' . preg_quote($type, '#') . ';[^\r\n]*boundary="([^"]+)"#', $mime, $m);
+
+        return $m[1] ?? '';
+    }
+
+    /**
+     * Returns the (rtrimmed) body of the first part delimited by $boundary whose
+     * block contains $needle.
+     */
+    private function partWith(string $mime, string $boundary, string $needle): string
+    {
+        foreach (explode('--' . $boundary, $mime) as $chunk) {
+            if (str_contains($chunk, $needle)) {
+                $split = explode("\r\n\r\n", $chunk, 2);
+
+                return rtrim($split[1] ?? '', "\r\n");
+            }
+        }
+
+        return '';
     }
 
     /**

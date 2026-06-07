@@ -130,13 +130,156 @@ class MessageRenderer
     }
 
     /**
-     * Builds the body and the content-related headers that describe it. HTML
+     * Builds the message body and its content headers, wrapping the textual
+     * content in multipart/related when inline images are present and in
+     * multipart/mixed when file attachments are present. The resulting nesting is
+     * mixed { related { alternative } } so each container only appears when it has
+     * something to hold.
+     *
+     * @return array{0: array<string, string>, 1: string}
+     */
+    private function buildBody(Email $email): array
+    {
+        [$headers, $body] = $this->buildContentPart($email);
+
+        $inline      = array_values(array_filter($email->attachments, static fn (Attachment $a): bool => $a->disposition === 'inline'));
+        $attachments = array_values(array_filter($email->attachments, static fn (Attachment $a): bool => $a->disposition !== 'inline'));
+
+        if ($inline !== []) {
+            [$headers, $body] = $this->wrapMultipart('related', $headers, $body, $inline);
+        }
+
+        if ($attachments !== []) {
+            [$headers, $body] = $this->wrapMultipart('mixed', $headers, $body, $attachments);
+        }
+
+        return [$headers, $body];
+    }
+
+    /**
+     * Wraps an already-rendered root part (its headers and body) in a multipart
+     * container of the given subtype, appending one binary part per attachment.
+     * A multipart/related container also names the root part's media type with a
+     * type parameter, as RFC 2387 requires; multipart/mixed carries none.
+     *
+     * @param array<string, string> $rootHeaders
+     * @param list<Attachment>      $attachments
+     *
+     * @return array{0: array<string, string>, 1: string}
+     */
+    private function wrapMultipart(string $subtype, array $rootHeaders, string $rootBody, array $attachments): array
+    {
+        $boundary = uniqid('B_' . strtoupper($subtype) . '_', true);
+
+        $parts = [$this->part($rootHeaders, $rootBody)];
+
+        foreach ($attachments as $attachment) {
+            [$partHeaders, $partBody] = $this->binaryPart($attachment);
+            $parts[]                  = $this->part($partHeaders, $partBody);
+        }
+
+        $contentType = 'multipart/' . $subtype;
+
+        if ($subtype === 'related') {
+            $contentType .= '; type="' . $this->mediaType($rootHeaders['Content-Type'] ?? 'text/plain') . '"';
+        }
+
+        $headers = [
+            'Content-Type' => $contentType . '; boundary="' . $boundary . '"',
+        ];
+
+        return [$headers, $this->multipart($boundary, $parts)];
+    }
+
+    /**
+     * Renders one MIME part: its headers, a blank line, then its body. Header
+     * values are stripped of CR/LF so a part header (e.g. a filename) cannot
+     * inject sibling headers.
+     *
+     * @param array<string, string> $headers
+     */
+    private function part(array $headers, string $body): string
+    {
+        $rendered = '';
+
+        foreach ($headers as $name => $value) {
+            $rendered .= $this->stripNewlines($name) . ': ' . $this->stripNewlines($value) . self::CRLF;
+        }
+
+        return $rendered . self::CRLF . $body;
+    }
+
+    /**
+     * Assembles MIME parts into a multipart body delimited by the boundary, with
+     * the closing delimiter appended.
+     *
+     * @param list<string> $parts
+     */
+    private function multipart(string $boundary, array $parts): string
+    {
+        $body = '';
+
+        foreach ($parts as $part) {
+            $body .= '--' . $boundary . self::CRLF . $part . self::CRLF;
+        }
+
+        return $body . '--' . $boundary . '--' . self::CRLF;
+    }
+
+    /**
+     * Builds the headers and base64-encoded, line-chunked body for a binary
+     * attachment or inline image.
+     *
+     * @return array{0: array<string, string>, 1: string}
+     */
+    private function binaryPart(Attachment $attachment): array
+    {
+        $name = $this->quoteParam($attachment->name);
+
+        $headers = [
+            'Content-Type'              => $attachment->mimeType() . '; name="' . $name . '"',
+            'Content-Transfer-Encoding' => 'base64',
+            'Content-Disposition'       => $attachment->disposition . '; filename="' . $name . '"',
+        ];
+
+        if ($attachment->disposition === 'inline' && $attachment->cid !== null) {
+            $headers['Content-ID'] = '<' . $attachment->cid . '>';
+        }
+
+        // Base64 with CRLF every 76 columns (RFC 2045 §6.8); drop the trailing
+        // break chunk_split() adds so the multipart separator is not doubled.
+        $body = rtrim(chunk_split(base64_encode($attachment->content()), 76, self::CRLF), "\r\n");
+
+        return [$headers, $body];
+    }
+
+    /**
+     * Returns the bare media type (e.g. "multipart/alternative") from a full
+     * Content-Type value, dropping any parameters.
+     */
+    private function mediaType(string $contentType): string
+    {
+        return trim(explode(';', $contentType)[0]);
+    }
+
+    /**
+     * Sanitises a value for use inside a quoted-string MIME parameter: CR/LF are
+     * removed so the parameter cannot inject sibling headers, and embedded quotes
+     * and backslashes are escaped so they cannot terminate the quoted-string.
+     */
+    private function quoteParam(string $value): string
+    {
+        return addcslashes($this->stripNewlines($value), '"\\');
+    }
+
+    /**
+     * Builds the textual body and the content headers that describe it. HTML
      * always yields multipart/alternative; a plain-text fallback is generated
      * from the HTML when none was supplied.
      *
      * @return array{0: array<string, string>, 1: string}
      */
-    private function buildBody(Email $email): array
+    private function buildContentPart(Email $email): array
     {
         // Both parts are quoted-printable so long lines stay within the 998-octet
         // SMTP limit and the message is 7-bit clean without an 8BITMIME server.

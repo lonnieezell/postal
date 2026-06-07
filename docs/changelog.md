@@ -4,6 +4,12 @@
 
 ### Added
 
+- Attachments and inline images: `Email::attach()` (file by path, read lazily at
+  render), `Email::attachData()` (raw bytes), and `Email::embedImage()` (inline
+  CID image referenceable from HTML), backed by the `Attachment` value object. The
+  renderer nests `multipart/mixed` (attachments) around `multipart/related`
+  (inline images) around the existing `multipart/alternative`, with base64 parts
+  chunked at 76 columns and part headers sanitised against filename injection.
 - Core send pipeline: compose an `Email` and send it through a transport via
   `service('mailer')`, receiving a `SendResult`.
 - `Email` message builder with `from`/`replyTo`/`to`/`cc`/`bcc`/`subject`/`html`/`text`/
