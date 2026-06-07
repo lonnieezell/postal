@@ -24,7 +24,7 @@ use Myth\Postal\SendResult;
  * AUTH login/plain/xoauth2, STARTTLS and implicit SSL/TLS, persistent
  * keep-alive across sends in one request, and DSN delivery notifications.
  */
-final class SmtpTransport implements TransportInterface
+final class SmtpTransport implements RawMimeTransport
 {
     private const CRLF = "\r\n";
 
@@ -87,13 +87,15 @@ final class SmtpTransport implements TransportInterface
     public function send(Email $email): SendResult
     {
         $renderer = new MessageRenderer();
-        $message  = $renderer->render($email);
+        $message  = $email->rawMessage ?? $renderer->render($email);
 
         try {
             $this->ensureReady();
             $this->transaction($email, $message);
 
-            $messageId = $renderer->headers()['Message-ID'] ?? null;
+            $messageId = $email->rawMessage !== null
+                ? $this->messageIdFromRaw($message)
+                : ($renderer->headers()['Message-ID'] ?? null);
 
             if (! $this->keepAlive) {
                 $this->quit();
@@ -403,6 +405,19 @@ final class SmtpTransport implements TransportInterface
         }
 
         return false;
+    }
+
+    /**
+     * Extracts the Message-ID header value from a pre-rendered raw message, or
+     * null when it carries none.
+     */
+    private function messageIdFromRaw(string $message): ?string
+    {
+        if (preg_match('/^Message-ID:[ \t]*(.+?)[ \t]*\r?$/im', $message, $m) === 1) {
+            return $m[1];
+        }
+
+        return null;
     }
 
     /**

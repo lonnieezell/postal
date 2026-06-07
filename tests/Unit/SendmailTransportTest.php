@@ -37,6 +37,21 @@ final class SendmailTransportTest extends CIUnitTestCase
         $this->assertStringContainsString(' -t', (string) $process->command);
     }
 
+    public function testTransmitsRawMessageVerbatimWhenSet(): void
+    {
+        $process           = new FakeSendmailProcess();
+        $email             = $this->message();
+        $email->rawMessage = "Message-ID: <raw@example.com>\r\nSubject: Signed\r\n\r\nRaw signed body\r\n";
+
+        $result = $this->transport($process)->send($email);
+
+        $this->assertTrue($result->success, $result->error ?? '');
+        // The pre-rendered bytes are piped untouched; not re-rendered.
+        $this->assertStringContainsString('Raw signed body', $process->written);
+        $this->assertStringNotContainsString('Hello there', $process->written);
+        $this->assertSame('<raw@example.com>', $result->messageId);
+    }
+
     public function testHonorsConfiguredPath(): void
     {
         $process = new FakeSendmailProcess();

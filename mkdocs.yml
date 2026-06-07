@@ -54,6 +54,7 @@ nav:
   - The Sendmail & Mail Mailers: sendmail-mail-mailers.md
   - The SES Mailer: ses-mailer.md
   - The Failover Mailer: failover-mailer.md
+  - DKIM Signing: dkim-signing.md
   - MIME Rendering: mime-rendering.md
   - Events: events.md
   - Suppression & Unsubscribe: suppression-unsubscribe.md

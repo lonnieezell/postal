@@ -57,6 +57,25 @@ final class SmtpTransportTest extends CIUnitTestCase
         $this->assertStringContainsString('@example.com', $result->messageId);
     }
 
+    public function testTransmitsRawMessageVerbatimWhenSet(): void
+    {
+        $email             = $this->message();
+        $email->rawMessage = "Message-ID: <raw@example.com>\r\nSubject: Signed\r\n\r\nRaw signed body\r\n";
+
+        $socket = $this->okSocket();
+        $result = $this->transport($socket)->send($email);
+
+        $this->assertTrue($result->success, $result->error ?? '');
+
+        // The pre-rendered bytes go on the wire untouched; the message is not
+        // re-rendered (which would change boundaries and break a signature).
+        $transcript = $socket->transcript();
+        $this->assertStringContainsString('Raw signed body', $transcript);
+        $this->assertStringNotContainsString('Hello there', $transcript);
+        // The Message-ID for the result is read back out of the raw message.
+        $this->assertSame('<raw@example.com>', $result->messageId);
+    }
+
     public function testParsesMultilineEhloAndAuthsWithLogin(): void
     {
         $socket = new FakeSocket([

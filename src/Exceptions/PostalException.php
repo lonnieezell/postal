@@ -36,4 +36,14 @@ class PostalException extends RuntimeException
     {
         return new self('A failover mailer must list at least one child mailer under its "chain" key.');
     }
+
+    public static function forInvalidDkimConfig(string $requirement): self
+    {
+        return new self("DKIM signing requires {$requirement} in the mailer's \"dkim\" config.");
+    }
+
+    public static function forDkimUnsupported(string $transport): self
+    {
+        return new self("The \"{$transport}\" transport cannot DKIM-sign: it does not deliver raw MIME (such providers sign server-side). Remove the \"dkim\" config from this mailer.");
+    }
 }
