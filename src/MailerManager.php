@@ -95,13 +95,13 @@ class MailerManager
 
     /**
      * Builds the ordered child transports for a failover mailer from the mailer
-     * names listed under its "mailers" key.
+     * names listed under its "chain" key.
      *
      * @return list<TransportInterface>
      */
     private function resolveFailoverChildren(string $name): array
     {
-        $childNames = $this->config->mailers[$name]['mailers'] ?? [];
+        $childNames = $this->config->mailers[$name]['chain'] ?? [];
 
         if (! is_array($childNames)) {
             $childNames = [];

@@ -5,7 +5,7 @@
 ### Added
 
 - Failover transport (`failover` mailer): a composite that tries an ordered list
-  of child mailers (named under a `mailers` key) and falls through to the next on
+  of child mailers (named under a `chain` key) and falls through to the next on
   failure — returning the first success and reporting failure only when every
   child fails. A child that throws is treated as a failure so the chain advances.
   `MailerManager` resolves the child mailers by name and hands the already-built

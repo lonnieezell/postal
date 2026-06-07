@@ -153,7 +153,7 @@ final class MailerManagerTest extends CIUnitTestCase
         $config->mailers = [
             'broken'   => ['transport' => 'broken'],
             'null'     => ['transport' => 'null'],
-            'failover' => ['transport' => 'failover', 'mailers' => ['broken', 'null']],
+            'failover' => ['transport' => 'failover', 'chain' => ['broken', 'null']],
         ];
         // A transport whose send() always fails, so the composite must fall
         // through to the real null transport to succeed.

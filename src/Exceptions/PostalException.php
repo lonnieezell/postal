@@ -34,6 +34,6 @@ class PostalException extends RuntimeException
 
     public static function forEmptyFailover(): self
     {
-        return new self('A failover mailer must list at least one child mailer under its "mailers" key.');
+        return new self('A failover mailer must list at least one child mailer under its "chain" key.');
     }
 }

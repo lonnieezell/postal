@@ -6,7 +6,7 @@ It composes mailers you've already defined, so each child keeps its own transpor
 
 ## Configuration
 
-Define the child mailers as usual, then add a `failover` mailer that lists them by name, in priority order, under a `mailers` key:
+Define the child mailers as usual, then add a `failover` mailer that lists them by name, in priority order, under a `chain` key:
 
 ```php
 public array $mailers = [
@@ -23,7 +23,7 @@ public array $mailers = [
     ],
     'primary' => [
         'transport' => 'failover',
-        'mailers'   => ['ses', 'backup-smtp'],
+        'chain'     => ['ses', 'backup-smtp'],
     ],
 ];
 ```
@@ -49,7 +49,7 @@ The children are resolved by name, so each one is built with its own settings â€
 
 ## How it works
 
-Sending walks the `mailers` list in order:
+Sending walks the `chain` list in order:
 
 1. The message is handed to the first child.
 2. If that child reports success, the result is returned immediately â€” later children are never tried.
@@ -71,7 +71,7 @@ if (! $result->success) {
 }
 ```
 
-A failover mailer must list at least one child. An entry with a missing or empty `mailers` key is a configuration error and throws a `PostalException` the first time the mailer is resolved, rather than silently sending nothing.
+A failover mailer must list at least one child. An entry with a missing or empty `chain` key is a configuration error and throws a `PostalException` the first time the mailer is resolved, rather than silently sending nothing.
 
 ## Testing
 
