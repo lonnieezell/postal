@@ -52,6 +52,7 @@ nav:
   - The Log Mailer: log-mailer.md
   - The SMTP Mailer: smtp-mailer.md
   - The Sendmail & Mail Mailers: sendmail-mail-mailers.md
+  - The SES Mailer: ses-mailer.md
   - MIME Rendering: mime-rendering.md
   - Events: events.md
   - Suppression & Unsubscribe: suppression-unsubscribe.md
