@@ -47,6 +47,15 @@ class Email
     public array $headers = [];
 
     /**
+     * Provider metadata (tags) attached to the message, mapped by API transports
+     * onto their provider's tagging feature (e.g. SES EmailTags). Ignored by
+     * SMTP and other non-API transports.
+     *
+     * @var array<string, string>
+     */
+    public array $metadata = [];
+
+    /**
      * File attachments and inline images, rendered at send time.
      *
      * @var list<Attachment>
@@ -138,6 +147,18 @@ class Email
     public function header(string $name, string $value): static
     {
         $this->headers[$name] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Attaches a provider metadata tag to the message. API transports map these
+     * onto their tagging feature; unsupported keys/values are dropped and logged
+     * by the transport rather than failing the send.
+     */
+    public function metadata(string $key, string $value): static
+    {
+        $this->metadata[$key] = $value;
 
         return $this;
     }
