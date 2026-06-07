@@ -111,4 +111,45 @@ final class EmailTest extends CIUnitTestCase
 
         $this->assertSame('bounce@example.com', $email->returnPath);
     }
+
+    public function testAttachRecordsPathBasedAttachment(): void
+    {
+        $email = (new Email())->attach('/var/data/report.pdf');
+
+        $this->assertCount(1, $email->attachments);
+        $this->assertSame('report.pdf', $email->attachments[0]->name);
+        $this->assertSame('attachment', $email->attachments[0]->disposition);
+        $this->assertNull($email->attachments[0]->cid);
+    }
+
+    public function testAttachDataRecordsBytes(): void
+    {
+        $email = (new Email())->attachData('raw', 'note.txt', 'text/plain');
+
+        $this->assertCount(1, $email->attachments);
+        $this->assertSame('note.txt', $email->attachments[0]->name);
+        $this->assertSame('raw', $email->attachments[0]->content());
+        $this->assertSame('text/plain', $email->attachments[0]->mimeType());
+    }
+
+    public function testEmbedImageRecordsInlineAttachmentWithCid(): void
+    {
+        $email = (new Email())->embedImage('/var/img/logo.png', 'logo123');
+
+        $this->assertCount(1, $email->attachments);
+        $this->assertSame('inline', $email->attachments[0]->disposition);
+        $this->assertSame('logo123', $email->attachments[0]->cid);
+        $this->assertSame('logo.png', $email->attachments[0]->name);
+    }
+
+    public function testAttachmentsAccumulateAndChain(): void
+    {
+        $email = new Email();
+
+        $this->assertSame($email, $email->attach('/a.pdf'));
+        $this->assertSame($email, $email->attachData('x', 'b.txt'));
+        $this->assertSame($email, $email->embedImage('/c.png', 'cid1'));
+
+        $this->assertCount(3, $email->attachments);
+    }
 }
