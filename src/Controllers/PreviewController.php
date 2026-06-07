@@ -17,6 +17,7 @@ use CodeIgniter\Controller;
 use Myth\Postal\Config\Postal;
 use Myth\Postal\Mailable;
 use Myth\Postal\Previewable;
+use Throwable;
 
 /**
  * Serves the in-browser Mailable preview. Mounted by src/Config/Routes.php only
@@ -29,6 +30,34 @@ class PreviewController extends Controller
     public function __construct(?Postal $config = null)
     {
         $this->config = $config ?? config(Postal::class);
+    }
+
+    /**
+     * Lists every discovered Mailable with the subject from its preview
+     * instance. A Mailable whose previewInstance()/build() throws is still
+     * listed, carrying its error message, so one broken Mailable cannot blank
+     * the whole list.
+     */
+    public function index(): string
+    {
+        $mailables = [];
+
+        foreach ($this->discover() as $class) {
+            $entry = ['class' => $class, 'subject' => null, 'error' => null];
+
+            try {
+                $entry['subject'] = $class::previewInstance()->render()->subject;
+            } catch (Throwable $e) {
+                $entry['error'] = $e->getMessage();
+            }
+
+            $mailables[] = $entry;
+        }
+
+        return view('Myth\Postal\Views\preview\index', [
+            'mailables'   => $mailables,
+            'previewPath' => $this->config->previewPath,
+        ]);
     }
 
     /**

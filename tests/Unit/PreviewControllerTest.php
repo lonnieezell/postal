@@ -49,4 +49,23 @@ final class PreviewControllerTest extends CIUnitTestCase
 
         $this->assertNotContains(WelcomeEmail::class, $found);
     }
+
+    public function testIndexListsMailablesWithTheirSubjects(): void
+    {
+        $html = $this->controller()->index();
+
+        $this->assertStringContainsString('PreviewWelcome', $html);
+        $this->assertStringContainsString('Welcome, Sample', $html);
+        $this->assertStringContainsString('HTML only', $html);
+    }
+
+    public function testIndexStillListsAMailableWhosePreviewThrows(): void
+    {
+        $html = $this->controller()->index();
+
+        // The broken mailable is listed, carrying an error badge rather than
+        // blanking the whole page.
+        $this->assertStringContainsString('PreviewBroken', $html);
+        $this->assertStringContainsString('preview blew up', $html);
+    }
 }
