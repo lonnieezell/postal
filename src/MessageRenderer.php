@@ -47,6 +47,8 @@ class MessageRenderer
      */
     public function render(Email $email): string
     {
+        $email = $this->embedInlineImages($email);
+
         [$contentHeaders, $body] = $this->buildBody($email);
 
         $headers = array_merge($this->buildHeaders($email), $contentHeaders);
@@ -74,6 +76,151 @@ class MessageRenderer
     public function headers(): array
     {
         return $this->renderedHeaders;
+    }
+
+    /**
+     * Scans the HTML body for embeddable image sources, turns each into an inline
+     * attachment and rewrites the reference to a "cid:" URL. data: URIs are
+     * decoded in memory and local file paths are read at render time; remote
+     * (http/https) and existing cid: sources are left untouched. Returns a clone
+     * carrying the rewritten body and the extra attachments, or the original
+     * email when the feature is off or nothing was embedded.
+     */
+    private function embedInlineImages(Email $email): Email
+    {
+        if (! $email->autoEmbedImages || $email->htmlBody === null) {
+            return $email;
+        }
+
+        /** @var list<Attachment> $embedded */
+        $embedded = [];
+
+        /** @var array<string, string> $bySource */
+        $bySource = [];
+
+        $html = preg_replace_callback(
+            '/<img\b[^>]*>/i',
+            function (array $match) use (&$embedded, &$bySource): string {
+                $tag = $match[0];
+
+                if (preg_match('/\bsrc\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([^\s">]+))/i', $tag, $src) !== 1) {
+                    return $tag;
+                }
+
+                $value = $src[1] !== '' ? $src[1] : (($src[2] ?? '') !== '' ? $src[2] : ($src[3] ?? ''));
+                $cid   = $this->embedSource(trim($value), $bySource, $embedded);
+
+                if ($cid === null) {
+                    return $tag;
+                }
+
+                return str_replace($src[0], 'src="cid:' . $cid . '"', $tag);
+            },
+            $email->htmlBody,
+        ) ?? $email->htmlBody;
+
+        if ($embedded === []) {
+            return $email;
+        }
+
+        $clone              = clone $email;
+        $clone->htmlBody    = $html;
+        $clone->attachments = [...$email->attachments, ...$embedded];
+
+        return $clone;
+    }
+
+    /**
+     * Resolves one image source to a Content-ID, appending the inline attachment
+     * it created (deduplicating repeats). Returns null for sources that must be
+     * left as-is: empty, remote, an existing cid:, or a non-image/unreadable
+     * local file.
+     *
+     * @param array<string, string> $bySource
+     * @param list<Attachment>      $embedded
+     */
+    private function embedSource(string $source, array &$bySource, array &$embedded): ?string
+    {
+        if ($source === '' || preg_match('#^(cid:|https?:|//)#i', $source) === 1) {
+            return null;
+        }
+
+        if (isset($bySource[$source])) {
+            return $bySource[$source];
+        }
+
+        $attachment = str_starts_with(strtolower($source), 'data:')
+            ? $this->dataUriImage($source)
+            : $this->localImage($source);
+
+        if ($attachment === null) {
+            return null;
+        }
+
+        $bySource[$source] = (string) $attachment->cid;
+        $embedded[]        = $attachment;
+
+        return (string) $attachment->cid;
+    }
+
+    /**
+     * Builds an inline attachment from a base64 data: URI that declares an image
+     * MIME type, or null for anything else.
+     */
+    private function dataUriImage(string $source): ?Attachment
+    {
+        if (preg_match('#^data:([^;,]*)(;base64)?,(.*)$#is', $source, $m) !== 1) {
+            return null;
+        }
+
+        $mime = strtolower(trim($m[1]));
+
+        if (! str_starts_with($mime, 'image/') || $m[2] === '') {
+            return null;
+        }
+
+        $bytes = base64_decode($m[3], true);
+
+        if ($bytes === false) {
+            return null;
+        }
+
+        $cid = substr(hash('sha256', $bytes), 0, 24) . '@postal';
+
+        return Attachment::embedData($bytes, $cid, 'image-' . substr($cid, 0, 8) . $this->imageExtension($mime), $mime);
+    }
+
+    /**
+     * Builds an inline attachment from a readable local image file, or null when
+     * the path is not a readable file or is not an image.
+     */
+    private function localImage(string $source): ?Attachment
+    {
+        if (! is_file($source) || ! is_readable($source)) {
+            return null;
+        }
+
+        $cid        = substr(hash('sha256', (string) realpath($source)), 0, 24) . '@postal';
+        $attachment = Attachment::embed($source, $cid);
+
+        return str_starts_with($attachment->mimeType(), 'image/') ? $attachment : null;
+    }
+
+    /**
+     * Maps a common image MIME type to a filename extension.
+     */
+    private function imageExtension(string $mime): string
+    {
+        return match ($mime) {
+            'image/png'                                => '.png',
+            'image/jpeg'                               => '.jpg',
+            'image/gif'                                => '.gif',
+            'image/webp'                               => '.webp',
+            'image/svg+xml'                            => '.svg',
+            'image/bmp'                                => '.bmp',
+            'image/x-icon', 'image/vnd.microsoft.icon' => '.ico',
+            default                                    => '',
+        };
     }
 
     /**

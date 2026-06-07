@@ -90,4 +90,15 @@ final class AttachmentTest extends CIUnitTestCase
 
         unlink($path);
     }
+
+    public function testEmbedDataCarriesInlineBytesCidAndMime(): void
+    {
+        $attachment = Attachment::embedData('img-bytes', 'logo123', 'logo.png', 'image/png');
+
+        $this->assertSame('inline', $attachment->disposition);
+        $this->assertSame('logo123', $attachment->cid);
+        $this->assertSame('logo.png', $attachment->name);
+        $this->assertSame('image/png', $attachment->mimeType());
+        $this->assertSame('img-bytes', $attachment->content());
+    }
 }

@@ -100,6 +100,11 @@ final class EmailTest extends CIUnitTestCase
         $this->assertSame([], (new Email())->metadata);
     }
 
+    public function testAutoEmbedImagesDefaultsToTrue(): void
+    {
+        $this->assertTrue((new Email())->autoEmbedImages);
+    }
+
     public function testMetadataAccumulatesAndChains(): void
     {
         $email = (new Email())

@@ -66,6 +66,14 @@ class Email
     public ?string $returnPath = null;
 
     /**
+     * When true (the default), the renderer scans the HTML body for embeddable
+     * image sources — data: URIs and local file paths — turns each into an
+     * inline attachment, and rewrites the reference to a "cid:" URL. Set to
+     * false to leave the HTML untouched.
+     */
+    public bool $autoEmbedImages = true;
+
+    /**
      * The Mailable class that composed this message, set by Mailable::send().
      * Lets the fake transport filter recorded messages by mailable type.
      */
