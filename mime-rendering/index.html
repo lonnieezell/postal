@@ -471,6 +471,45 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#attachments-and-inline-images" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Attachments and inline images
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attachments and inline images">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-gets-rendered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What gets rendered
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lazy-reads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lazy reads
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#headers" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -755,6 +794,45 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#attachments-and-inline-images" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Attachments and inline images
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attachments and inline images">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-gets-rendered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What gets rendered
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lazy-reads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lazy reads
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#headers" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -856,15 +934,46 @@
 <p>The fallback is built at render time only. Your original <code>Email</code> object still has <code>textBody === null</code> afterward — nothing is written back.</p>
 </div>
 <p>If you want full control over the plain-text version, just set it yourself with <code>-&gt;text(...)</code> and the renderer uses yours verbatim.</p>
-<h2 id="headers">Headers</h2>
-<p>The renderer emits the standard envelope and structural headers — <code>From</code>, <code>To</code>, <code>Cc</code>, <code>Reply-To</code>, <code>Subject</code>, <code>Date</code>, <code>Message-ID</code>, <code>MIME-Version</code>, and the content headers — plus everything you added through the <code>Email</code> builder:</p>
+<h2 id="attachments-and-inline-images">Attachments and inline images</h2>
+<p>Three builder methods add files to a message:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="x">$email = (new Email())</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="x">    -&gt;from(&#39;you@example.com&#39;)</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="x">    -&gt;to(&#39;user@example.com&#39;)</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="x">    -&gt;subject(&#39;Receipt&#39;)</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="x">    -&gt;header(&#39;X-Campaign&#39;, &#39;spring-2026&#39;)   // arbitrary custom header</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="x">    -&gt;returnPath(&#39;bounces@example.com&#39;)     // -&gt; Return-Path + Sender</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="x">    -&gt;priority(1);                          // -&gt; X-Priority: 1 (Highest)</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="x">    -&gt;subject(&#39;Your receipt&#39;)</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="x">    -&gt;html(&#39;&lt;p&gt;Thanks! Your logo: &lt;img src=&quot;cid:logo&quot;&gt;&lt;/p&gt;&#39;)</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="x">    -&gt;attach(&#39;/path/to/receipt.pdf&#39;)                 // a file on disk</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="x">    -&gt;attachData($bytes, &#39;report.csv&#39;, &#39;text/csv&#39;)   // raw bytes in memory</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="x">    -&gt;embedImage(&#39;/path/to/logo.png&#39;, &#39;logo&#39;);       // inline image, referenced by CID</span>
+</code></pre></div>
+<ul>
+<li><strong><code>attach($path, $name = '', $mime = '')</code></strong> — attaches a file by path. The display name defaults to the file's basename and the MIME type is detected from the file; pass <code>$name</code>/<code>$mime</code> to override either.</li>
+<li><strong><code>attachData($data, $name, $mime = '')</code></strong> — attaches raw bytes you already have in memory. The MIME type defaults to <code>application/octet-stream</code> when omitted.</li>
+<li><strong><code>embedImage($path, $cid, $name = '', $mime = '')</code></strong> — embeds an image as an <em>inline</em> part. Reference it from your HTML with a <code>cid:</code> URL whose value matches <code>$cid</code> (e.g. <code>&lt;img src="cid:logo"&gt;</code>).</li>
+</ul>
+<h3 id="what-gets-rendered">What gets rendered</h3>
+<p>The renderer only adds the containers a message actually needs, nesting them like this:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>multipart/mixed              ← present when there are attachments
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>└── multipart/related        ← present when there are inline images
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    └── multipart/alternative ← present when there is HTML
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>        ├── text/plain
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        └── text/html
+</code></pre></div>
+<p>Each level appears only when it has something to hold: a text-only message with one attachment is simply <code>multipart/mixed</code> wrapping a <code>text/plain</code> part. Attachments carry <code>Content-Disposition: attachment</code>; inline images carry <code>Content-Disposition: inline</code> plus a <code>Content-ID</code>, and the <code>multipart/related</code> container names its root part with a <code>type</code> parameter, as RFC 2387 expects. Binary parts are base64-encoded and wrapped at 76 columns (RFC 2045).</p>
+<h3 id="lazy-reads">Lazy reads</h3>
+<p>Path-based attachments (<code>attach()</code> and <code>embedImage()</code>) are <strong>read from disk at render time</strong>, not when you call the method — so the file only needs to exist when the message is sent. If the file can't be read at that point, <code>render()</code> throws a <code>PostalException</code>. Bytes passed to <code>attachData()</code> are carried as-is.</p>
+<div class="admonition warning">
+<p class="admonition-title">Attach only trusted paths</p>
+<p><code>attach()</code> and <code>embedImage()</code> read whatever path you give them. Never pass an unsanitised, user-controlled path, or a request could read arbitrary files off your server.</p>
+</div>
+<h2 id="headers">Headers</h2>
+<p>The renderer emits the standard envelope and structural headers — <code>From</code>, <code>To</code>, <code>Cc</code>, <code>Reply-To</code>, <code>Subject</code>, <code>Date</code>, <code>Message-ID</code>, <code>MIME-Version</code>, and the content headers — plus everything you added through the <code>Email</code> builder:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="x">$email = (new Email())</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="x">    -&gt;from(&#39;you@example.com&#39;)</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="x">    -&gt;to(&#39;user@example.com&#39;)</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="x">    -&gt;subject(&#39;Receipt&#39;)</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="x">    -&gt;header(&#39;X-Campaign&#39;, &#39;spring-2026&#39;)   // arbitrary custom header</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="x">    -&gt;returnPath(&#39;bounces@example.com&#39;)     // -&gt; Return-Path + Sender</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="x">    -&gt;priority(1);                          // -&gt; X-Priority: 1 (Highest)</span>
 </code></pre></div>
 <ul>
 <li><strong>Custom headers</strong> from <code>-&gt;header()</code> are emitted as-is.</li>
@@ -876,9 +985,9 @@
 <p>A custom header can't overwrite a structural one. <code>-&gt;header('From', '...')</code> is ignored in favour of the real <code>From</code>. CR and LF are stripped from every header name and value, so untrusted input can't inject extra headers.</p>
 </div>
 <p><code>render()</code> also records the header set it produced. Call <code>headers()</code> afterward to get it back as an array — used by the message debugger:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="x">$renderer = new MessageRenderer();</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="x">$renderer-&gt;render($email);</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="x">$headers = $renderer-&gt;headers(); // [&#39;From&#39; =&gt; &#39;...&#39;, &#39;Subject&#39; =&gt; &#39;...&#39;, ...]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="x">$renderer = new MessageRenderer();</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="x">$renderer-&gt;render($email);</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="x">$headers = $renderer-&gt;headers(); // [&#39;From&#39; =&gt; &#39;...&#39;, &#39;Subject&#39; =&gt; &#39;...&#39;, ...]</span>
 </code></pre></div>
 <h2 id="encoding">Encoding</h2>
 <p>Headers with non-ASCII characters — an accented subject, a display name like <code>Café Owner</code> — are encoded with RFC 2047 "Q" encoding. The address itself stays literal; only the display name is encoded. Pure-ASCII headers are left untouched.</p>
@@ -888,7 +997,7 @@
 <p>Quoted-printable soft wrapping is invisible to the reader — it decodes away on delivery. When you want the plain-text part to <em>stay</em> wrapped in the recipient's client, set <code>Email::$wordWrap = true</code> (and <code>$wrapChars</code>, default 76). The renderer then hard-wraps the text at word boundaries before encoding, leaving long space-less tokens such as URLs intact. Word wrap is off by default; the legacy <code>setWordWrap()</code> adapter method drives it.</p>
 <div class="admonition note">
 <p class="admonition-title">Current limitations</p>
-<p>The renderer is deliberately small for now. Very long non-ASCII header values aren't folded into multiple encoded-words. This is fine for the log mailer and typical messages; richer encoding will arrive with the SMTP transport.</p>
+<p>The renderer is deliberately small for now. Very long non-ASCII header values aren't folded into multiple encoded-words, and non-ASCII attachment filenames are placed in the parameter as-is rather than RFC 2231-encoded (CR/LF and quotes are still stripped/escaped, so they remain safe). This is fine for the log mailer and typical messages; richer encoding will arrive with the SMTP transport.</p>
 </div>
 <h2 id="next-steps">Next steps</h2>
 <ul>

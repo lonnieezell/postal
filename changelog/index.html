@@ -765,6 +765,12 @@
 <h2 id="unreleased">[Unreleased]</h2>
 <h3 id="added">Added</h3>
 <ul>
+<li>Attachments and inline images: <code>Email::attach()</code> (file by path, read lazily at
+  render), <code>Email::attachData()</code> (raw bytes), and <code>Email::embedImage()</code> (inline
+  CID image referenceable from HTML), backed by the <code>Attachment</code> value object. The
+  renderer nests <code>multipart/mixed</code> (attachments) around <code>multipart/related</code>
+  (inline images) around the existing <code>multipart/alternative</code>, with base64 parts
+  chunked at 76 columns and part headers sanitised against filename injection.</li>
 <li>Core send pipeline: compose an <code>Email</code> and send it through a transport via
   <code>service('mailer')</code>, receiving a <code>SendResult</code>.</li>
 <li><code>Email</code> message builder with <code>from</code>/<code>replyTo</code>/<code>to</code>/<code>cc</code>/<code>bcc</code>/<code>subject</code>/<code>html</code>/<code>text</code>/
