@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/**
+ * This file is part of Myth/Postal.
+ *
+ * (c) Lonnie Ezell <lonnieje@gmail.com>
+ *
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ */
+
 namespace Tests\Unit;
 
 use Aws\CommandInterface;
@@ -59,9 +68,9 @@ final class SesTransportTest extends CIUnitTestCase
         $from = $this->captured['FromEmailAddress'];
         // The raw multibyte name must not leak into the header field; it is
         // RFC 2047-encoded and the address remains intact.
-        $this->assertStringNotContainsString('José', $from);
-        $this->assertStringContainsString('=?UTF-8?', $from);
-        $this->assertStringContainsString('<me@example.com>', $from);
+        $this->assertStringNotContainsString('José', (string) $from);
+        $this->assertStringContainsString('=?UTF-8?', (string) $from);
+        $this->assertStringContainsString('<me@example.com>', (string) $from);
     }
 
     public function testMapsCcBccAndReplyTo(): void
@@ -86,8 +95,8 @@ final class SesTransportTest extends CIUnitTestCase
 
         $this->assertArrayNotHasKey('Simple', $this->captured['Content']);
         $raw = $this->captured['Content']['Raw']['Data'];
-        $this->assertStringContainsString('Subject: Hi', $raw);
-        $this->assertStringContainsString('report.txt', $raw);
+        $this->assertStringContainsString('Subject: Hi', (string) $raw);
+        $this->assertStringContainsString('report.txt', (string) $raw);
     }
 
     public function testHtmlWithoutTextUsesRawSoATextFallbackIsGenerated(): void
@@ -100,8 +109,8 @@ final class SesTransportTest extends CIUnitTestCase
 
         $this->assertArrayNotHasKey('Simple', $this->captured['Content']);
         $raw = $this->captured['Content']['Raw']['Data'];
-        $this->assertStringContainsString('multipart/alternative', $raw);
-        $this->assertStringContainsString('text/plain', $raw);
+        $this->assertStringContainsString('multipart/alternative', (string) $raw);
+        $this->assertStringContainsString('text/plain', (string) $raw);
     }
 
     public function testHtmlWithExplicitTextStaysSimple(): void
@@ -144,7 +153,7 @@ final class SesTransportTest extends CIUnitTestCase
 
         $this->assertSame([['Name' => 'ok_tag', 'Value' => 'fine']], $this->captured['EmailTags']);
         $this->assertSame('debug', $logger->level);
-        $this->assertStringContainsString('bad key', $logger->message);
+        $this->assertStringContainsString('bad key', (string) $logger->message);
     }
 
     public function testOmitsEmailTagsWhenNoneSurvive(): void

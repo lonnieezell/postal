@@ -28,7 +28,7 @@ use Psr\Log\LoggerInterface;
  * Sends structured "Simple" content by default and switches to raw MIME when
  * the message carries attachments/inline images or raw is forced.
  */
-final class SesTransport implements TransportInterface
+final readonly class SesTransport implements TransportInterface
 {
     private const CHARSET = 'UTF-8';
 
@@ -38,10 +38,10 @@ final class SesTransport implements TransportInterface
      */
     private const TAG_PATTERN = '/^[A-Za-z0-9_-]{1,256}$/';
 
-    private readonly SesV2Client $client;
-    private readonly LoggerInterface $logger;
-    private readonly ?string $configurationSet;
-    private readonly bool $forceRaw;
+    private SesV2Client $client;
+    private LoggerInterface $logger;
+    private ?string $configurationSet;
+    private bool $forceRaw;
 
     /**
      * @param array<string, mixed> $settings
