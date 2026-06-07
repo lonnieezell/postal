@@ -666,6 +666,67 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#previewing-mailables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Previewing Mailables
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Previewing Mailables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#turning-it-on" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Turning it on
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#making-a-mailable-previewable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Making a Mailable previewable
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-youll-see" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What you'll see
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rendering-without-sending" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rendering without sending
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#next-steps" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -863,6 +924,67 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#previewing-mailables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Previewing Mailables
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Previewing Mailables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#turning-it-on" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Turning it on
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#making-a-mailable-previewable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Making a Mailable previewable
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-youll-see" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What you'll see
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rendering-without-sending" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rendering without sending
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#next-steps" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -984,9 +1106,121 @@
 <p>Spark scaffolds one for you:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>php<span class="w"> </span>spark<span class="w"> </span>make:mailable<span class="w"> </span>Welcome
 </code></pre></div>
-<p>That writes <code>app/Mails/Welcome.php</code> in the <code>App\Mails</code> namespace, with an empty <code>build()</code> ready to fill in. Pass <code>--force</code> to overwrite an existing file:</p>
+<p>That writes <code>app/Mails/Welcome.php</code> in the <code>App\Mails</code> namespace, with an empty <code>build()</code> ready to fill in. The generated class also implements <a href="#previewing-mailables"><code>Previewable</code></a> with a <code>previewInstance()</code> stub, so it shows up in the browser preview out of the box. Pass <code>--force</code> to overwrite an existing file:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>php<span class="w"> </span>spark<span class="w"> </span>make:mailable<span class="w"> </span>Welcome<span class="w"> </span>--force
 </code></pre></div>
+<h2 id="previewing-mailables">Previewing Mailables</h2>
+<p>Designing an email is a lot easier when you can see it. Postal can render any Mailable straight to your browser — HTML, plain text, and the raw MIME — without sending a thing.</p>
+<p>It's <strong>off by default</strong> and <strong>never runs in production</strong>. You opt in per environment.</p>
+<h3 id="turning-it-on">Turning it on</h3>
+<p>Two independent locks both have to be open before a preview is reachable:</p>
+<ol>
+<li>The environment is <strong>not</strong> <code>production</code>.</li>
+<li><code>Config\Postal::$enablePreview</code> is <code>true</code>.</li>
+</ol>
+<p>Either lock alone keeps previews hidden, so a stray flag can't leak mail in production and a misconfigured environment can't expose it on its own.</p>
+<p>Create <code>app/Config/Postal.php</code> (or set the value from <code>.env</code>):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="x">namespace Config;</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="x">use Myth\Postal\Config\Postal as BasePostal;</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="x">class Postal extends BasePostal</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="x">{</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="x">    public bool $enablePreview = true;</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="x">}</span>
+</code></pre></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:1"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">.env</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="na">postal.enablePreview</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="admonition danger">
+<p class="admonition-title">Never enable this in production</p>
+<p>Even with the flag on, Postal refuses to register the preview routes when <code>ENVIRONMENT</code> is <code>production</code>. Leave the flag in your development config and you've got nothing to worry about.</p>
+</div>
+<p>A few more knobs on <code>Config\Postal</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$enablePreview</code></td>
+<td><code>false</code></td>
+<td>The opt-in switch described above</td>
+</tr>
+<tr>
+<td><code>$previewPath</code></td>
+<td><code>'postal/preview'</code></td>
+<td>The URI prefix the preview is mounted under</td>
+</tr>
+<tr>
+<td><code>$mailableNamespaces</code></td>
+<td><code>['App\Mails' =&gt; APPPATH . 'Mails']</code></td>
+<td>Namespace → directory pairs scanned for previewable Mailables</td>
+</tr>
+</tbody>
+</table>
+<p>Add a pair to <code>$mailableNamespaces</code> for every place your Mailables live:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="x">public array $mailableNamespaces = [</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="x">    &#39;App\Mails&#39;           =&gt; APPPATH . &#39;Mails&#39;,</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="x">    &#39;Acme\Billing\Mails&#39;  =&gt; ROOTPATH . &#39;modules/Billing/Mails&#39;,</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="x">];</span>
+</code></pre></div>
+<h3 id="making-a-mailable-previewable">Making a Mailable previewable</h3>
+<p>The preview needs sample data to render with — a Mailable usually takes a real <code>User</code>, and there isn't one at preview time. Implement <code>Myth\Postal\Previewable</code> and return an instance built from fake data:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="x">namespace App\Mails;</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="x">use Myth\Postal\Mailable;</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="x">use Myth\Postal\Previewable;</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="x">class WelcomeEmail extends Mailable implements Previewable</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="x">{</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="x">    public function __construct(private readonly User $user)</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="x">    {</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="x">        parent::__construct();</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="x">    }</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="x">    public static function previewInstance(): static</span>
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="x">    {</span>
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="x">        return new static(User::makeSample());</span>
+<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a><span class="x">    }</span>
+<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>
+<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a><span class="x">    protected function build(): void</span>
+<a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a><span class="x">    {</span>
+<a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a><span class="x">        // ...</span>
+<a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a><span class="x">    }</span>
+<a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a><span class="x">}</span>
+</code></pre></div>
+<p>Keeping the sample data right here in the class means it travels with the Mailable — discoverable, version-controlled, and refactor-safe. Only Mailables that implement <code>Previewable</code> show up in the preview; the rest are ignored.</p>
+<div class="admonition tip">
+<p class="admonition-title">Generated Mailables are ready to go</p>
+<p><code>make:mailable</code> scaffolds the <code>implements Previewable</code> clause and a <code>previewInstance()</code> stub for you. Fill in the sample data and you're done.</p>
+</div>
+<h3 id="what-youll-see">What you'll see</h3>
+<p>Visit <code>/postal/preview</code> (or whatever you set <code>$previewPath</code> to). The index lists every previewable Mailable with its subject. Click one to open the detail view, which has three tabs:</p>
+<ul>
+<li><strong>HTML</strong> — rendered in a sandboxed <code>&lt;iframe&gt;</code>, so the email's CSS can't bleed into the preview page (or vice versa)</li>
+<li><strong>Text</strong> — your <code>text()</code> body if you supplied one, otherwise the version Postal auto-generates from the HTML</li>
+<li><strong>Raw MIME</strong> — the full message exactly as it goes on the wire, headers and all — handy for debugging encoding or attachments</li>
+</ul>
+<p>Attachments are listed by name. Inline <code>cid:</code> images won't render inside the iframe — that's an inherent limit of the sandbox, not a bug in your email.</p>
+<p>If a Mailable throws while building its preview, it still appears in the list with an error badge, and its detail page shows the exception inline. One broken Mailable never takes down the whole preview.</p>
+<h3 id="rendering-without-sending">Rendering without sending</h3>
+<p>The preview is built on <code>Mailable::render()</code>, a public seam you can use anywhere:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="x">$email = (new WelcomeEmail($user))-&gt;render();</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="x">echo $email-&gt;subject;</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="x">echo $email-&gt;htmlBody;</span>
+</code></pre></div>
+<p><code>render()</code> runs <code>build()</code> and hands back the composed <a href="../"><code>Email</code></a> — it never sends. It's the build-without-send counterpart to <code>send()</code>.</p>
 <h2 id="next-steps">Next steps</h2>
 <ul>
 <li><a href="../testing/">Testing Mail</a> — assert that a Mailable was sent, by class, without touching a real transport</li>
