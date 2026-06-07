@@ -32,6 +32,46 @@ The generated text is a best-effort conversion of your HTML:
 
 If you want full control over the plain-text version, just set it yourself with `->text(...)` and the renderer uses yours verbatim.
 
+## Attachments and inline images
+
+Three builder methods add files to a message:
+
+```php
+$email = (new Email())
+    ->from('you@example.com')
+    ->to('user@example.com')
+    ->subject('Your receipt')
+    ->html('<p>Thanks! Your logo: <img src="cid:logo"></p>')
+    ->attach('/path/to/receipt.pdf')                 // a file on disk
+    ->attachData($bytes, 'report.csv', 'text/csv')   // raw bytes in memory
+    ->embedImage('/path/to/logo.png', 'logo');       // inline image, referenced by CID
+```
+
+- **`attach($path, $name = '', $mime = '')`** — attaches a file by path. The display name defaults to the file's basename and the MIME type is detected from the file; pass `$name`/`$mime` to override either.
+- **`attachData($data, $name, $mime = '')`** — attaches raw bytes you already have in memory. The MIME type defaults to `application/octet-stream` when omitted.
+- **`embedImage($path, $cid, $name = '', $mime = '')`** — embeds an image as an *inline* part. Reference it from your HTML with a `cid:` URL whose value matches `$cid` (e.g. `<img src="cid:logo">`).
+
+### What gets rendered
+
+The renderer only adds the containers a message actually needs, nesting them like this:
+
+```
+multipart/mixed              ← present when there are attachments
+└── multipart/related        ← present when there are inline images
+    └── multipart/alternative ← present when there is HTML
+        ├── text/plain
+        └── text/html
+```
+
+Each level appears only when it has something to hold: a text-only message with one attachment is simply `multipart/mixed` wrapping a `text/plain` part. Attachments carry `Content-Disposition: attachment`; inline images carry `Content-Disposition: inline` plus a `Content-ID`, and the `multipart/related` container names its root part with a `type` parameter, as RFC 2387 expects. Binary parts are base64-encoded and wrapped at 76 columns (RFC 2045).
+
+### Lazy reads
+
+Path-based attachments (`attach()` and `embedImage()`) are **read from disk at render time**, not when you call the method — so the file only needs to exist when the message is sent. If the file can't be read at that point, `render()` throws a `PostalException`. Bytes passed to `attachData()` are carried as-is.
+
+!!! warning "Attach only trusted paths"
+    `attach()` and `embedImage()` read whatever path you give them. Never pass an unsanitised, user-controlled path, or a request could read arbitrary files off your server.
+
 ## Headers
 
 The renderer emits the standard envelope and structural headers — `From`, `To`, `Cc`, `Reply-To`, `Subject`, `Date`, `Message-ID`, `MIME-Version`, and the content headers — plus everything you added through the `Email` builder:
@@ -74,7 +114,7 @@ Both the plain-text and HTML parts are encoded with `quoted-printable`, with eve
 Quoted-printable soft wrapping is invisible to the reader — it decodes away on delivery. When you want the plain-text part to *stay* wrapped in the recipient's client, set `Email::$wordWrap = true` (and `$wrapChars`, default 76). The renderer then hard-wraps the text at word boundaries before encoding, leaving long space-less tokens such as URLs intact. Word wrap is off by default; the legacy `setWordWrap()` adapter method drives it.
 
 !!! note "Current limitations"
-    The renderer is deliberately small for now. Very long non-ASCII header values aren't folded into multiple encoded-words. This is fine for the log mailer and typical messages; richer encoding will arrive with the SMTP transport.
+    The renderer is deliberately small for now. Very long non-ASCII header values aren't folded into multiple encoded-words, and non-ASCII attachment filenames are placed in the parameter as-is rather than RFC 2231-encoded (CR/LF and quotes are still stripped/escaped, so they remain safe). This is fine for the log mailer and typical messages; richer encoding will arrive with the SMTP transport.
 
 ## Next steps
 
