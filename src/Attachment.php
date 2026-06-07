@@ -67,6 +67,15 @@ final readonly class Attachment
     }
 
     /**
+     * An inline image carrying raw bytes in memory, referenceable from HTML via
+     * the given Content-ID.
+     */
+    public static function embedData(string $data, string $cid, string $name, ?string $mime = null): self
+    {
+        return new self($name, 'inline', data: $data, mime: $mime, cid: $cid);
+    }
+
+    /**
      * Returns the attachment bytes, reading a path-based attachment from disk on
      * demand. An unreadable path raises a PostalException.
      */

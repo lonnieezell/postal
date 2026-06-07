@@ -95,6 +95,28 @@ final class EmailTest extends CIUnitTestCase
         ], $email->headers);
     }
 
+    public function testMetadataDefaultsToEmpty(): void
+    {
+        $this->assertSame([], (new Email())->metadata);
+    }
+
+    public function testAutoEmbedImagesDefaultsToTrue(): void
+    {
+        $this->assertTrue((new Email())->autoEmbedImages);
+    }
+
+    public function testMetadataAccumulatesAndChains(): void
+    {
+        $email = (new Email())
+            ->metadata('campaign', 'spring')
+            ->metadata('tier', 'gold');
+
+        $this->assertSame([
+            'campaign' => 'spring',
+            'tier'     => 'gold',
+        ], $email->metadata);
+    }
+
     public function testPriorityDefaultsToThree(): void
     {
         $this->assertSame(3, (new Email())->priority);

@@ -26,4 +26,9 @@ class PostalException extends RuntimeException
     {
         return new self("No transport named \"{$name}\" is mapped in Config\\Email::\$transports.");
     }
+
+    public static function forMissingPackage(string $package, string $transport): self
+    {
+        return new self("The \"{$transport}\" transport requires the \"{$package}\" package. Run \"composer require {$package}\".");
+    }
 }

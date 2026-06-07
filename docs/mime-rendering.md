@@ -72,6 +72,30 @@ Path-based attachments (`attach()` and `embedImage()`) are **read from disk at r
 !!! warning "Attach only trusted paths"
     `attach()` and `embedImage()` read whatever path you give them. Never pass an unsanitised, user-controlled path, or a request could read arbitrary files off your server.
 
+### Automatic inline images
+
+You don't have to call `embedImage()` yourself for every image. By default the renderer scans the HTML body for `<img>` sources, turns the embeddable ones into inline parts, and rewrites the reference to a `cid:` URL — so the images travel with the message instead of being hot-linked. Two source kinds are embedded:
+
+```php
+$email->html('
+    <img src="data:image/png;base64,iVBORw0KGgo...">   <!-- decoded in memory -->
+    <img src="/var/www/assets/logo.png">               <!-- read from disk -->
+');
+```
+
+- **`data:` URIs** with an image MIME type are decoded and embedded (many clients strip data URIs, so this also improves rendering).
+- **Local file paths** are embedded when the file exists and is actually an image.
+- **`http(s)://` URLs and existing `cid:` references are left untouched** — remote images are never fetched, and an explicit `embedImage()` still works exactly as before.
+
+Identical sources are de-duplicated into a single part, and the generated `Content-ID` is content-derived. Turn the whole pass off per message when you'd rather ship the HTML verbatim:
+
+```php
+$email->autoEmbedImages = false;
+```
+
+!!! warning "Only images are read"
+    Auto-embedding reads a referenced local file **only when it sniffs as an image**, so an `<img src="/etc/passwd">` in HTML is ignored rather than embedded. Even so, treat HTML you put into a message as trusted — don't build it from unsanitised user input.
+
 ## Headers
 
 The renderer emits the standard envelope and structural headers — `From`, `To`, `Cc`, `Reply-To`, `Subject`, `Date`, `Message-ID`, `MIME-Version`, and the content headers — plus everything you added through the `Email` builder:

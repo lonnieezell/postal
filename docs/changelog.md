@@ -4,6 +4,23 @@
 
 ### Added
 
+- Automatic inline images: the renderer scans the HTML body for `<img>`
+  sources and embeds the embeddable ones — `data:` image URIs (decoded in
+  memory) and local image file paths (read at render) — rewriting each
+  reference to a `cid:` URL and de-duplicating identical sources. Remote
+  (`http(s)://`) and existing `cid:` sources are left untouched, and only files
+  that sniff as images are read. On by default; disable per message with
+  `Email::$autoEmbedImages = false`. Adds `Attachment::embedData()`.
+- Amazon SES transport (`ses` mailer): delivers through the official
+  `aws/aws-sdk-php` SesV2 client (SigV4 signing and HTTP owned by the SDK).
+  Sends structured Simple content by default and switches to raw MIME for
+  attachments/inline images, HTML without an explicit text body, or when
+  `forceRaw` is set. Maps `Email::metadata()` onto SES EmailTags (dropping and
+  debug-logging tags that break SES's character rules), applies an optional
+  `configurationSet`, and returns the SES message id. `aws/aws-sdk-php` is an
+  optional dependency (install it with `composer require aws/aws-sdk-php`).
+- `Email::metadata(key, value)` builder for provider tags, mapped by API
+  transports onto their tagging feature and ignored by the others.
 - Attachments and inline images: `Email::attach()` (file by path, read lazily at
   render), `Email::attachData()` (raw bytes), and `Email::embedImage()` (inline
   CID image referenceable from HTML), backed by the `Attachment` value object. The

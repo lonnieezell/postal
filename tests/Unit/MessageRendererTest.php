@@ -733,6 +733,114 @@ final class MessageRendererTest extends CIUnitTestCase
         $this->assertStringNotContainsString('multipart/related', $mime);
     }
 
+    public function testAutoEmbedsBase64DataUriImages(): void
+    {
+        $b64 = base64_encode('PNGDATA');
+
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->html('<p><img src="data:image/png;base64,' . $b64 . '"></p>');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        // The data: URI is replaced by a cid: reference into a related part.
+        $this->assertStringContainsString('Content-Type: multipart/related;', $mime);
+        $this->assertStringContainsString('Content-ID: <', $mime);
+        $this->assertStringContainsString('cid:', $mime);
+        $this->assertStringNotContainsString('data:image/png', $mime);
+
+        $related = $this->boundaryOf($mime, 'multipart/related');
+        $this->assertSame('PNGDATA', base64_decode($this->partWith($mime, $related, 'image/png'), true));
+    }
+
+    public function testAutoEmbedsLocalFileImages(): void
+    {
+        $png  = (string) base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVR4nGNgAAIAAAUAAen63NgAAAAASUVORK5CYII=', true);
+        $path = tempnam(sys_get_temp_dir(), 'postal');
+        file_put_contents($path, $png);
+
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->html('<p><img src="' . $path . '"></p>');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        $this->assertStringContainsString('Content-Type: multipart/related;', $mime);
+        $this->assertStringContainsString('Content-ID: <', $mime);
+
+        $related = $this->boundaryOf($mime, 'multipart/related');
+        $this->assertSame($png, base64_decode($this->partWith($mime, $related, 'image/png'), true));
+
+        unlink($path);
+    }
+
+    public function testLeavesRemoteAndCidImageSourcesUntouched(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->html('<p><img src="https://cdn.example.com/a.png"><img src="cid:keep"></p>');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        // Remote URLs are never fetched; an existing cid: reference is left as-is.
+        $this->assertStringContainsString('https://cdn.example.com/a.png', $mime);
+        $this->assertStringContainsString('cid:keep', $mime);
+        $this->assertStringNotContainsString('multipart/related', $mime);
+    }
+
+    public function testDoesNotAutoEmbedWhenDisabled(): void
+    {
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->html('<p><img src="data:image/png;base64,' . base64_encode('PNGDATA') . '"></p>');
+
+        $email->autoEmbedImages = false;
+
+        $mime = (new MessageRenderer())->render($email);
+
+        $this->assertStringContainsString('data:image/png', $mime);
+        $this->assertStringNotContainsString('multipart/related', $mime);
+    }
+
+    public function testDeduplicatesIdenticalAutoEmbeddedImages(): void
+    {
+        $uri = 'data:image/png;base64,' . base64_encode('PNGDATA');
+
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->html('<p><img src="' . $uri . '"><img src="' . $uri . '"></p>');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        // The repeated image becomes a single related part referenced twice.
+        $this->assertSame(1, substr_count($mime, 'Content-ID: <'));
+    }
+
+    public function testDoesNotEmbedNonImageLocalFiles(): void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'postal');
+        file_put_contents($path, 'SECRET-NOT-AN-IMAGE');
+
+        $email = (new Email())
+            ->from('me@example.com')
+            ->to('you@example.com')
+            ->html('<p><img src="' . $path . '"></p>');
+
+        $mime = (new MessageRenderer())->render($email);
+
+        // A referenced local file that is not an image is never read into the
+        // message — guarding against exfiltrating arbitrary files via <img>.
+        $this->assertStringNotContainsString('multipart/related', $mime);
+        $this->assertStringNotContainsString('SECRET-NOT-AN-IMAGE', $mime);
+
+        unlink($path);
+    }
+
     /**
      * Returns the boundary declared for the given multipart content subtype.
      */
