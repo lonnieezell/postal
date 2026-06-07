@@ -14,8 +14,10 @@ declare(strict_types=1);
 namespace Myth\Postal\Controllers;
 
 use CodeIgniter\Controller;
+use CodeIgniter\Exceptions\PageNotFoundException;
 use Myth\Postal\Config\Postal;
 use Myth\Postal\Mailable;
+use Myth\Postal\MessageRenderer;
 use Myth\Postal\Previewable;
 use Throwable;
 
@@ -57,6 +59,46 @@ class PreviewController extends Controller
         return view('Myth\Postal\Views\preview\index', [
             'mailables'   => $mailables,
             'previewPath' => $this->config->previewPath,
+        ]);
+    }
+
+    /**
+     * Renders a single Mailable's preview with HTML, plain-text, and raw-MIME
+     * tabs. An unknown / non-previewable class is a 404; a Mailable that throws
+     * while building has its error shown inline in the preview chrome.
+     */
+    public function show(string $class): string
+    {
+        $class = urldecode($class);
+
+        if (! class_exists($class) || ! is_subclass_of($class, Mailable::class) || ! is_a($class, Previewable::class, true)) {
+            throw PageNotFoundException::forPageNotFound('Unknown previewable Mailable: ' . $class);
+        }
+
+        try {
+            $email = $class::previewInstance()->render();
+        } catch (Throwable $e) {
+            return view('Myth\Postal\Views\preview\show', [
+                'class'       => $class,
+                'previewPath' => $this->config->previewPath,
+                'error'       => $e->getMessage() . "\n\n" . $e->getTraceAsString(),
+            ]);
+        }
+
+        $renderer = new MessageRenderer();
+        $textAuto = $email->textBody === null && $email->htmlBody !== null;
+        $text     = $email->textBody ?? ($email->htmlBody !== null ? $renderer->htmlToText($email->htmlBody) : '');
+
+        return view('Myth\Postal\Views\preview\show', [
+            'class'       => $class,
+            'previewPath' => $this->config->previewPath,
+            'error'       => null,
+            'subject'     => $email->subject,
+            'htmlBody'    => $email->htmlBody,
+            'text'        => $text,
+            'textAuto'    => $textAuto,
+            'rawMime'     => $renderer->render($email),
+            'attachments' => array_map(static fn ($a): string => $a->name, $email->attachments),
         ]);
     }
 

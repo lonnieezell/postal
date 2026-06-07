@@ -467,9 +467,10 @@ class MessageRenderer
     /**
      * Produces a basic plain-text rendering of an HTML body for the text part:
      * anchors become "text (url)", block-level tags become line breaks, the
-     * remaining tags are stripped and HTML entities decoded.
+     * remaining tags are stripped and HTML entities decoded. Public so the
+     * preview UI can show the same fallback the renderer would emit.
      */
-    private function htmlToText(string $html): string
+    public function htmlToText(string $html): string
     {
         // strip_tags() keeps the *contents* of removed tags, so script/style/head
         // blocks would dump their CSS/JS/metadata into the text. Remove them whole
