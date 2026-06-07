@@ -31,4 +31,9 @@ class PostalException extends RuntimeException
     {
         return new self("The \"{$transport}\" transport requires the \"{$package}\" package. Run \"composer require {$package}\".");
     }
+
+    public static function forEmptyFailover(): self
+    {
+        return new self('A failover mailer must list at least one child mailer under its "chain" key.');
+    }
 }

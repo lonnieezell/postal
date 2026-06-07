@@ -15,6 +15,7 @@ namespace Myth\Postal;
 
 use Myth\Postal\Config\Email as EmailConfig;
 use Myth\Postal\Exceptions\PostalException;
+use Myth\Postal\Transport\FailoverTransport;
 use Myth\Postal\Transport\TransportInterface;
 
 /**
@@ -80,8 +81,38 @@ class MailerManager
 
         $class = $this->config->transports[$transportName];
 
+        // A failover mailer is a composite: build its child transports by name
+        // and hand them to the FailoverTransport. Children are resolved through
+        // the same path, so each carries its own transport's settings.
+        if (is_a($class, FailoverTransport::class, true)) {
+            return new $class($this->resolveFailoverChildren($name));
+        }
+
         // The whole mailer entry is the transport's settings; each transport
         // reads the keys it understands (host, level, …) and ignores the rest.
         return new $class($this->config->mailers[$name]);
+    }
+
+    /**
+     * Builds the ordered child transports for a failover mailer from the mailer
+     * names listed under its "chain" key.
+     *
+     * @return list<TransportInterface>
+     */
+    private function resolveFailoverChildren(string $name): array
+    {
+        $childNames = $this->config->mailers[$name]['chain'] ?? [];
+
+        if (! is_array($childNames)) {
+            $childNames = [];
+        }
+
+        $children = [];
+
+        foreach ($childNames as $childName) {
+            $children[] = $this->resolveTransport((string) $childName);
+        }
+
+        return $children;
     }
 }

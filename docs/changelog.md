@@ -4,6 +4,13 @@
 
 ### Added
 
+- Failover transport (`failover` mailer): a composite that tries an ordered list
+  of child mailers (named under a `chain` key) and falls through to the next on
+  failure — returning the first success and reporting failure only when every
+  child fails. A child that throws is treated as a failure so the chain advances.
+  `MailerManager` resolves the child mailers by name and hands the already-built
+  transports to the composite. A failover mailer with no children throws a
+  `PostalException`.
 - Automatic inline images: the renderer scans the HTML body for `<img>`
   sources and embeds the embeddable ones — `data:` image URIs (decoded in
   memory) and local image file paths (read at render) — rewriting each
