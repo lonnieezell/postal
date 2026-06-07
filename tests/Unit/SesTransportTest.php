@@ -99,6 +99,27 @@ final class SesTransportTest extends CIUnitTestCase
         $this->assertStringContainsString('report.txt', (string) $raw);
     }
 
+    public function testEmbedsInlineImagesAsRawRelatedParts(): void
+    {
+        // Inline images cannot be expressed in Simple content, so the message
+        // goes raw and the rendered MIME carries the Content-ID the HTML's
+        // "cid:" reference resolves against.
+        $this->transport($this->mock())->send(
+            (new Email())
+                ->from('me@example.com')
+                ->to('you@example.com')
+                ->subject('Hi')
+                ->html('<p><img src="cid:logo"></p>')
+                ->embedImage(__FILE__, 'logo', 'logo.png', 'image/png'),
+        );
+
+        $this->assertArrayNotHasKey('Simple', $this->captured['Content']);
+        $raw = (string) $this->captured['Content']['Raw']['Data'];
+        $this->assertStringContainsString('multipart/related', $raw);
+        $this->assertStringContainsString('Content-ID: <logo>', $raw);
+        $this->assertStringContainsString('Content-Disposition: inline', $raw);
+    }
+
     public function testHtmlWithoutTextUsesRawSoATextFallbackIsGenerated(): void
     {
         // The renderer turns HTML-only into multipart/alternative with a
