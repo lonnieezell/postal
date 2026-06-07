@@ -15,6 +15,7 @@ namespace Myth\Postal\Config;
 
 use CodeIgniter\Config\BaseConfig;
 use Myth\Postal\SuppressionListInterface;
+use Myth\Postal\Transport\FailoverTransport;
 use Myth\Postal\Transport\LogTransport;
 use Myth\Postal\Transport\MailTransport;
 use Myth\Postal\Transport\NullTransport;
@@ -82,5 +83,6 @@ class Email extends BaseConfig
         'sendmail' => SendmailTransport::class,
         'mail'     => MailTransport::class,
         'ses'      => SesTransport::class,
+        'failover' => FailoverTransport::class,
     ];
 }

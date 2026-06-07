@@ -22,6 +22,7 @@ use Myth\Postal\Exceptions\PostalException;
 use Myth\Postal\MailerManager;
 use Psr\Log\AbstractLogger;
 use Stringable;
+use Tests\Support\AlwaysFailsTransport;
 
 /**
  * @internal
@@ -139,6 +140,44 @@ final class MailerManagerTest extends CIUnitTestCase
         $this->assertStringContainsString('<p>Hello there</p>', $logger->message);
 
         Services::reset();
+    }
+
+    public function testConfigShipsFailoverTransport(): void
+    {
+        $this->assertArrayHasKey('failover', (new EmailConfig())->transports);
+    }
+
+    public function testResolvesFailoverChildrenByName(): void
+    {
+        $config          = new EmailConfig();
+        $config->mailers = [
+            'broken'   => ['transport' => 'broken'],
+            'null'     => ['transport' => 'null'],
+            'failover' => ['transport' => 'failover', 'mailers' => ['broken', 'null']],
+        ];
+        // A transport whose send() always fails, so the composite must fall
+        // through to the real null transport to succeed.
+        $config->transports['broken'] = AlwaysFailsTransport::class;
+        $config->default              = 'failover';
+
+        $manager = new MailerManager($config);
+        $email   = (new Email())->from('me@example.com')->to('you@example.com');
+
+        $this->assertTrue($manager->send($email)->success);
+    }
+
+    public function testFailoverWithoutChildrenThrows(): void
+    {
+        $config          = new EmailConfig();
+        $config->mailers = [
+            'failover' => ['transport' => 'failover'],
+        ];
+        $config->default = 'failover';
+
+        $manager = new MailerManager($config);
+
+        $this->expectException(PostalException::class);
+        $manager->mailer();
     }
 
     public function testUnknownMailerThrows(): void
