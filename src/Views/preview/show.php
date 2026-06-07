@@ -1,17 +1,16 @@
 <?php
 
 /**
- * @var class-string  $class
- * @var string        $previewPath
- * @var string|null   $error
- * @var string        $subject     (absent when $error is set)
- * @var string|null   $htmlBody    (absent when $error is set)
- * @var string        $text        (absent when $error is set)
- * @var bool          $textAuto    (absent when $error is set)
- * @var string        $rawMime     (absent when $error is set)
- * @var list<string>  $attachments (absent when $error is set)
+ * @var class-string $class
+ * @var string       $previewPath
+ * @var string|null  $error
+ * @var string       $subject     (absent when $error is set)
+ * @var string|null  $htmlBody    (absent when $error is set)
+ * @var string       $text        (absent when $error is set)
+ * @var bool         $textAuto    (absent when $error is set)
+ * @var string       $rawMime     (absent when $error is set)
+ * @var list<string> $attachments (absent when $error is set)
  */
-
 helper('url');
 $shortName = substr((string) strrchr('\\' . $class, '\\'), 1);
 ?>

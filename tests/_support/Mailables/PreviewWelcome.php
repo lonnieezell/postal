@@ -25,7 +25,7 @@ final class PreviewWelcome extends Mailable implements Previewable
 
     public static function previewInstance(): static
     {
-        return new static('Sample');
+        return new self('Sample');
     }
 
     protected function build(): void

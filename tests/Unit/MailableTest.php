@@ -83,7 +83,6 @@ final class MailableTest extends CIUnitTestCase
 
         $email = (new WelcomeEmail('Ada'))->render();
 
-        $this->assertInstanceOf(Email::class, $email);
         $this->assertSame('Welcome, Ada', $email->subject);
         $this->assertSame('<p>Hello Ada</p>', $email->htmlBody);
         $fake->assertNothingSent();

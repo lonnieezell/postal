@@ -20,7 +20,7 @@ final class PreviewHtmlOnly extends Mailable implements Previewable
 {
     public static function previewInstance(): static
     {
-        return new static();
+        return new self();
     }
 
     protected function build(): void

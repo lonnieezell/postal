@@ -15,7 +15,6 @@ namespace Tests\Unit;
 
 use CodeIgniter\Config\Factories;
 use CodeIgniter\Test\CIUnitTestCase;
-use Myth\Postal\Config\Postal;
 
 /**
  * @internal
@@ -37,13 +36,16 @@ final class PreviewRoutesTest extends CIUnitTestCase
      */
     private function loadRoutes(bool $enablePreview): object
     {
-        $config                = new Postal();
-        $config->enablePreview = $enablePreview;
-        Factories::injectMock('config', Postal::class, $config);
+        // Mutate the shared config the routes file resolves via config('Postal');
+        // tearDown resets the config factory so this does not leak across tests.
+        config('Postal')->enablePreview = $enablePreview;
 
         $routes = new class () {
-            /** @var array<string, string> */
-            public array $gets        = [];
+            /**
+             * @var array<string, string>
+             */
+            public array $gets = [];
+
             public ?string $groupPrefix = null;
 
             /**

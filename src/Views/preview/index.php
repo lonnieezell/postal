@@ -4,7 +4,6 @@
  * @var list<array{class: class-string, subject: string|null, error: string|null}> $mailables
  * @var string                                                                     $previewPath
  */
-
 helper('url');
 ?>
 <!DOCTYPE html>

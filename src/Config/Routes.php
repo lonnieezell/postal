@@ -11,16 +11,16 @@ declare(strict_types=1);
  * the LICENSE file that was distributed with this source code.
  */
 
-use Myth\Postal\Config\Postal;
+use CodeIgniter\Router\RouteCollection;
 
 /**
  * Auto-discovered by CodeIgniter in every host app, including production, so the
  * preview routes are registered only when the gate is open: a non-production
  * environment AND Config\Postal::$enablePreview enabled.
  *
- * @var CodeIgniter\Router\RouteCollection $routes
+ * @var RouteCollection $routes
  */
-$postal = config(Postal::class);
+$postal = config('Postal');
 
 if ($postal->previewEnabled(ENVIRONMENT)) {
     $routes->group($postal->previewPath, ['namespace' => 'Myth\Postal\Controllers'], static function ($routes): void {

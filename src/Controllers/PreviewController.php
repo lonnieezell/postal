@@ -32,7 +32,7 @@ class PreviewController extends Controller
 
     public function __construct(?Postal $config = null)
     {
-        $this->config = $config ?? config(Postal::class);
+        $this->config = $config ?? config('Postal');
     }
 
     /**
@@ -124,7 +124,11 @@ class PreviewController extends Controller
 
         foreach ($this->config->mailableNamespaces as $namespace => $path) {
             $namespace = rtrim($namespace, '\\');
-            $files     = glob(rtrim($path, '/\\') . DIRECTORY_SEPARATOR . '*.php') ?: [];
+            $files     = glob(rtrim($path, '/\\') . DIRECTORY_SEPARATOR . '*.php');
+
+            if ($files === false) {
+                continue;
+            }
 
             foreach ($files as $file) {
                 $class = $namespace . '\\' . basename($file, '.php');
