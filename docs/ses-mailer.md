@@ -78,6 +78,7 @@ SES accepts two body shapes, and Postal picks the right one for each message:
 Postal switches to **raw** automatically when:
 
 - the message carries **attachments or inline images** (Simple content can't represent them),
+- the HTML body contains an **auto-embeddable image** — a `data:` URI or local image path that [the renderer inlines](mime-rendering.md#automatic-inline-images) — since the resulting inline part can't ride in Simple content,
 - the message is **HTML without an explicit text body** — only Postal's renderer generates the plain-text alternative that keeps HTML mail off the bare-HTML spam signal, or
 - you set **`forceRaw => true`** (for example, when you sign messages with your own DKIM before handing them to SES).
 
