@@ -128,7 +128,13 @@ final class SesTransport implements TransportInterface
      */
     private function content(Email $email): array
     {
-        if ($this->forceRaw || $email->attachments !== []) {
+        // Raw mode for attachments/inline parts, when forced, and for HTML
+        // without an explicit text part: only the renderer can synthesise the
+        // plain-text alternative that keeps HTML mail off the bare-HTML spam
+        // signal, which Simple content cannot reproduce.
+        $htmlNeedsFallback = $email->htmlBody !== null && $email->textBody === null;
+
+        if ($this->forceRaw || $email->attachments !== [] || $htmlNeedsFallback) {
             return ['Raw' => ['Data' => (new MessageRenderer())->render($email)]];
         }
 
@@ -191,7 +197,13 @@ final class SesTransport implements TransportInterface
             return $address->email;
         }
 
-        return '"' . addcslashes($address->name, '"\\') . '" <' . $address->email . '>';
+        // A non-ASCII display name must be RFC 2047-encoded; a pure-ASCII name is
+        // wrapped in a quoted-string so specials (e.g. a comma) cannot split it.
+        $name = preg_match('/[^\x20-\x7E]/', $address->name) === 1
+            ? mb_encode_mimeheader($address->name, self::CHARSET, 'Q')
+            : '"' . addcslashes($address->name, '"\\') . '"';
+
+        return $name . ' <' . $address->email . '>';
     }
 
     /**

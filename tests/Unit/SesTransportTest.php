@@ -50,6 +50,20 @@ final class SesTransportTest extends CIUnitTestCase
         $this->assertArrayNotHasKey('Raw', $this->captured['Content']);
     }
 
+    public function testEncodesNonAsciiDisplayNamesInSimpleMode(): void
+    {
+        $this->transport($this->mock())->send(
+            (new Email())->from('me@example.com', 'José')->to('you@example.com')->subject('Hi')->text('Hi'),
+        );
+
+        $from = $this->captured['FromEmailAddress'];
+        // The raw multibyte name must not leak into the header field; it is
+        // RFC 2047-encoded and the address remains intact.
+        $this->assertStringNotContainsString('José', $from);
+        $this->assertStringContainsString('=?UTF-8?', $from);
+        $this->assertStringContainsString('<me@example.com>', $from);
+    }
+
     public function testMapsCcBccAndReplyTo(): void
     {
         $this->transport($this->mock())->send(
@@ -74,6 +88,30 @@ final class SesTransportTest extends CIUnitTestCase
         $raw = $this->captured['Content']['Raw']['Data'];
         $this->assertStringContainsString('Subject: Hi', $raw);
         $this->assertStringContainsString('report.txt', $raw);
+    }
+
+    public function testHtmlWithoutTextUsesRawSoATextFallbackIsGenerated(): void
+    {
+        // The renderer turns HTML-only into multipart/alternative with a
+        // generated text part; Simple content cannot, so HTML-only must go raw.
+        $this->transport($this->mock())->send(
+            (new Email())->from('me@example.com')->to('you@example.com')->subject('Hi')->html('<p>Hello</p>'),
+        );
+
+        $this->assertArrayNotHasKey('Simple', $this->captured['Content']);
+        $raw = $this->captured['Content']['Raw']['Data'];
+        $this->assertStringContainsString('multipart/alternative', $raw);
+        $this->assertStringContainsString('text/plain', $raw);
+    }
+
+    public function testHtmlWithExplicitTextStaysSimple(): void
+    {
+        $this->transport($this->mock())->send(
+            (new Email())->from('me@example.com')->to('you@example.com')->subject('Hi')->html('<p>Hi</p>')->text('Hi'),
+        );
+
+        $this->assertArrayHasKey('Simple', $this->captured['Content']);
+        $this->assertArrayNotHasKey('Raw', $this->captured['Content']);
     }
 
     public function testForceRawSettingSelectsRawWithoutAttachments(): void
