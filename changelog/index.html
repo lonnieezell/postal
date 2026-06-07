@@ -425,6 +425,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../failover-mailer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Failover Mailer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../mime-rendering/" class="md-nav__link">
         
   
@@ -792,6 +819,13 @@
 <h2 id="unreleased">[Unreleased]</h2>
 <h3 id="added">Added</h3>
 <ul>
+<li>Failover transport (<code>failover</code> mailer): a composite that tries an ordered list
+  of child mailers (named under a <code>chain</code> key) and falls through to the next on
+  failure — returning the first success and reporting failure only when every
+  child fails. A child that throws is treated as a failure so the chain advances.
+  <code>MailerManager</code> resolves the child mailers by name and hands the already-built
+  transports to the composite. A failover mailer with no children throws a
+  <code>PostalException</code>.</li>
 <li>Automatic inline images: the renderer scans the HTML body for <code>&lt;img&gt;</code>
   sources and embeds the embeddable ones — <code>data:</code> image URIs (decoded in
   memory) and local image file paths (read at render) — rewriting each
