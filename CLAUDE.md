@@ -72,7 +72,7 @@ composer docker:shell     # bash shell inside container
 
 ## CI Workflows
 
-Workflows run on `develop` branch PRs/pushes. PHPUnit runs against PHP 8.2–8.5 × MySQL/SQLite/PostgreSQL/SQLSRV/OCI8.
+Workflows run on `main` branch PRs/pushes. PHPUnit runs against PHP 8.2–8.5 × MySQL/SQLite/PostgreSQL/SQLSRV/OCI8.
 
 ## PHPStan
 

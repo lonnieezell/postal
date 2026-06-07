@@ -62,7 +62,7 @@ class LegacyEmailAdapter
     private int $BCCBatchSize;
 
     /**
-     * Recorded attachments (rendering pending issue #17).
+     * Recorded attachments, translated to native Attachments at send time.
      *
      * @var list<array{name: array{0: string, 1: string|null}, disposition: string, mime: string, cid: string|null}>
      */
@@ -166,8 +166,8 @@ class LegacyEmailAdapter
 
     /**
      * Sends the message through a Mailer, returning the legacy boolean result.
-     * Invalid addresses, a missing From, missing recipients, or (for now)
-     * attachments cause a false return surfaced via printDebugger() — never an
+     * Invalid addresses, a missing From, missing recipients, or an unreadable
+     * attachment cause a false return surfaced via printDebugger() — never an
      * exception.
      */
     public function send(bool $autoClear = true): bool
@@ -180,9 +180,7 @@ class LegacyEmailAdapter
             return false;
         }
 
-        if ($this->attachments !== []) {
-            $this->fail('Attachments are not yet supported (see issue #17).');
-
+        if (! $this->applyAttachments()) {
             return false;
         }
 
@@ -316,9 +314,38 @@ class LegacyEmailAdapter
         return $email;
     }
 
+    /** Applies the deferred body, mail type and wrap settings onto the Email. */
     /**
-     * Applies the deferred body, mail type and wrap settings onto the Email.
+     * Translates the recorded legacy attachments into native Attachment objects
+     * on the underlying Email. Path-based files and inline images (those given a
+     * CID via setAttachmentCID()) are delivered; an unreadable path — including
+     * an unsupported in-memory buffer — fails the send gracefully rather than
+     * throwing at render time. Returns false when an attachment cannot be read.
      */
+    private function applyAttachments(): bool
+    {
+        $this->email->attachments = [];
+
+        foreach ($this->attachments as $attachment) {
+            $path    = (string) $attachment['name'][0];
+            $newname = $attachment['name'][1];
+            $name    = ($newname === null || $newname === '') ? null : (string) $newname;
+            $mime    = $attachment['mime'] === '' ? null : $attachment['mime'];
+
+            if (! is_file($path)) {
+                $this->fail('Unable to read attachment: ' . $path);
+
+                return false;
+            }
+
+            $this->email->attachments[] = $attachment['cid'] !== null
+                ? Attachment::embed($path, $attachment['cid'], $name, $mime)
+                : Attachment::fromPath($path, $name, $mime);
+        }
+
+        return true;
+    }
+
     private function prepareEmail(): void
     {
         if ($this->mailType === 'html') {

@@ -65,6 +65,19 @@ final class LegacyEmailAdapterTest extends CIUnitTestCase
         $this->assertNull($email->htmlBody);
     }
 
+    public function testSetFromExtractsAddrSpecFromNamedAddress(): void
+    {
+        $transport = new RecordingTransport();
+
+        $this->adapter($transport)
+            ->setFrom('"Doe, John" <john@example.com>')
+            ->setTo('you@example.com')
+            ->setMessage('Hi')
+            ->send();
+
+        $this->assertSame('john@example.com', $transport->sent[0]->from->email);
+    }
+
     public function testSetMailTypeHtmlRoutesMessageToHtmlAndAltToText(): void
     {
         $transport = new RecordingTransport();
@@ -298,7 +311,59 @@ final class LegacyEmailAdapterTest extends CIUnitTestCase
         $this->assertCount(2, $transport->sent);
     }
 
-    public function testAttachIsStubbedAndSendFailsWithDebuggerNote(): void
+    public function testAttachDeliversPathBasedFile(): void
+    {
+        $transport = new RecordingTransport();
+        $path      = tempnam(sys_get_temp_dir(), 'postal') . '.txt';
+        file_put_contents($path, 'file body');
+
+        try {
+            $adapter = $this->adapter($transport)
+                ->setFrom('me@example.com')
+                ->setTo('you@example.com')
+                ->setMessage('Hi');
+            $adapter->attach($path, '', 'report.txt');
+
+            $this->assertTrue($adapter->send());
+            $this->assertCount(1, $transport->sent);
+
+            $attachments = $transport->sent[0]->attachments;
+            $this->assertCount(1, $attachments);
+            $this->assertSame('report.txt', $attachments[0]->name);
+            $this->assertSame('attachment', $attachments[0]->disposition);
+            $this->assertSame('file body', $attachments[0]->content());
+        } finally {
+            @unlink($path);
+        }
+    }
+
+    public function testSetAttachmentCidEmbedsAsInlineImage(): void
+    {
+        $transport = new RecordingTransport();
+        $path      = tempnam(sys_get_temp_dir(), 'postal') . '.png';
+        file_put_contents($path, 'image bytes');
+
+        try {
+            $adapter = $this->adapter($transport)
+                ->setFrom('me@example.com')
+                ->setTo('you@example.com')
+                ->setMailType('html')
+                ->setMessage('<p>Hi</p>');
+            $adapter->attach($path);
+            $cid = $adapter->setAttachmentCID($path);
+
+            $this->assertTrue($adapter->send());
+
+            $attachments = $transport->sent[0]->attachments;
+            $this->assertCount(1, $attachments);
+            $this->assertSame('inline', $attachments[0]->disposition);
+            $this->assertSame($cid, $attachments[0]->cid);
+        } finally {
+            @unlink($path);
+        }
+    }
+
+    public function testSendFailsGracefullyWhenAttachmentIsUnreadable(): void
     {
         $transport = new RecordingTransport();
 
@@ -307,7 +372,7 @@ final class LegacyEmailAdapterTest extends CIUnitTestCase
             ->setTo('you@example.com')
             ->setMessage('Hi');
 
-        $adapter->attach('/tmp/file.pdf');
+        $adapter->attach('/tmp/does-not-exist.pdf');
 
         $this->assertFalse($adapter->send());
         $this->assertCount(0, $transport->sent);

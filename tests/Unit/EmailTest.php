@@ -16,6 +16,7 @@ namespace Tests\Unit;
 use CodeIgniter\Test\CIUnitTestCase;
 use Myth\Postal\Address;
 use Myth\Postal\Email;
+use Myth\Postal\Exceptions\PostalException;
 
 /**
  * @internal
@@ -69,6 +70,38 @@ final class EmailTest extends CIUnitTestCase
         $this->assertCount(2, $email->to);
         $this->assertSame('a@example.com', $email->to[0]->email);
         $this->assertSame('Bee', $email->to[1]->name);
+    }
+
+    public function testFromRejectsMalformedAddress(): void
+    {
+        $this->expectException(PostalException::class);
+        $this->expectExceptionMessage('Invalid email address');
+
+        (new Email())->from('not-an-email');
+    }
+
+    public function testToRejectsEmptyAddress(): void
+    {
+        $this->expectException(PostalException::class);
+
+        (new Email())->to('');
+    }
+
+    public function testToRejectsMalformedEntryInArray(): void
+    {
+        $this->expectException(PostalException::class);
+
+        (new Email())->to(['good@example.com', 'bogus']);
+    }
+
+    public function testToRejectsAddressWithBracketInsideDisplayName(): void
+    {
+        // The loose parser mis-captures the addr-spec for a bracketed display
+        // name; entry validation must reject it rather than deliver to a bad
+        // address.
+        $this->expectException(PostalException::class);
+
+        (new Email())->to('"Weird <x>" <real@example.com>');
     }
 
     public function testSubjectHtmlAndText(): void

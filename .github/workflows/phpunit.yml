@@ -3,7 +3,7 @@ name: PHPUnit
 on:
   pull_request:
     branches:
-      - develop
+      - main
     paths:
       - '**.php'
       - 'composer.*'

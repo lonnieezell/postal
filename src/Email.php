@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Myth\Postal;
 
+use Myth\Postal\Exceptions\PostalException;
+
 /**
  * A mutable email message builder. Methods mutate the instance and return it
  * so calls can be chained.
@@ -97,14 +99,14 @@ class Email
 
     public function from(string $address, string $name = ''): static
     {
-        $this->from = new Address($address, $name);
+        $this->from = $this->validated(new Address($address, $name));
 
         return $this;
     }
 
     public function replyTo(string $address, string $name = ''): static
     {
-        $this->replyTo = new Address($address, $name);
+        $this->replyTo = $this->validated(new Address($address, $name));
 
         return $this;
     }
@@ -248,12 +250,26 @@ class Email
     {
         if (is_array($address)) {
             foreach ($address as $entry) {
-                $bucket[] = Address::fromString($entry);
+                $bucket[] = $this->validated(Address::fromString($entry));
             }
 
             return;
         }
 
-        $bucket[] = $name === '' ? Address::fromString($address) : new Address($address, $name);
+        $bucket[] = $this->validated($name === '' ? Address::fromString($address) : new Address($address, $name));
+    }
+
+    /**
+     * Guards an address at the point of entry into the fluent API, throwing on a
+     * malformed or empty addr-spec so the failure surfaces here rather than as a
+     * confusing transport-level error.
+     */
+    private function validated(Address $address): Address
+    {
+        if (! Address::isValid($address->email)) {
+            throw PostalException::forInvalidAddress($address->email);
+        }
+
+        return $address;
     }
 }
