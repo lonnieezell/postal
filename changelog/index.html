@@ -398,6 +398,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../ses-mailer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The SES Mailer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../mime-rendering/" class="md-nav__link">
         
   
@@ -765,6 +792,23 @@
 <h2 id="unreleased">[Unreleased]</h2>
 <h3 id="added">Added</h3>
 <ul>
+<li>Automatic inline images: the renderer scans the HTML body for <code>&lt;img&gt;</code>
+  sources and embeds the embeddable ones — <code>data:</code> image URIs (decoded in
+  memory) and local image file paths (read at render) — rewriting each
+  reference to a <code>cid:</code> URL and de-duplicating identical sources. Remote
+  (<code>http(s)://</code>) and existing <code>cid:</code> sources are left untouched, and only files
+  that sniff as images are read. On by default; disable per message with
+  <code>Email::$autoEmbedImages = false</code>. Adds <code>Attachment::embedData()</code>.</li>
+<li>Amazon SES transport (<code>ses</code> mailer): delivers through the official
+  <code>aws/aws-sdk-php</code> SesV2 client (SigV4 signing and HTTP owned by the SDK).
+  Sends structured Simple content by default and switches to raw MIME for
+  attachments/inline images, HTML without an explicit text body, or when
+  <code>forceRaw</code> is set. Maps <code>Email::metadata()</code> onto SES EmailTags (dropping and
+  debug-logging tags that break SES's character rules), applies an optional
+  <code>configurationSet</code>, and returns the SES message id. <code>aws/aws-sdk-php</code> is an
+  optional dependency (install it with <code>composer require aws/aws-sdk-php</code>).</li>
+<li><code>Email::metadata(key, value)</code> builder for provider tags, mapped by API
+  transports onto their tagging feature and ignored by the others.</li>
 <li>Attachments and inline images: <code>Email::attach()</code> (file by path, read lazily at
   render), <code>Email::attachData()</code> (raw bytes), and <code>Email::embedImage()</code> (inline
   CID image referenceable from HTML), backed by the <code>Attachment</code> value object. The

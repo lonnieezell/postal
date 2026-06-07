@@ -11,10 +11,10 @@
       
       
       
-        <link rel="prev" href="../log-mailer/">
+        <link rel="prev" href="../sendmail-mail-mailers/">
       
       
-        <link rel="next" href="../sendmail-mail-mailers/">
+        <link rel="next" href="../mime-rendering/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>The SMTP Mailer - Postal</title>
+        <title>The SES Mailer - Postal</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#the-smtp-mailer" class="md-skip">
+        <a href="#the-ses-mailer" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              The SMTP Mailer
+              The SES Mailer
             
           </span>
         </div>
@@ -343,37 +343,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The SMTP Mailer
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../smtp-mailer/" class="md-nav__link">
         
   
   
@@ -389,131 +362,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#configuring-an-smtp-mailer" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configuring an SMTP mailer
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuration-reference" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configuration reference
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Configuration reference">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#authentication" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Authentication
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#encryption" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Encryption
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#keep-alive" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Keep-alive
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#delivery-status-notifications" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Delivery Status Notifications
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#testing-without-a-real-server" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Testing without a real server
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#security" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Security
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Next steps
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -549,10 +397,37 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../ses-mailer/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The SES Mailer
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -568,6 +443,153 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installing-the-sdk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installing the SDK
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-a-mailer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuring a mailer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring a mailer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration reference
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#credentials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Credentials
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simple-vs-raw-content" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simple vs. raw content
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tagging-messages-with-metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tagging messages with metadata
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-sets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration sets
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-without-calling-aws" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing without calling AWS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error handling
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -815,10 +837,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#configuring-an-smtp-mailer" class="md-nav__link">
+  <a href="#installing-the-sdk" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuring an SMTP mailer
+        Installing the SDK
       
     </span>
   </a>
@@ -826,33 +848,22 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#configuring-a-mailer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuring a mailer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring a mailer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#configuration-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
         Configuration reference
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Configuration reference">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#authentication" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Authentication
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#encryption" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Encryption
       
     </span>
   </a>
@@ -865,10 +876,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#keep-alive" class="md-nav__link">
+  <a href="#credentials" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Keep-alive
+        Credentials
       
     </span>
   </a>
@@ -876,10 +887,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#delivery-status-notifications" class="md-nav__link">
+  <a href="#simple-vs-raw-content" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Delivery Status Notifications
+        Simple vs. raw content
       
     </span>
   </a>
@@ -887,10 +898,43 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#testing-without-a-real-server" class="md-nav__link">
+  <a href="#tagging-messages-with-metadata" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Testing without a real server
+        Tagging messages with metadata
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-sets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration sets
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-without-calling-aws" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing without calling AWS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error handling
       
     </span>
   </a>
@@ -936,7 +980,7 @@
 
 
   
-    <a href="https://github.com/lonnieezell/postal/edit/main/docs/smtp-mailer.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/lonnieezell/postal/edit/main/docs/ses-mailer.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -944,38 +988,39 @@
   
 
 
-<h1 id="the-smtp-mailer">The SMTP Mailer</h1>
-<p>When it's time to send real email, the <code>smtp</code> transport speaks SMTP directly to your mail server. It handles the full conversation — EHLO, authentication, the envelope, and the message body — and supports STARTTLS, implicit SSL/TLS, every common auth method, and connection reuse across a batch.</p>
-<h2 id="configuring-an-smtp-mailer">Configuring an SMTP mailer</h2>
-<p>Transports are wired through configuration, not code. Add a named mailer to your <code>Config\Email</code> and point it at the <code>smtp</code> transport, then give it your server's settings:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="x">public array $mailers = [</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="x">    &#39;smtp&#39; =&gt; [</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="x">        &#39;transport&#39;  =&gt; &#39;smtp&#39;,</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="x">        &#39;host&#39;       =&gt; &#39;smtp.example.com&#39;,</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="x">        &#39;port&#39;       =&gt; 587,</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="x">        &#39;username&#39;   =&gt; &#39;postmaster@example.com&#39;,</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="x">        &#39;password&#39;   =&gt; &#39;s3cret&#39;,</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="x">        &#39;authType&#39;   =&gt; &#39;login&#39;,</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="x">        &#39;encryption&#39; =&gt; &#39;tls&#39;,</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="x">        &#39;timeout&#39;    =&gt; 30,</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="x">        &#39;keepAlive&#39;  =&gt; false,</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="x">    ],</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="x">];</span>
+<h1 id="the-ses-mailer">The SES Mailer</h1>
+<p>When you send through Amazon Simple Email Service, you're talking to an HTTP API rather than an SMTP server. Postal's <code>ses</code> transport delivers through the official <a href="https://github.com/aws/aws-sdk-php"><code>aws/aws-sdk-php</code></a> SesV2 client, which signs every request with AWS SigV4 and owns the HTTP connection — so there are no credentials to put on the wire and no signing for you to get right.</p>
+<p>Reach for it when you already run on AWS (or want SES's deliverability and tracking) and would rather authenticate with IAM than manage an SMTP password. For a local MTA see <a href="../sendmail-mail-mailers/">the Sendmail &amp; Mail mailers</a>; for a remote SMTP server see <a href="../smtp-mailer/">the SMTP mailer</a>.</p>
+<h2 id="installing-the-sdk">Installing the SDK</h2>
+<p>The AWS SDK is an <strong>optional</strong> dependency — Postal doesn't pull it into every install. Add it when you want the SES transport:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>composer<span class="w"> </span>require<span class="w"> </span>aws/aws-sdk-php
+</code></pre></div>
+<p>If the SES transport is used without the SDK present, it throws a <code>Myth\Postal\Exceptions\PostalException</code> telling you to install it.</p>
+<h2 id="configuring-a-mailer">Configuring a mailer</h2>
+<p>Add a named mailer that points at the <code>ses</code> transport and carries its settings:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="x">public array $mailers = [</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="x">    &#39;ses&#39; =&gt; [</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="x">        &#39;transport&#39; =&gt; &#39;ses&#39;,</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="x">        &#39;region&#39;    =&gt; &#39;us-east-1&#39;,</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="x">        &#39;key&#39;       =&gt; env(&#39;SES_KEY&#39;),</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="x">        &#39;secret&#39;    =&gt; env(&#39;SES_SECRET&#39;),</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="x">    ],</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="x">];</span>
 </code></pre></div>
 <p>Send through it by name, exactly like any other mailer:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="x">use Myth\Postal\Email;</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="x">$email = (new Email())</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="x">    -&gt;from(&#39;you@example.com&#39;, &#39;Your Name&#39;)</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="x">    -&gt;to(&#39;user@example.com&#39;)</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="x">    -&gt;subject(&#39;Welcome aboard&#39;)</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="x">    -&gt;html(&#39;&lt;p&gt;Glad to have you with us.&lt;/p&gt;&#39;);</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="x">$result = service(&#39;mailer&#39;)-&gt;mailer(&#39;smtp&#39;)-&gt;send($email);</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="x">use Myth\Postal\Email;</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="x">$email = (new Email())</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="x">    -&gt;from(&#39;you@example.com&#39;, &#39;Your Name&#39;)</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="x">    -&gt;to(&#39;user@example.com&#39;)</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="x">    -&gt;subject(&#39;Welcome aboard&#39;)</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="x">    -&gt;html(&#39;&lt;p&gt;Glad to have you with us.&lt;/p&gt;&#39;);</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="x">$result = service(&#39;mailer&#39;)-&gt;mailer(&#39;ses&#39;)-&gt;send($email);</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="x">$result-&gt;messageId; // the SES message id on success</span>
 </code></pre></div>
-<p>To make SMTP the default for every send, set <code>public string $default = 'smtp';</code> and call <code>service('mailer')-&gt;send($email)</code> with no name.</p>
-<h2 id="configuration-reference">Configuration reference</h2>
-<p>Every key in the mailer array beyond <code>transport</code> is an SMTP setting. Anything you omit falls back to a sensible default.</p>
+<h3 id="configuration-reference">Configuration reference</h3>
 <table>
 <thead>
 <tr>
@@ -986,139 +1031,117 @@
 </thead>
 <tbody>
 <tr>
-<td><code>host</code></td>
-<td><code>localhost</code></td>
-<td>The SMTP server hostname or IP.</td>
+<td><code>region</code></td>
+<td><code>us-east-1</code></td>
+<td>The AWS region your SES account sends from.</td>
 </tr>
 <tr>
-<td><code>port</code></td>
-<td><code>25</code></td>
-<td>The server port. Use <code>587</code> for STARTTLS, <code>465</code> for implicit SSL.</td>
+<td><code>key</code></td>
+<td><em>(unset)</em></td>
+<td>AWS access key id. Omit to use the default credential chain (see below).</td>
 </tr>
 <tr>
-<td><code>username</code></td>
-<td><em>(none)</em></td>
-<td>The auth username.</td>
+<td><code>secret</code></td>
+<td><em>(unset)</em></td>
+<td>AWS secret access key. Required when <code>key</code> is set.</td>
 </tr>
 <tr>
-<td><code>password</code></td>
-<td><em>(none)</em></td>
-<td>The auth password, or the OAuth2 access token for <code>xoauth2</code>.</td>
+<td><code>token</code></td>
+<td><em>(unset)</em></td>
+<td>Optional session token for temporary credentials.</td>
 </tr>
 <tr>
-<td><code>authType</code></td>
-<td><em>(none)</em></td>
-<td><code>login</code>, <code>plain</code>, or <code>xoauth2</code>. Leave unset for no authentication.</td>
+<td><code>configurationSet</code></td>
+<td><em>(unset)</em></td>
+<td>SES configuration set applied to every send (event publishing, dedicated IPs, etc.).</td>
 </tr>
 <tr>
-<td><code>encryption</code></td>
-<td><em>(none)</em></td>
-<td><code>tls</code> for a STARTTLS upgrade, <code>ssl</code> for an implicit TLS connection.</td>
-</tr>
-<tr>
-<td><code>timeout</code></td>
-<td><code>30</code></td>
-<td>Connection timeout in seconds.</td>
-</tr>
-<tr>
-<td><code>keepAlive</code></td>
+<td><code>forceRaw</code></td>
 <td><code>false</code></td>
-<td>Reuse one connection across multiple sends. See below.</td>
-</tr>
-<tr>
-<td><code>helo</code></td>
-<td><em>(system hostname)</em></td>
-<td>The hostname announced in the EHLO command. Defaults to <code>gethostname()</code>.</td>
-</tr>
-<tr>
-<td><code>dsn</code></td>
-<td><em>(none)</em></td>
-<td>Delivery Status Notification options. See below.</td>
+<td>Always send raw MIME instead of letting Postal choose (see below).</td>
 </tr>
 </tbody>
 </table>
-<h3 id="authentication">Authentication</h3>
-<p>Pick the method your provider expects with <code>authType</code>:</p>
+<h2 id="credentials">Credentials</h2>
+<p>Set <code>key</code> and <code>secret</code> explicitly, or leave them unset to let the AWS SDK resolve credentials from its <a href="https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/guide_credentials.html">default provider chain</a> — environment variables, shared credentials files, or the IAM role attached to your EC2/ECS/Lambda runtime. On AWS infrastructure, <strong>omitting <code>key</code>/<code>secret</code> and using an IAM role is the recommended setup</strong>: there are no long-lived secrets to store or rotate.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="x">&#39;ses&#39; =&gt; [</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="x">    &#39;transport&#39; =&gt; &#39;ses&#39;,</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="x">    &#39;region&#39;    =&gt; &#39;us-east-1&#39;,</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="x">    // no key/secret — credentials come from the instance role</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="x">],</span>
+</code></pre></div>
+<h2 id="simple-vs-raw-content">Simple vs. raw content</h2>
+<p>SES accepts two body shapes, and Postal picks the right one for each message:</p>
 <ul>
-<li><strong><code>login</code></strong> — the classic challenge/response exchange. The most widely supported.</li>
-<li><strong><code>plain</code></strong> — username and password sent in a single base64 token.</li>
-<li><strong><code>xoauth2</code></strong> — OAuth2 bearer tokens. Put your access token in <code>password</code> and the account in <code>username</code>.</li>
+<li><strong>Simple</strong> — structured fields (subject, HTML, text) that SES assembles into MIME. Used by default.</li>
+<li><strong>Raw</strong> — the complete MIME message Postal renders itself.</li>
 </ul>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="x">&#39;authType&#39; =&gt; &#39;xoauth2&#39;,</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="x">&#39;username&#39; =&gt; &#39;you@gmail.com&#39;,</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="x">&#39;password&#39; =&gt; $oauthAccessToken,</span>
-</code></pre></div>
-<p>Leave <code>authType</code> unset for servers that don't require authentication (a local relay, for instance).</p>
-<h3 id="encryption">Encryption</h3>
-<p>Two encryption modes, matching the two common ports:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">STARTTLS (port 587)</label><label for="__tabbed_1_2">Implicit SSL (port 465)</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<p><div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="x">&#39;port&#39;       =&gt; 587,</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="x">&#39;encryption&#39; =&gt; &#39;tls&#39;,</span>
-</code></pre></div>
-Connects in the clear, then upgrades the live connection to TLS with <code>STARTTLS</code>.</p>
-</div>
-<div class="tabbed-block">
-<p><div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="x">&#39;port&#39;       =&gt; 465,</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="x">&#39;encryption&#39; =&gt; &#39;ssl&#39;,</span>
-</code></pre></div>
-Negotiates TLS immediately, before the SMTP conversation begins.</p>
-</div>
-</div>
-</div>
-<div class="admonition tip">
-<p class="admonition-title">Port 465 is implicit TLS automatically</p>
-<p>Set <code>port =&gt; 465</code> and Postal uses implicit TLS even if you leave <code>encryption</code> unset, per <a href="https://www.rfc-editor.org/rfc/rfc8314">RFC 8314</a>. Setting <code>encryption =&gt; 'ssl'</code> is still fine — and is what forces implicit TLS on any other port.</p>
-</div>
-<h2 id="keep-alive">Keep-alive</h2>
-<p>By default each send opens a fresh connection and closes it with <code>QUIT</code>. When you're sending a batch in one request, that handshake-per-message overhead adds up. Set <code>keepAlive</code> to <code>true</code> to reuse a single connection:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="x">$mailer = service(&#39;mailer&#39;)-&gt;mailer(&#39;smtp&#39;);</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="x">foreach ($users as $user) {</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="x">    $mailer-&gt;send($welcomeFor($user));</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="x">}</span>
-</code></pre></div>
-<p>The first send connects and authenticates; each later send issues a quick <code>RSET</code> and reuses the open connection. If the server has dropped an idle connection in the meantime, the transport reconnects transparently rather than failing the send.</p>
-<div class="admonition note">
-<p class="admonition-title">One connection per mailer instance</p>
-<p>Keep-alive lives on the resolved mailer instance, which is cached per name. Grab the mailer once and reuse it for the batch, as shown above.</p>
-</div>
-<h2 id="delivery-status-notifications">Delivery Status Notifications</h2>
-<p>SMTP can ask the server to report back on delivery with <a href="https://www.rfc-editor.org/rfc/rfc3461">DSN</a>. Configure it with the <code>dsn</code> key:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="x">&#39;dsn&#39; =&gt; [</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="x">    &#39;notify&#39; =&gt; &#39;FAILURE,DELAY&#39;,</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="x">    &#39;ret&#39;    =&gt; &#39;HDRS&#39;,</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="x">    &#39;envid&#39;  =&gt; &#39;order-4821&#39;,</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="x">],</span>
-</code></pre></div>
+<p>Postal switches to <strong>raw</strong> automatically when:</p>
 <ul>
-<li><strong><code>notify</code></strong> — when to report: any of <code>SUCCESS</code>, <code>FAILURE</code>, <code>DELAY</code>, or <code>NEVER</code>.</li>
-<li><strong><code>ret</code></strong> — how much of the message to return on a bounce: <code>FULL</code> or <code>HDRS</code> (headers only).</li>
-<li><strong><code>envid</code></strong> — an envelope identifier echoed back in the notification, handy for correlation.</li>
+<li>the message carries <strong>attachments or inline images</strong> (Simple content can't represent them),</li>
+<li>the HTML body contains an <strong>auto-embeddable image</strong> — a <code>data:</code> URI or local image path that <a href="../mime-rendering/#automatic-inline-images">the renderer inlines</a> — since the resulting inline part can't ride in Simple content,</li>
+<li>the message is <strong>HTML without an explicit text body</strong> — only Postal's renderer generates the plain-text alternative that keeps HTML mail off the bare-HTML spam signal, or</li>
+<li>you set <strong><code>forceRaw =&gt; true</code></strong> (for example, when you sign messages with your own DKIM before handing them to SES).</li>
 </ul>
-<p>DSN parameters are only sent when the server advertises <code>DSN</code> support in its EHLO reply. If it doesn't, they're silently skipped — your mail still goes out.</p>
-<h2 id="testing-without-a-real-server">Testing without a real server</h2>
-<p>The transport talks through a small seam, <code>Myth\Postal\Transport\SmtpSocket</code>, rather than touching the network directly. The shipped <code>StreamSocket</code> is the real implementation that opens a TCP/TLS stream to your server.</p>
-<p>That seam exists so the SMTP conversation is fully testable. Pass your own <code>SmtpSocket</code> as the transport's second argument to drive the protocol in a unit test:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="x">use Myth\Postal\Transport\SmtpTransport;</span>
+<p>Everything else — plain text, or HTML with a matching text part — goes as Simple. You don't choose; you just build the message and Postal does the right thing.</p>
+<h2 id="tagging-messages-with-metadata">Tagging messages with metadata</h2>
+<p>Attach key/value metadata to a message with <code>Email::metadata()</code>. The SES transport maps each pair onto an SES <strong>EmailTag</strong>, which you can use for filtering CloudWatch metrics and event streams:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="x">$email-&gt;metadata(&#39;campaign&#39;, &#39;spring_2026&#39;)</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="x">      -&gt;metadata(&#39;tier&#39;, &#39;gold&#39;);</span>
+</code></pre></div>
+<p>SES restricts tag names and values to ASCII letters, digits, underscores and dashes (<code>A-Z a-z 0-9 _ -</code>), 1–256 characters each. Any pair that breaks those rules is <strong>dropped and logged at <code>debug</code></strong> rather than failing the send — so a stray space or colon in a tag never bounces an otherwise-good message. Only the offending key is logged; tag values are never written to the log.</p>
+<p>Metadata is ignored by transports that have no tagging concept (SMTP, sendmail, mail, log).</p>
+<h2 id="configuration-sets">Configuration sets</h2>
+<p>Point the mailer at an SES configuration set to apply it to every message — useful for event publishing (deliveries, bounces, complaints), dedicated IP pools, or custom tracking:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="x">&#39;ses&#39; =&gt; [</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="x">    &#39;transport&#39;        =&gt; &#39;ses&#39;,</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="x">    &#39;region&#39;           =&gt; &#39;us-east-1&#39;,</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="x">    &#39;configurationSet&#39; =&gt; &#39;transactional&#39;,</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="x">],</span>
+</code></pre></div>
+<h2 id="testing-without-calling-aws">Testing without calling AWS</h2>
+<p>The transport takes a <code>SesV2Client</code> as its second constructor argument, so you can unit-test against a mocked client with no network access. Build a client with the AWS SDK's <code>MockHandler</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="x">use Aws\MockHandler;</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="x">use Aws\Result;</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="x">use Aws\SesV2\SesV2Client;</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="x">use Myth\Postal\Transport\SesTransport;</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="x">$mock = new MockHandler();</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="x">$mock-&gt;append(new Result([&#39;MessageId&#39; =&gt; &#39;test-message-id&#39;]));</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="x">$client = new SesV2Client([</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="x">    &#39;region&#39;      =&gt; &#39;us-east-1&#39;,</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="x">    &#39;version&#39;     =&gt; &#39;latest&#39;,</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="x">    &#39;credentials&#39; =&gt; [&#39;key&#39; =&gt; &#39;test&#39;, &#39;secret&#39; =&gt; &#39;test&#39;],</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="x">    &#39;handler&#39;     =&gt; $mock,</span>
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="x">]);</span>
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>
+<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="x">$transport = new SesTransport([], $client);</span>
+<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="x">$result    = $transport-&gt;send($email);</span>
+</code></pre></div>
+<p>Append a closure instead of a <code>Result</code> to capture the parameters SES would have received, or append an <code>Aws\SesV2\Exception\SesV2Exception</code> to assert the failure path.</p>
+<h2 id="error-handling">Error handling</h2>
+<p>A rejected send never throws. An SES (or AWS) error is caught and returned as <code>SendResult::fail()</code>, carrying the AWS error message and the original exception as its raw payload:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="x">$result = service(&#39;mailer&#39;)-&gt;mailer(&#39;ses&#39;)-&gt;send($email);</span>
 <a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="x">$transport = new SmtpTransport([&#39;host&#39; =&gt; &#39;mail.test&#39;], $myFakeSocket);</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="x">if (! $result-&gt;success) {</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="x">    log_message(&#39;error&#39;, &#39;SES rejected the message: &#39; . $result-&gt;error);</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="x">}</span>
 </code></pre></div>
-<p>Postal's own suite uses a scripted double for exactly this. That double ships in the package's <code>tests/</code> directory — it's internal test plumbing, not public API, so don't rely on it from your application.</p>
 <h2 id="security">Security</h2>
-<div class="admonition danger">
-<p class="admonition-title">Handle credentials and untrusted addresses with care</p>
+<div class="admonition note">
+<p class="admonition-title">Credentials and headers</p>
 <ul>
-<li><strong>SMTP command injection is blocked.</strong> CR/LF is stripped from every command line, so an address, HELO name, or DSN value can't smuggle extra SMTP commands. Still, validate addresses at your application boundary.</li>
-<li><strong>Credentials never reach your logs.</strong> A failed <code>AUTH</code> reports against a safe label, so base64-encoded usernames and passwords stay out of exception messages and <code>SendResult</code> errors.</li>
-<li><strong>Use encryption for authenticated sends.</strong> <code>login</code> and <code>plain</code> put your credentials on the wire. Pair them with <code>encryption =&gt; 'tls'</code> or <code>'ssl'</code> so they're never sent in the clear.</li>
+<li><strong>No secrets on the wire.</strong> SigV4 signing means your secret key never leaves the SDK; prefer an IAM role over stored keys wherever you can.</li>
+<li><strong>Header injection is blocked.</strong> Simple content is sent as structured fields (never concatenated into headers), and raw content goes through the same renderer that strips CR/LF from every header. Display names with control characters are encoded, not passed through. Still, validate addresses at your application boundary.</li>
+<li><strong>Tag values stay out of the log.</strong> Dropped metadata is logged by key only, so message metadata can't leak sensitive values into your debug log.</li>
 </ul>
 </div>
 <h2 id="next-steps">Next steps</h2>
 <ul>
-<li><a href="../log-mailer/">The Log Mailer</a> — inspect messages in development without sending them</li>
-<li><a href="../mime-rendering/">MIME Rendering</a> — what the message body looks like on the wire</li>
+<li><a href="../smtp-mailer/">The SMTP Mailer</a> — authenticate to a remote server with encryption and keep-alive</li>
+<li><a href="../mime-rendering/">MIME Rendering</a> — what the raw message looks like on the wire</li>
+<li><a href="../testing/">Testing Mail</a> — assert on sent mail without hitting a provider</li>
 </ul>
 
 
@@ -1155,7 +1178,7 @@ Negotiates TLS immediately, before the SMTP conversation begins.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../log-mailer/" class="md-footer__link md-footer__link--prev" aria-label="Previous: The Log Mailer">
+          <a href="../sendmail-mail-mailers/" class="md-footer__link md-footer__link--prev" aria-label="Previous: The Sendmail &amp; Mail Mailers">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1165,20 +1188,20 @@ Negotiates TLS immediately, before the SMTP conversation begins.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                The Log Mailer
+                The Sendmail & Mail Mailers
               </div>
             </div>
           </a>
         
         
           
-          <a href="../sendmail-mail-mailers/" class="md-footer__link md-footer__link--next" aria-label="Next: The Sendmail &amp; Mail Mailers">
+          <a href="../mime-rendering/" class="md-footer__link md-footer__link--next" aria-label="Next: MIME Rendering">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                The Sendmail & Mail Mailers
+                MIME Rendering
               </div>
             </div>
             <div class="md-footer__button md-icon">
