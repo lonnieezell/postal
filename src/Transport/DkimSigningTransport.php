@@ -98,16 +98,17 @@ final readonly class DkimSigningTransport implements TransportInterface
 
         $bodyHash = base64_encode(hash('sha256', $this->canonicalizeBody($body), true));
 
-        // The signature is computed over the signed headers plus the
-        // DKIM-Signature header itself with an empty b= tag.
-        $template = $this->signatureValue($signed, $bodyHash, '');
-        $input    = $this->signingInput($headers, $signed, $template);
+        // Build the tag value once, ending in an empty "b=". The signature is
+        // computed over the signed headers plus this exact value, then appended
+        // to it — so the bytes that were signed are the bytes put on the wire
+        // (recomputing the value, and thus t=, would risk a mismatch).
+        $template  = $this->signatureValue($signed, $bodyHash);
+        $input     = $this->signingInput($headers, $signed, $template);
+        $signature = '';
 
         openssl_sign($input, $signature, $this->privateKey, OPENSSL_ALGO_SHA256);
 
-        $value = $this->signatureValue($signed, $bodyHash, base64_encode($signature));
-
-        return 'DKIM-Signature: ' . $value . self::CRLF . $message;
+        return 'DKIM-Signature: ' . $template . base64_encode($signature) . self::CRLF . $message;
     }
 
     /**
@@ -159,21 +160,20 @@ final readonly class DkimSigningTransport implements TransportInterface
     }
 
     /**
-     * Builds the DKIM-Signature tag value for the given body hash and signature
-     * (pass an empty signature to build the template that is signed).
+     * Builds the DKIM-Signature tag value through an empty "b=", ready to be
+     * signed and then have the base64 signature appended.
      *
      * @param list<string> $signed
      */
-    private function signatureValue(array $signed, string $bodyHash, string $signature): string
+    private function signatureValue(array $signed, string $bodyHash): string
     {
         return sprintf(
-            'v=1; a=rsa-sha256; c=relaxed/relaxed; d=%s; s=%s; t=%d; h=%s; bh=%s; b=%s',
+            'v=1; a=rsa-sha256; c=relaxed/relaxed; d=%s; s=%s; t=%d; h=%s; bh=%s; b=',
             $this->domain,
             $this->selector,
             time(),
             implode(':', $signed),
             $bodyHash,
-            $signature,
         );
     }
 
