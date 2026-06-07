@@ -22,6 +22,8 @@ use Myth\Postal\Exceptions\PostalException;
 use Myth\Postal\MailerManager;
 use Psr\Log\AbstractLogger;
 use Stringable;
+use Myth\Postal\Transport\DkimSigningTransport;
+use Myth\Postal\Transport\FailoverTransport;
 use Tests\Support\AlwaysFailsTransport;
 
 /**
@@ -180,6 +182,73 @@ final class MailerManagerTest extends CIUnitTestCase
         $manager->mailer();
     }
 
+    public function testWrapsRawLeafWithDkimWhenConfigured(): void
+    {
+        $config          = new EmailConfig();
+        $config->mailers = [
+            'signed' => [
+                'transport' => 'smtp',
+                'host'      => 'smtp.example.com',
+                'dkim'      => $this->dkimConfig(),
+            ],
+        ];
+        $config->default = 'signed';
+
+        $transport = $this->getPrivateProperty((new MailerManager($config))->mailer(), 'transport');
+
+        $this->assertInstanceOf(DkimSigningTransport::class, $transport);
+    }
+
+    public function testEnablingDkimOnApiTransportThrows(): void
+    {
+        $config          = new EmailConfig();
+        $config->mailers = [
+            'signed' => ['transport' => 'ses', 'dkim' => $this->dkimConfig()],
+        ];
+        $config->default = 'signed';
+
+        $manager = new MailerManager($config);
+
+        // SES signs server-side; enabling DKIM is a config error (and the check
+        // fires before SesTransport is even constructed).
+        $this->expectException(PostalException::class);
+        $manager->mailer();
+    }
+
+    public function testEnablingDkimOnMailTransportThrows(): void
+    {
+        $config          = new EmailConfig();
+        $config->mailers = [
+            'signed' => ['transport' => 'mail', 'dkim' => $this->dkimConfig()],
+        ];
+        $config->default = 'signed';
+
+        $manager = new MailerManager($config);
+
+        $this->expectException(PostalException::class);
+        $manager->mailer();
+    }
+
+    public function testFailoverChildLeafIsDkimSignedWhileCompositeStaysAgnostic(): void
+    {
+        $config          = new EmailConfig();
+        $config->mailers = [
+            'primary'  => ['transport' => 'smtp', 'host' => 'smtp.example.com', 'dkim' => $this->dkimConfig()],
+            'backup'   => ['transport' => 'null'],
+            'failover' => ['transport' => 'failover', 'chain' => ['primary', 'backup']],
+        ];
+        $config->default = 'failover';
+
+        $composite = $this->getPrivateProperty((new MailerManager($config))->mailer(), 'transport');
+
+        // The composite is not itself wrapped...
+        $this->assertInstanceOf(FailoverTransport::class, $composite);
+
+        // ...but its signing child leaf is.
+        $children = $this->getPrivateProperty($composite, 'children');
+        $this->assertInstanceOf(DkimSigningTransport::class, $children[0]);
+    }
+
     public function testUnknownMailerThrows(): void
     {
         $manager = new MailerManager(new EmailConfig());
@@ -198,5 +267,17 @@ final class MailerManagerTest extends CIUnitTestCase
 
         $this->expectException(PostalException::class);
         $manager->mailer();
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function dkimConfig(): array
+    {
+        return [
+            'domain'     => 'example.com',
+            'selector'   => 'postal',
+            'privateKey' => dirname(__DIR__) . '/_support/dkim/private.pem',
+        ];
     }
 }

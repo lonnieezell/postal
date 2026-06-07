@@ -15,7 +15,9 @@ namespace Myth\Postal;
 
 use Myth\Postal\Config\Email as EmailConfig;
 use Myth\Postal\Exceptions\PostalException;
+use Myth\Postal\Transport\DkimSigningTransport;
 use Myth\Postal\Transport\FailoverTransport;
+use Myth\Postal\Transport\RawMimeTransport;
 use Myth\Postal\Transport\TransportInterface;
 
 /**
@@ -83,14 +85,31 @@ class MailerManager
 
         // A failover mailer is a composite: build its child transports by name
         // and hand them to the FailoverTransport. Children are resolved through
-        // the same path, so each carries its own transport's settings.
+        // the same path, so each carries its own transport's settings — and its
+        // own DKIM signing — while the composite itself stays DKIM-agnostic.
         if (is_a($class, FailoverTransport::class, true)) {
             return new $class($this->resolveFailoverChildren($name));
         }
 
+        $settings = $this->config->mailers[$name];
+
+        // A leaf with "dkim" config is wrapped in a DKIM signer, but only when
+        // it delivers raw MIME. The check runs against the class (before the
+        // transport is built) so a structured-API leaf fails fast with a clear
+        // error rather than constructing a transport it can never sign through.
+        $dkim = $settings['dkim'] ?? null;
+
+        if (is_array($dkim) && $dkim !== []) {
+            if (! is_a($class, RawMimeTransport::class, true)) {
+                throw PostalException::forDkimUnsupported((string) $transportName);
+            }
+
+            return new DkimSigningTransport(new $class($settings), $dkim);
+        }
+
         // The whole mailer entry is the transport's settings; each transport
         // reads the keys it understands (host, level, …) and ignores the rest.
-        return new $class($this->config->mailers[$name]);
+        return new $class($settings);
     }
 
     /**

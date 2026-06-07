@@ -23,7 +23,7 @@ use Myth\Postal\SendResult;
  * binary is invoked with -t, so it reads the recipients from the message
  * headers itself.
  */
-final readonly class SendmailTransport implements TransportInterface
+final readonly class SendmailTransport implements RawMimeTransport
 {
     private string $path;
     private SendmailProcess $process;
@@ -40,7 +40,7 @@ final readonly class SendmailTransport implements TransportInterface
     public function send(Email $email): SendResult
     {
         $renderer = new MessageRenderer();
-        $message  = $this->withBcc($renderer->render($email), $email);
+        $message  = $this->withBcc($email->rawMessage ?? $renderer->render($email), $email);
 
         if (! $this->process->open($this->path . ' -oi' . $this->fromFlag($email) . ' -t')) {
             return SendResult::fail('Could not open the sendmail process.');
@@ -53,12 +53,29 @@ final readonly class SendmailTransport implements TransportInterface
             return SendResult::fail('Sendmail exited with status ' . $status . '.');
         }
 
-        return SendResult::ok($renderer->headers()['Message-ID'] ?? null);
+        return SendResult::ok(
+            $email->rawMessage !== null
+                ? $this->messageIdFromRaw($message)
+                : ($renderer->headers()['Message-ID'] ?? null),
+        );
     }
 
     public function ping(): bool
     {
         return is_executable($this->path);
+    }
+
+    /**
+     * Extracts the Message-ID header value from a pre-rendered raw message, or
+     * null when it carries none.
+     */
+    private function messageIdFromRaw(string $message): ?string
+    {
+        if (preg_match('/^Message-ID:[ \t]*(.+?)[ \t]*\r?$/im', $message, $m) === 1) {
+            return $m[1];
+        }
+
+        return null;
     }
 
     /**

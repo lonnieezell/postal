@@ -80,6 +80,14 @@ class Email
     public ?string $mailableClass = null;
 
     /**
+     * A pre-rendered raw MIME message to transmit verbatim instead of rendering
+     * the message at send time. Set by DkimSigningTransport so the bytes it
+     * signed are the exact bytes delivered; honored only by raw-MIME transports
+     * (see Transport\RawMimeTransport).
+     */
+    public ?string $rawMessage = null;
+
+    /**
      * When true, the renderer hard-wraps the plain-text part at $wrapChars so
      * the wrap survives delivery (unlike quoted-printable soft wrapping).
      */
