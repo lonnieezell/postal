@@ -11,26 +11,28 @@
       
       
       
+        <link rel="prev" href="../failover-mailer/">
       
-        <link rel="next" href="installation/">
+      
+        <link rel="next" href="../mime-rendering/">
       
       
         
       
       
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>Postal</title>
+        <title>DKIM Signing - Postal</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -49,7 +51,7 @@
       
     
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#postal" class="md-skip">
+        <a href="#dkim-signing" class="md-skip">
           Skip to content
         </a>
       
@@ -90,7 +92,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Postal" class="md-header__button md-logo" aria-label="Postal" data-md-component="logo">
+    <a href=".." title="Postal" class="md-header__button md-logo" aria-label="Postal" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -110,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              DKIM Signing
             
           </span>
         </div>
@@ -233,7 +235,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Postal" class="md-nav__button md-logo" aria-label="Postal" data-md-component="logo">
+    <a href=".." title="Postal" class="md-nav__button md-logo" aria-label="Postal" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -260,37 +262,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Home
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -306,48 +281,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#highlights" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Highlights
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#a-quick-taste" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        A quick taste
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -359,7 +292,7 @@
   
   
     <li class="md-nav__item">
-      <a href="installation/" class="md-nav__link">
+      <a href="../installation/" class="md-nav__link">
         
   
   
@@ -386,7 +319,7 @@
   
   
     <li class="md-nav__item">
-      <a href="log-mailer/" class="md-nav__link">
+      <a href="../log-mailer/" class="md-nav__link">
         
   
   
@@ -413,7 +346,7 @@
   
   
     <li class="md-nav__item">
-      <a href="smtp-mailer/" class="md-nav__link">
+      <a href="../smtp-mailer/" class="md-nav__link">
         
   
   
@@ -440,7 +373,7 @@
   
   
     <li class="md-nav__item">
-      <a href="sendmail-mail-mailers/" class="md-nav__link">
+      <a href="../sendmail-mail-mailers/" class="md-nav__link">
         
   
   
@@ -467,7 +400,7 @@
   
   
     <li class="md-nav__item">
-      <a href="ses-mailer/" class="md-nav__link">
+      <a href="../ses-mailer/" class="md-nav__link">
         
   
   
@@ -494,7 +427,7 @@
   
   
     <li class="md-nav__item">
-      <a href="failover-mailer/" class="md-nav__link">
+      <a href="../failover-mailer/" class="md-nav__link">
         
   
   
@@ -518,10 +451,37 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="dkim-signing/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DKIM Signing
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -537,6 +497,81 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it works
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#raw-mime-transports-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raw-MIME transports only
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#with-the-failover-mailer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        With the failover mailer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -548,7 +583,7 @@
   
   
     <li class="md-nav__item">
-      <a href="mime-rendering/" class="md-nav__link">
+      <a href="../mime-rendering/" class="md-nav__link">
         
   
   
@@ -575,7 +610,7 @@
   
   
     <li class="md-nav__item">
-      <a href="events/" class="md-nav__link">
+      <a href="../events/" class="md-nav__link">
         
   
   
@@ -602,7 +637,7 @@
   
   
     <li class="md-nav__item">
-      <a href="suppression-unsubscribe/" class="md-nav__link">
+      <a href="../suppression-unsubscribe/" class="md-nav__link">
         
   
   
@@ -629,7 +664,7 @@
   
   
     <li class="md-nav__item">
-      <a href="mailables/" class="md-nav__link">
+      <a href="../mailables/" class="md-nav__link">
         
   
   
@@ -656,7 +691,7 @@
   
   
     <li class="md-nav__item">
-      <a href="testing/" class="md-nav__link">
+      <a href="../testing/" class="md-nav__link">
         
   
   
@@ -683,7 +718,7 @@
   
   
     <li class="md-nav__item">
-      <a href="cli-commands/" class="md-nav__link">
+      <a href="../cli-commands/" class="md-nav__link">
         
   
   
@@ -710,7 +745,7 @@
   
   
     <li class="md-nav__item">
-      <a href="legacy-compatibility/" class="md-nav__link">
+      <a href="../legacy-compatibility/" class="md-nav__link">
         
   
   
@@ -737,7 +772,7 @@
   
   
     <li class="md-nav__item">
-      <a href="changelog/" class="md-nav__link">
+      <a href="../changelog/" class="md-nav__link">
         
   
   
@@ -784,10 +819,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#highlights" class="md-nav__link">
+  <a href="#configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Highlights
+        Configuration
       
     </span>
   </a>
@@ -795,10 +830,43 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#a-quick-taste" class="md-nav__link">
+  <a href="#how-it-works" class="md-nav__link">
     <span class="md-ellipsis">
       
-        A quick taste
+        How it works
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#raw-mime-transports-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raw-MIME transports only
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#with-the-failover-mailer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        With the failover mailer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next steps
       
     </span>
   </a>
@@ -822,7 +890,7 @@
 
 
   
-    <a href="https://github.com/lonnieezell/postal/edit/main/docs/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/lonnieezell/postal/edit/main/docs/dkim-signing.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -830,42 +898,92 @@
   
 
 
-<h1 id="postal">Postal</h1>
-<p>A modern, driver-based email library for CodeIgniter 4.</p>
-<p>Postal replaces CodeIgniter 4's monolithic <code>Email</code> class with a clean transport-driver
-architecture: compose a message once and send it through SMTP, Sendmail, PHP <code>mail()</code>, a log,
-or — in later phases — first-class HTTP API providers such as Amazon SES, Mailgun, Postmark,
-and Resend. It keeps the familiar CodeIgniter email API working for a painless migration, and
-it is fully testable without ever sending a real message.</p>
-<div class="admonition note">
-<p class="admonition-title">Early development</p>
-<p>Postal is in <code>0.x</code>. The API is still settling and may change before <code>1.0</code>. Phase 1 — the
-core pipeline plus the SMTP-era transports — is the current focus.</p>
-</div>
-<h2 id="highlights">Highlights</h2>
-<ul>
-<li><strong>Driver-based transports</strong> — change how mail is delivered through configuration, not code.</li>
-<li><strong>Drop-in friendly</strong> — existing <code>service('email')</code> calls keep working via a compatibility
-  adapter.</li>
-<li><strong>Zero required dependencies</strong> — PHP standard extensions only; no database, queue, or view
-  renderer needed to send mail.</li>
-<li><strong>Built for testing</strong> — a fake transport and expressive assertions verify mail in PHPUnit
-  with no network access.</li>
-<li><strong>Extensible</strong> — a clean <code>TransportInterface</code> plus optional contracts for companion
-  packages (campaigns, tracking, templates).</li>
-</ul>
-<h2 id="a-quick-taste">A quick taste</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="x">use Myth\Postal\Email;</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="x">$email = (new Email())</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="x">    -&gt;from(&#39;you@example.com&#39;, &#39;Your Name&#39;)</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="x">    -&gt;to(&#39;user@example.com&#39;)</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="x">    -&gt;subject(&#39;Welcome aboard&#39;)</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="x">    -&gt;html(&#39;&lt;p&gt;Glad to have you with us.&lt;/p&gt;&#39;);</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="x">$result = service(&#39;mailer&#39;)-&gt;send($email);</span>
+<h1 id="dkim-signing">DKIM Signing</h1>
+<p>A DKIM signature is how a receiving server knows the message really came from your domain and wasn't tampered with in transit. It's also one of the things DMARC checks before deciding whether your mail lands in the inbox or the spam folder. Postal can sign messages for you at the library level — the signature is computed as the message is sent and travels with it.</p>
+<p>You enable it by adding one <code>dkim</code> block to a mailer. The transport renders the message, signs it, and hands the signed bytes straight to delivery. There's nothing to call at send time and nothing to change in your application code.</p>
+<h2 id="configuration">Configuration</h2>
+<p>Add a <code>dkim</code> key to any SMTP or sendmail mailer. It takes three values: the <code>domain</code> you're signing as, the <code>selector</code> that names the public key in DNS, and the <code>privateKey</code> used to sign:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="x">public array $mailers = [</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="x">    &#39;primary&#39; =&gt; [</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="x">        &#39;transport&#39;  =&gt; &#39;smtp&#39;,</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="x">        &#39;host&#39;       =&gt; &#39;smtp.example.com&#39;,</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="x">        &#39;port&#39;       =&gt; 587,</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="x">        &#39;username&#39;   =&gt; env(&#39;SMTP_USER&#39;),</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="x">        &#39;password&#39;   =&gt; env(&#39;SMTP_PASS&#39;),</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="x">        &#39;dkim&#39;       =&gt; [</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="x">            &#39;domain&#39;     =&gt; &#39;example.com&#39;,</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="x">            &#39;selector&#39;   =&gt; &#39;postal&#39;,</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="x">            &#39;privateKey&#39; =&gt; WRITEPATH . &#39;keys/dkim-private.pem&#39;,</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="x">        ],</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="x">    ],</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="x">];</span>
 </code></pre></div>
-<p>Continue to <a href="installation/">Installation</a> to get started.</p>
+<p><code>privateKey</code> accepts either a path to a readable PEM file (as above) or the PEM text itself — handy when the key comes from an environment variable or a secrets manager:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="x">&#39;privateKey&#39; =&gt; env(&#39;DKIM_PRIVATE_KEY&#39;),</span>
+</code></pre></div>
+<p>The matching public key lives in DNS as a <code>TXT</code> record at <code>&lt;selector&gt;._domainkey.&lt;domain&gt;</code> — for the example above, <code>postal._domainkey.example.com</code>. Until that record is published, receivers can't verify the signature, so set up DNS before you switch signing on.</p>
+<p>A <code>dkim</code> block that's missing its <code>domain</code>, <code>selector</code>, or a usable <code>privateKey</code> is a configuration error: the mailer throws a <code>PostalException</code> the first time it's resolved, rather than sending unsigned mail and hoping you notice.</p>
+<h2 id="how-it-works">How it works</h2>
+<p>When you send through a signed mailer, the transport:</p>
+<ol>
+<li>Renders the message to its raw MIME form once.</li>
+<li>Computes a <code>relaxed/relaxed</code>, <code>rsa-sha256</code> signature over the standard header set (<code>From</code>, <code>To</code>, <code>Cc</code>, <code>Subject</code>, <code>Date</code>, <code>Message-ID</code>, and the MIME headers) plus a hash of the body.</li>
+<li>Prepends the resulting <code>DKIM-Signature</code> header.</li>
+<li>Delivers those exact bytes — verbatim.</li>
+</ol>
+<p>That last point is the important one. The signature covers the precise bytes of the headers and body, so the message can't be re-rendered after signing or the signature breaks. Postal signs once and the transport transmits what was signed, which is why signing is built into the delivery path rather than bolted on as a separate step.</p>
+<div class="admonition warning">
+<p class="admonition-title">Sign last, deliver unchanged</p>
+<p>A DKIM signature is only valid for the message as it was signed. If something downstream rewrites the body — a relay that injects a footer, a mailing-list manager that adds an unsubscribe block — the signature no longer matches and verification fails. Library-level signing works precisely because Postal is the last thing to touch the message before it goes on the wire.</p>
+</div>
+<h2 id="raw-mime-transports-only">Raw-MIME transports only</h2>
+<p>DKIM signing is available on the transports that deliver raw MIME and can carry the signed bytes untouched: <strong><code>smtp</code></strong> and <strong><code>sendmail</code></strong>.</p>
+<p>It is <strong>not</strong> available on <code>ses</code>, <code>mail</code>, <code>null</code>, or <code>log</code>. Adding a <code>dkim</code> block to one of those raises a <code>PostalException</code> when the mailer is resolved:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="x">&#39;broken&#39; =&gt; [</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="x">    &#39;transport&#39; =&gt; &#39;ses&#39;,</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="x">    &#39;dkim&#39;      =&gt; [&#39;domain&#39; =&gt; &#39;example.com&#39;, &#39;selector&#39; =&gt; &#39;postal&#39;, &#39;privateKey&#39; =&gt; &#39;...&#39;],</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="x">],</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="x">// PostalException: The &quot;ses&quot; transport cannot DKIM-sign: it does not deliver</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="x">// raw MIME (such providers sign server-side). Remove the &quot;dkim&quot; config…</span>
+</code></pre></div>
+<p>This isn't a missing feature — it's the right boundary. Amazon SES and similar API providers sign outbound mail on their own infrastructure once you've set up the DKIM records in their console. Signing the message a second time in Postal would be redundant at best and conflicting at worst. Let the provider own signing for those transports, and use Postal's signing for the ones that hand raw MIME to an MTA.</p>
+<h2 id="with-the-failover-mailer">With the failover mailer</h2>
+<p>DKIM is applied <strong>per leaf</strong>. A <a href="../failover-mailer/">failover mailer</a> is just a coordinator — it never renders or delivers a message itself — so it stays signing-agnostic. Each child that needs signing carries its own <code>dkim</code> block:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="x">public array $mailers = [</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="x">    &#39;relay-a&#39; =&gt; [</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="x">        &#39;transport&#39; =&gt; &#39;smtp&#39;,</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="x">        &#39;host&#39;      =&gt; &#39;smtp-a.example.com&#39;,</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="x">        &#39;dkim&#39;      =&gt; [</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="x">            &#39;domain&#39;     =&gt; &#39;example.com&#39;,</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="x">            &#39;selector&#39;   =&gt; &#39;postal&#39;,</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="x">            &#39;privateKey&#39; =&gt; WRITEPATH . &#39;keys/dkim-private.pem&#39;,</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="x">        ],</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="x">    ],</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="x">    &#39;relay-b&#39; =&gt; [</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="x">        &#39;transport&#39; =&gt; &#39;smtp&#39;,</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="x">        &#39;host&#39;      =&gt; &#39;smtp-b.example.com&#39;,</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="x">        &#39;dkim&#39;      =&gt; [</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="x">            &#39;domain&#39;     =&gt; &#39;example.com&#39;,</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="x">            &#39;selector&#39;   =&gt; &#39;postal&#39;,</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="x">            &#39;privateKey&#39; =&gt; WRITEPATH . &#39;keys/dkim-private.pem&#39;,</span>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="x">        ],</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="x">    ],</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="x">    &#39;primary&#39; =&gt; [</span>
+<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="x">        &#39;transport&#39; =&gt; &#39;failover&#39;,</span>
+<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="x">        &#39;chain&#39;     =&gt; [&#39;relay-a&#39;, &#39;relay-b&#39;],</span>
+<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="x">    ],</span>
+<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="x">];</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Each leaf signs itself</p>
+<p>Whichever child actually delivers the message signs it on the way out, so a message that falls through from <code>relay-a</code> to <code>relay-b</code> is signed by <code>relay-b</code>. List a <code>dkim</code> block on every leaf that should send signed mail; a leaf without one sends unsigned, even inside a signed chain.</p>
+</div>
+<h2 id="next-steps">Next steps</h2>
+<ul>
+<li><a href="../smtp-mailer/">The SMTP Mailer</a> — the most common home for a <code>dkim</code> block</li>
+<li><a href="../sendmail-mail-mailers/">The Sendmail &amp; Mail Mailers</a> — sign through a local <code>sendmail</code> binary</li>
+<li><a href="../failover-mailer/">The Failover Mailer</a> — sign each leaf of a resilient chain</li>
+</ul>
 
 
 
@@ -900,15 +1018,31 @@ core pipeline plus the SMTP-era transports — is the current focus.</p>
       
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
+          
+          <a href="../failover-mailer/" class="md-footer__link md-footer__link--prev" aria-label="Previous: The Failover Mailer">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                The Failover Mailer
+              </div>
+            </div>
+          </a>
+        
         
           
-          <a href="installation/" class="md-footer__link md-footer__link--next" aria-label="Next: Installation">
+          <a href="../mime-rendering/" class="md-footer__link md-footer__link--next" aria-label="Next: MIME Rendering">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Installation
+                MIME Rendering
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -949,10 +1083,10 @@ core pipeline plus the SMTP-era transports — is the current focus.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.instant", "content.code.copy", "navigation.footer", "content.action.edit", "navigation.top", "search.suggest", "search.highlight", "search.share"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "content.code.copy", "navigation.footer", "content.action.edit", "navigation.top", "search.suggest", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
