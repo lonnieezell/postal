@@ -47,19 +47,25 @@ plugins:
   - search
 
 nav:
-  - Home: index.md
-  - Installation: installation.md
-  - The Log Mailer: log-mailer.md
-  - The SMTP Mailer: smtp-mailer.md
-  - The Sendmail & Mail Mailers: sendmail-mail-mailers.md
-  - The SES Mailer: ses-mailer.md
-  - The Failover Mailer: failover-mailer.md
-  - DKIM Signing: dkim-signing.md
-  - MIME Rendering: mime-rendering.md
-  - Events: events.md
-  - Suppression & Unsubscribe: suppression-unsubscribe.md
-  - Mailables: mailables.md
-  - Testing Mail: testing.md
-  - CLI Commands: cli-commands.md
-  - Legacy Compatibility: legacy-compatibility.md
-  - Changelog: changelog.md
+  - Getting Started:
+    - Home: index.md
+    - Quick Start: quick-start.md
+  - Sending Mail:
+    - Mailables: mailables.md
+    - Testing: testing.md
+  - Transports:
+    - SMTP: smtp-mailer.md
+    - Amazon SES: ses-mailer.md
+    - Log: log-mailer.md
+    - Sendmail & Mail: sendmail-mail-mailers.md
+    - Failover: failover-mailer.md
+  - Advanced:
+    - DKIM Signing: dkim-signing.md
+    - Suppression & Unsubscribe: suppression-unsubscribe.md
+    - Events: events.md
+    - MIME Rendering: mime-rendering.md
+  - Reference:
+    - Legacy Compatibility: legacy-compatibility.md
+    - CLI Commands: cli-commands.md
+    - Installation: installation.md
+    - Changelog: changelog.md
