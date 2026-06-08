@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use CodeIgniter\Test\CIUnitTestCase;
+use Myth\Postal\Address;
 use Myth\Postal\Email;
 use Myth\Postal\Transport\SmtpTransport;
 use Tests\Support\FakeSocket;
@@ -312,7 +313,10 @@ final class SmtpTransportTest extends CIUnitTestCase
         $socket = $this->okSocket();
 
         // A recipient address carrying CRLF must not inject a second command.
-        $email = $this->message()->to("victim@example.com>\r\nRSET\r\nMAIL FROM:<evil@example.com");
+        // Assigned via the Address value object to bypass the fluent API's
+        // entry validation and exercise the transport's own CRLF stripping.
+        $email       = $this->message();
+        $email->to[] = new Address("victim@example.com>\r\nRSET\r\nMAIL FROM:<evil@example.com");
         $this->transport($socket)->send($email);
 
         $transcript = $socket->transcript();

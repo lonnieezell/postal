@@ -46,4 +46,9 @@ class PostalException extends RuntimeException
     {
         return new self("The \"{$transport}\" transport cannot DKIM-sign: it does not deliver raw MIME (such providers sign server-side). Remove the \"dkim\" config from this mailer.");
     }
+
+    public static function forInvalidAddress(string $address): self
+    {
+        return new self("Invalid email address: \"{$address}\".");
+    }
 }

@@ -43,4 +43,25 @@ final readonly class Address
     {
         return $this->name === '' ? $this->email : "{$this->name} <{$this->email}>";
     }
+
+    /**
+     * Validates an addr-spec, converting an IDN domain to ASCII first when the
+     * intl extension is available so internationalised domains pass too.
+     */
+    public static function isValid(string $email): bool
+    {
+        if (
+            function_exists('idn_to_ascii')
+            && defined('INTL_IDNA_VARIANT_UTS46')
+            && ($atpos = strpos($email, '@')) !== false
+        ) {
+            $ascii = idn_to_ascii(substr($email, $atpos + 1), 0, INTL_IDNA_VARIANT_UTS46);
+
+            if ($ascii !== false) {
+                $email = substr($email, 0, $atpos + 1) . $ascii;
+            }
+        }
+
+        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+    }
 }

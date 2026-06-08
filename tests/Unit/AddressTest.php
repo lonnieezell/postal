@@ -65,4 +65,57 @@ final class AddressTest extends CIUnitTestCase
 
         $this->assertSame('alice@example.com', $address->toString());
     }
+
+    public function testFromStringTrimsQuotesButKeepsCommaInName(): void
+    {
+        $address = Address::fromString('"Doe, John" <john@example.com>');
+
+        $this->assertSame('john@example.com', $address->email);
+        $this->assertSame('Doe, John', $address->name);
+    }
+
+    public function testFromStringTrimsSingleQuotedName(): void
+    {
+        $address = Address::fromString("'Alice' <alice@example.com>");
+
+        $this->assertSame('alice@example.com', $address->email);
+        $this->assertSame('Alice', $address->name);
+    }
+
+    public function testFromStringParsesAngleOnlyAddress(): void
+    {
+        $address = Address::fromString('<only@example.com>');
+
+        $this->assertSame('only@example.com', $address->email);
+        $this->assertSame('', $address->name);
+    }
+
+    public function testFromStringTrimsWhitespaceAroundNameAndAddress(): void
+    {
+        $address = Address::fromString('  Bob   <  bob@example.com  >  ');
+
+        $this->assertSame('bob@example.com', $address->email);
+        $this->assertSame('Bob', $address->name);
+    }
+
+    public function testFromStringWithBracketInsideNameYieldsInvalidAddrSpec(): void
+    {
+        // An angle bracket inside the display name defeats the loose parser, so
+        // the captured addr-spec is malformed. This is safe: the address is
+        // rejected by Email's entry validation rather than silently mis-sent.
+        $address = Address::fromString('"Weird <x>" <real@example.com>');
+
+        $this->assertFalse(Address::isValid($address->email));
+    }
+
+    public function testIsValidAcceptsWellFormedAddress(): void
+    {
+        $this->assertTrue(Address::isValid('alice@example.com'));
+    }
+
+    public function testIsValidRejectsMalformedAndEmptyAddresses(): void
+    {
+        $this->assertFalse(Address::isValid('not-an-email'));
+        $this->assertFalse(Address::isValid(''));
+    }
 }

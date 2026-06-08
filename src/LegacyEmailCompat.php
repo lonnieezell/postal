@@ -181,9 +181,9 @@ trait LegacyEmailCompat
     }
 
     /**
-     * Records an attachment. Attachment rendering is not implemented yet (issue
-     * #17); a send with attachments fails with a debugger note rather than
-     * silently dropping them.
+     * Records a path-based attachment. It is translated to a native Attachment
+     * and delivered when the message is sent; an unreadable path fails the send
+     * with a debugger note rather than throwing.
      *
      * @param string      $file
      * @param string      $disposition
@@ -247,19 +247,7 @@ trait LegacyEmailCompat
 
     public function isValidEmail(string $email): bool
     {
-        if (
-            function_exists('idn_to_ascii')
-            && defined('INTL_IDNA_VARIANT_UTS46')
-            && ($atpos = strpos($email, '@')) !== false
-        ) {
-            $ascii = idn_to_ascii(substr($email, $atpos + 1), 0, INTL_IDNA_VARIANT_UTS46);
-
-            if ($ascii !== false) {
-                $email = substr($email, 0, $atpos + 1) . $ascii;
-            }
-        }
-
-        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+        return Address::isValid($email);
     }
 
     /**

@@ -58,4 +58,8 @@ The adapter maps your existing `app/Config/Email.php` onto the new mailer:
 
 ## Attachments
 
-`attach()` and `setAttachmentCID()` are present and record their inputs, but attachment rendering is not implemented yet. A send with attachments returns `false` with an explanatory note in `printDebugger()` rather than silently dropping the files. Full attachment support is tracked separately.
+`attach()` accepts a file path and the message is delivered with the file attached, just like the native service. `setAttachmentCID()` marks a previously attached file as an inline image and returns its Content-ID, so HTML bodies can reference it with a `cid:` URL.
+
+An unreadable attachment path fails the send: `send()` returns `false` with an explanatory note in `printDebugger()` rather than throwing.
+
+**Limitation:** the in-memory buffer form of CI4's `attach()` — passing raw file *contents* as the first argument together with an explicit MIME type instead of a path — is not supported. Such a value is treated as a path, found to be unreadable, and fails the send. Attach files by path instead.
