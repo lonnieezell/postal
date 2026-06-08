@@ -1212,24 +1212,26 @@ error if it failed).</p>
 <h2 id="configuration">Configuration</h2>
 <p>Transports are defined as named <strong>mailers</strong> in <code>Config\Email</code>, with a <code>$default</code> chosen per
 environment:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="x">public string $default = match (ENVIRONMENT) {</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="x">    &#39;production&#39; =&gt; &#39;ses&#39;,</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="x">    &#39;testing&#39;    =&gt; &#39;null&#39;,</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="x">    default      =&gt; &#39;log&#39;,</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="x">};</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="x">public array $mailers = [</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="x">    &#39;smtp&#39; =&gt; [</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="x">        &#39;transport&#39;  =&gt; &#39;smtp&#39;,</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="x">        &#39;host&#39;       =&gt; &#39;localhost&#39;,</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="x">        &#39;port&#39;       =&gt; 587,</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="x">        &#39;encryption&#39; =&gt; &#39;tls&#39;,</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="x">        &#39;username&#39;   =&gt; &#39;&#39;,</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="x">        &#39;password&#39;   =&gt; &#39;&#39;,</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="x">    ],</span>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="x">    &#39;log&#39;  =&gt; [&#39;transport&#39; =&gt; &#39;log&#39;],</span>
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="x">    &#39;null&#39; =&gt; [&#39;transport&#39; =&gt; &#39;null&#39;],</span>
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="x">];</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">public</span> <span class="nx">string</span> <span class="nv">$default</span> <span class="o">=</span> <span class="k">match</span> <span class="p">(</span><span class="nx">ENVIRONMENT</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="s1">&#39;production&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;ses&#39;</span><span class="p">,</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="s1">&#39;testing&#39;</span>    <span class="o">=&gt;</span> <span class="s1">&#39;null&#39;</span><span class="p">,</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="k">default</span>      <span class="o">=&gt;</span> <span class="s1">&#39;log&#39;</span><span class="p">,</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="p">};</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="k">public</span> <span class="k">array</span> <span class="nv">$mailers</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="s1">&#39;smtp&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>        <span class="s1">&#39;transport&#39;</span>  <span class="o">=&gt;</span> <span class="s1">&#39;smtp&#39;</span><span class="p">,</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>        <span class="s1">&#39;host&#39;</span>       <span class="o">=&gt;</span> <span class="s1">&#39;localhost&#39;</span><span class="p">,</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>        <span class="s1">&#39;port&#39;</span>       <span class="o">=&gt;</span> <span class="mi">587</span><span class="p">,</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>        <span class="s1">&#39;encryption&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;tls&#39;</span><span class="p">,</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>        <span class="s1">&#39;username&#39;</span>   <span class="o">=&gt;</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>        <span class="s1">&#39;password&#39;</span>   <span class="o">=&gt;</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>    <span class="p">],</span>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>    <span class="s1">&#39;log&#39;</span>  <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;transport&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;log&#39;</span><span class="p">],</span>
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>    <span class="s1">&#39;null&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;transport&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;null&#39;</span><span class="p">],</span>
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="p">];</span>
 </code></pre></div>
 <p>To override the defaults in your application, copy the config into <code>app/Config/Email.php</code> (in
 your application's namespace) and adjust the values. The full configuration reference is

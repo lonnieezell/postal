@@ -1328,10 +1328,12 @@
 
 <h1 id="mime-rendering">MIME Rendering</h1>
 <p><code>MessageRenderer</code> turns an <code>Email</code> into a complete, RFC 5322 / MIME message as a raw string. Transports that speak raw MIME — like the <a href="../log-mailer/">log mailer</a> and the SMTP-era transports — hand their message to it. You rarely call it directly, but knowing what it produces helps you reason about what actually leaves your app.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="x">use Myth\Postal\Email;</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="x">use Myth\Postal\MessageRenderer;</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="x">$mime = (new MessageRenderer())-&gt;render($email);</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">use</span> <span class="nx">Myth\Postal\Email</span><span class="p">;</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">use</span> <span class="nx">Myth\Postal\MessageRenderer</span><span class="p">;</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="nv">$mime</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nx">MessageRenderer</span><span class="p">())</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">(</span><span class="nv">$email</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="text-html-and-the-automatic-fallback">Text, HTML, and the automatic fallback</h2>
 <p>What the renderer produces depends on which bodies you set:</p>
@@ -1355,14 +1357,16 @@
 <p>If you want full control over the plain-text version, just set it yourself with <code>-&gt;text(...)</code> and the renderer uses yours verbatim.</p>
 <h2 id="attachments-and-inline-images">Attachments and inline images</h2>
 <p>Three builder methods add files to a message:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="x">$email = (new Email())</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="x">    -&gt;from(&#39;you@example.com&#39;)</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="x">    -&gt;to(&#39;user@example.com&#39;)</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="x">    -&gt;subject(&#39;Your receipt&#39;)</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="x">    -&gt;html(&#39;&lt;p&gt;Thanks! Your logo: &lt;img src=&quot;cid:logo&quot;&gt;&lt;/p&gt;&#39;)</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="x">    -&gt;attach(&#39;/path/to/receipt.pdf&#39;)                 // a file on disk</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="x">    -&gt;attachData($bytes, &#39;report.csv&#39;, &#39;text/csv&#39;)   // raw bytes in memory</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="x">    -&gt;embedImage(&#39;/path/to/logo.png&#39;, &#39;logo&#39;);       // inline image, referenced by CID</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nv">$email</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nx">Email</span><span class="p">())</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="o">-&gt;</span><span class="na">from</span><span class="p">(</span><span class="s1">&#39;you@example.com&#39;</span><span class="p">)</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="o">-&gt;</span><span class="na">to</span><span class="p">(</span><span class="s1">&#39;user@example.com&#39;</span><span class="p">)</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="o">-&gt;</span><span class="na">subject</span><span class="p">(</span><span class="s1">&#39;Your receipt&#39;</span><span class="p">)</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="o">-&gt;</span><span class="na">html</span><span class="p">(</span><span class="s1">&#39;&lt;p&gt;Thanks! Your logo: &lt;img src=&quot;cid:logo&quot;&gt;&lt;/p&gt;&#39;</span><span class="p">)</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="o">-&gt;</span><span class="na">attach</span><span class="p">(</span><span class="s1">&#39;/path/to/receipt.pdf&#39;</span><span class="p">)</span>                 <span class="c1">// a file on disk</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="o">-&gt;</span><span class="na">attachData</span><span class="p">(</span><span class="nv">$bytes</span><span class="p">,</span> <span class="s1">&#39;report.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;text/csv&#39;</span><span class="p">)</span>   <span class="c1">// raw bytes in memory</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="o">-&gt;</span><span class="na">embedImage</span><span class="p">(</span><span class="s1">&#39;/path/to/logo.png&#39;</span><span class="p">,</span> <span class="s1">&#39;logo&#39;</span><span class="p">);</span>       <span class="c1">// inline image, referenced by CID</span>
 </code></pre></div>
 <ul>
 <li><strong><code>attach($path, $name = '', $mime = '')</code></strong> — attaches a file by path. The display name defaults to the file's basename and the MIME type is detected from the file; pass <code>$name</code>/<code>$mime</code> to override either.</li>
@@ -1386,10 +1390,12 @@
 </div>
 <h3 id="automatic-inline-images">Automatic inline images</h3>
 <p>You don't have to call <code>embedImage()</code> yourself for every image. By default the renderer scans the HTML body for <code>&lt;img&gt;</code> sources, turns the embeddable ones into inline parts, and rewrites the reference to a <code>cid:</code> URL — so the images travel with the message instead of being hot-linked. Two source kinds are embedded:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="x">$email-&gt;html(&#39;</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="x">    &lt;img src=&quot;data:image/png;base64,iVBORw0KGgo...&quot;&gt;   &lt;!-- decoded in memory --&gt;</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="x">    &lt;img src=&quot;/var/www/assets/logo.png&quot;&gt;               &lt;!-- read from disk --&gt;</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="x">&#39;);</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="nv">$email</span><span class="o">-&gt;</span><span class="na">html</span><span class="p">(</span><span class="s1">&#39;</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="s1">    &lt;img src=&quot;data:image/png;base64,iVBORw0KGgo...&quot;&gt;   &lt;!-- decoded in memory --&gt;</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="s1">    &lt;img src=&quot;/var/www/assets/logo.png&quot;&gt;               &lt;!-- read from disk --&gt;</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="s1">&#39;</span><span class="p">);</span>
 </code></pre></div>
 <ul>
 <li><strong><code>data:</code> URIs</strong> with an image MIME type are decoded and embedded (many clients strip data URIs, so this also improves rendering).</li>
@@ -1397,7 +1403,9 @@
 <li><strong><code>http(s)://</code> URLs and existing <code>cid:</code> references are left untouched</strong> — remote images are never fetched, and an explicit <code>embedImage()</code> still works exactly as before.</li>
 </ul>
 <p>Identical sources are de-duplicated into a single part, and the generated <code>Content-ID</code> is content-derived. Turn the whole pass off per message when you'd rather ship the HTML verbatim:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="x">$email-&gt;autoEmbedImages = false;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nv">$email</span><span class="o">-&gt;</span><span class="na">autoEmbedImages</span> <span class="o">=</span> <span class="k">false</span><span class="p">;</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Only images are read</p>
@@ -1405,13 +1413,15 @@
 </div>
 <h2 id="headers">Headers</h2>
 <p>The renderer emits the standard envelope and structural headers — <code>From</code>, <code>To</code>, <code>Cc</code>, <code>Reply-To</code>, <code>Subject</code>, <code>Date</code>, <code>Message-ID</code>, <code>MIME-Version</code>, and the content headers — plus everything you added through the <code>Email</code> builder:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="x">$email = (new Email())</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="x">    -&gt;from(&#39;you@example.com&#39;)</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="x">    -&gt;to(&#39;user@example.com&#39;)</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="x">    -&gt;subject(&#39;Receipt&#39;)</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="x">    -&gt;header(&#39;X-Campaign&#39;, &#39;spring-2026&#39;)   // arbitrary custom header</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="x">    -&gt;returnPath(&#39;bounces@example.com&#39;)     // -&gt; Return-Path + Sender</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="x">    -&gt;priority(1);                          // -&gt; X-Priority: 1 (Highest)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nv">$email</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nx">Email</span><span class="p">())</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="o">-&gt;</span><span class="na">from</span><span class="p">(</span><span class="s1">&#39;you@example.com&#39;</span><span class="p">)</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="o">-&gt;</span><span class="na">to</span><span class="p">(</span><span class="s1">&#39;user@example.com&#39;</span><span class="p">)</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="o">-&gt;</span><span class="na">subject</span><span class="p">(</span><span class="s1">&#39;Receipt&#39;</span><span class="p">)</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="o">-&gt;</span><span class="na">header</span><span class="p">(</span><span class="s1">&#39;X-Campaign&#39;</span><span class="p">,</span> <span class="s1">&#39;spring-2026&#39;</span><span class="p">)</span>   <span class="c1">// arbitrary custom header</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    <span class="o">-&gt;</span><span class="na">returnPath</span><span class="p">(</span><span class="s1">&#39;bounces@example.com&#39;</span><span class="p">)</span>     <span class="c1">// -&gt; Return-Path + Sender</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="o">-&gt;</span><span class="na">priority</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>                          <span class="c1">// -&gt; X-Priority: 1 (Highest)</span>
 </code></pre></div>
 <ul>
 <li><strong>Custom headers</strong> from <code>-&gt;header()</code> are emitted as-is.</li>
@@ -1423,9 +1433,11 @@
 <p>A custom header can't overwrite a structural one. <code>-&gt;header('From', '...')</code> is ignored in favour of the real <code>From</code>. CR and LF are stripped from every header name and value, so untrusted input can't inject extra headers.</p>
 </div>
 <p><code>render()</code> also records the header set it produced. Call <code>headers()</code> afterward to get it back as an array — used by the message debugger:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="x">$renderer = new MessageRenderer();</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="x">$renderer-&gt;render($email);</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="x">$headers = $renderer-&gt;headers(); // [&#39;From&#39; =&gt; &#39;...&#39;, &#39;Subject&#39; =&gt; &#39;...&#39;, ...]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nv">$renderer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MessageRenderer</span><span class="p">();</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="nv">$renderer</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">(</span><span class="nv">$email</span><span class="p">);</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="nv">$headers</span> <span class="o">=</span> <span class="nv">$renderer</span><span class="o">-&gt;</span><span class="na">headers</span><span class="p">();</span> <span class="c1">// [&#39;From&#39; =&gt; &#39;...&#39;, &#39;Subject&#39; =&gt; &#39;...&#39;, ...]</span>
 </code></pre></div>
 <h2 id="encoding">Encoding</h2>
 <p>Headers with non-ASCII characters — an accented subject, a display name like <code>Café Owner</code> — are encoded with RFC 2047 "Q" encoding. The address itself stays literal; only the display name is encoded. Pure-ASCII headers are left untouched.</p>

@@ -1219,16 +1219,18 @@
 <p>No configuration changes are required: the adapter reads the flat <code>Config\Email</code> keys your app already has.</p>
 <h2 id="how-it-works">How it works</h2>
 <p><code>service('email')</code> returns a <code>Myth\Postal\LegacyEmailAdapter</code>. The adapter composes a new <code>Email</code> value object from the legacy setters and sends it through a <code>Mailer</code> built from your configured protocol. The new <code>Email</code> itself carries none of the legacy API — the compatibility layer lives entirely in the adapter.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="x">$email = service(&#39;email&#39;);</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="x">$email-&gt;setFrom(&#39;me@example.com&#39;, &#39;Me&#39;)</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="x">    -&gt;setTo(&#39;you@example.com&#39;)</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="x">    -&gt;setSubject(&#39;Hello&#39;)</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="x">    -&gt;setMessage(&#39;Plain text body&#39;);</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="x">if (! $email-&gt;send()) {</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="x">    log_message(&#39;error&#39;, $email-&gt;printDebugger([&#39;headers&#39;]));</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="x">}</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nv">$email</span> <span class="o">=</span> <span class="nx">service</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">);</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nv">$email</span><span class="o">-&gt;</span><span class="na">setFrom</span><span class="p">(</span><span class="s1">&#39;me@example.com&#39;</span><span class="p">,</span> <span class="s1">&#39;Me&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="o">-&gt;</span><span class="na">setTo</span><span class="p">(</span><span class="s1">&#39;you@example.com&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="o">-&gt;</span><span class="na">setSubject</span><span class="p">(</span><span class="s1">&#39;Hello&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="o">-&gt;</span><span class="na">setMessage</span><span class="p">(</span><span class="s1">&#39;Plain text body&#39;</span><span class="p">);</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nv">$email</span><span class="o">-&gt;</span><span class="na">send</span><span class="p">())</span> <span class="p">{</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="nx">log_message</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="nv">$email</span><span class="o">-&gt;</span><span class="na">printDebugger</span><span class="p">([</span><span class="s1">&#39;headers&#39;</span><span class="p">]));</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="p">}</span>
 </code></pre></div>
 <h2 id="supported-methods">Supported methods</h2>
 <p>The full legacy surface is available:</p>

@@ -1219,34 +1219,38 @@
 <p>It composes mailers you've already defined, so each child keeps its own transport and settings. Point it at your SES mailer first and an SMTP relay second, and a primary outage falls through to the backup without your application noticing.</p>
 <h2 id="configuration">Configuration</h2>
 <p>Define the child mailers as usual, then add a <code>failover</code> mailer that lists them by name, in priority order, under a <code>chain</code> key:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="x">public array $mailers = [</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="x">    &#39;ses&#39; =&gt; [</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="x">        &#39;transport&#39; =&gt; &#39;ses&#39;,</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="x">        &#39;region&#39;    =&gt; &#39;us-east-1&#39;,</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="x">    ],</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="x">    &#39;backup-smtp&#39; =&gt; [</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="x">        &#39;transport&#39; =&gt; &#39;smtp&#39;,</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="x">        &#39;host&#39;      =&gt; &#39;smtp.example.com&#39;,</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="x">        &#39;port&#39;      =&gt; 587,</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="x">        &#39;username&#39;  =&gt; env(&#39;SMTP_USER&#39;),</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="x">        &#39;password&#39;  =&gt; env(&#39;SMTP_PASS&#39;),</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="x">    ],</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="x">    &#39;primary&#39; =&gt; [</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="x">        &#39;transport&#39; =&gt; &#39;failover&#39;,</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="x">        &#39;chain&#39;     =&gt; [&#39;ses&#39;, &#39;backup-smtp&#39;],</span>
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="x">    ],</span>
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="x">];</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">public</span> <span class="k">array</span> <span class="nv">$mailers</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="s1">&#39;ses&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        <span class="s1">&#39;transport&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;ses&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        <span class="s1">&#39;region&#39;</span>    <span class="o">=&gt;</span> <span class="s1">&#39;us-east-1&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="p">],</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="s1">&#39;backup-smtp&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        <span class="s1">&#39;transport&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;smtp&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        <span class="s1">&#39;host&#39;</span>      <span class="o">=&gt;</span> <span class="s1">&#39;smtp.example.com&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>        <span class="s1">&#39;port&#39;</span>      <span class="o">=&gt;</span> <span class="mi">587</span><span class="p">,</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>        <span class="s1">&#39;username&#39;</span>  <span class="o">=&gt;</span> <span class="nx">env</span><span class="p">(</span><span class="s1">&#39;SMTP_USER&#39;</span><span class="p">),</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>        <span class="s1">&#39;password&#39;</span>  <span class="o">=&gt;</span> <span class="nx">env</span><span class="p">(</span><span class="s1">&#39;SMTP_PASS&#39;</span><span class="p">),</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="p">],</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="s1">&#39;primary&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>        <span class="s1">&#39;transport&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;failover&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>        <span class="s1">&#39;chain&#39;</span>     <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;ses&#39;</span><span class="p">,</span> <span class="s1">&#39;backup-smtp&#39;</span><span class="p">],</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="p">],</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="p">];</span>
 </code></pre></div>
 <p>Send through it by name, exactly like any other mailer:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="x">use Myth\Postal\Email;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="x">$email = (new Email())</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="x">    -&gt;from(&#39;you@example.com&#39;, &#39;Your Name&#39;)</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="x">    -&gt;to(&#39;user@example.com&#39;)</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="x">    -&gt;subject(&#39;Welcome aboard&#39;)</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="x">    -&gt;html(&#39;&lt;p&gt;Glad to have you with us.&lt;/p&gt;&#39;);</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="x">$result = service(&#39;mailer&#39;)-&gt;mailer(&#39;primary&#39;)-&gt;send($email);</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">use</span> <span class="nx">Myth\Postal\Email</span><span class="p">;</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="nv">$email</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nx">Email</span><span class="p">())</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="o">-&gt;</span><span class="na">from</span><span class="p">(</span><span class="s1">&#39;you@example.com&#39;</span><span class="p">,</span> <span class="s1">&#39;Your Name&#39;</span><span class="p">)</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="o">-&gt;</span><span class="na">to</span><span class="p">(</span><span class="s1">&#39;user@example.com&#39;</span><span class="p">)</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="o">-&gt;</span><span class="na">subject</span><span class="p">(</span><span class="s1">&#39;Welcome aboard&#39;</span><span class="p">)</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="o">-&gt;</span><span class="na">html</span><span class="p">(</span><span class="s1">&#39;&lt;p&gt;Glad to have you with us.&lt;/p&gt;&#39;</span><span class="p">);</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="nv">$result</span> <span class="o">=</span> <span class="nx">service</span><span class="p">(</span><span class="s1">&#39;mailer&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">mailer</span><span class="p">(</span><span class="s1">&#39;primary&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">send</span><span class="p">(</span><span class="nv">$email</span><span class="p">);</span>
 </code></pre></div>
 <p>The children are resolved by name, so each one is built with its own settings — including any decoration it would normally receive. A failover mailer is just a coordinator; it never renders or delivers a message itself.</p>
 <div class="admonition note">
@@ -1264,25 +1268,29 @@
 <p>That a thrown error is treated as just another failure is deliberate: a provider whose client blows up mid-send is exactly the case you want to fall through, not a crash that takes the whole send down.</p>
 <h2 id="when-the-whole-chain-fails">When the whole chain fails</h2>
 <p>If no child succeeds, you get a single failed <code>SendResult</code> whose error rolls up what each child reported, so you can see why every attempt fell through:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="x">$result = service(&#39;mailer&#39;)-&gt;mailer(&#39;primary&#39;)-&gt;send($email);</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="x">if (! $result-&gt;success) {</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="x">    log_message(&#39;error&#39;, $result-&gt;error);</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="x">    // e.g. &quot;All failover transports failed: ses timed out; smtp auth rejected&quot;</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="x">}</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nv">$result</span> <span class="o">=</span> <span class="nx">service</span><span class="p">(</span><span class="s1">&#39;mailer&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">mailer</span><span class="p">(</span><span class="s1">&#39;primary&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">send</span><span class="p">(</span><span class="nv">$email</span><span class="p">);</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nv">$result</span><span class="o">-&gt;</span><span class="na">success</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="nx">log_message</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="nv">$result</span><span class="o">-&gt;</span><span class="na">error</span><span class="p">);</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="c1">// e.g. &quot;All failover transports failed: ses timed out; smtp auth rejected&quot;</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">}</span>
 </code></pre></div>
 <p>A failover mailer must list at least one child. An entry with a missing or empty <code>chain</code> key is a configuration error and throws a <code>PostalException</code> the first time the mailer is resolved, rather than silently sending nothing.</p>
 <h2 id="testing">Testing</h2>
 <p>The transport composes plain <code>TransportInterface</code> instances, so in a unit test you can construct it directly with whatever children you need — including doubles that simulate a primary outage:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="x">use Myth\Postal\Transport\FailoverTransport;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="x">$failover = new FailoverTransport([</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="x">    $aTransportThatFails,    // primary is down</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="x">    $aTransportThatSucceeds, // backup takes over</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="x">]);</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="x">$result = $failover-&gt;send($email);</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="x">$this-&gt;assertTrue($result-&gt;success);</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">use</span> <span class="nx">Myth\Postal\Transport\FailoverTransport</span><span class="p">;</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="nv">$failover</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FailoverTransport</span><span class="p">([</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="nv">$aTransportThatFails</span><span class="p">,</span>    <span class="c1">// primary is down</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="nv">$aTransportThatSucceeds</span><span class="p">,</span> <span class="c1">// backup takes over</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="p">]);</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="nv">$result</span> <span class="o">=</span> <span class="nv">$failover</span><span class="o">-&gt;</span><span class="na">send</span><span class="p">(</span><span class="nv">$email</span><span class="p">);</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="nv">$result</span><span class="o">-&gt;</span><span class="na">success</span><span class="p">);</span>
 </code></pre></div>
 <p>The constructor takes only the ordered children; the failover renders and delivers nothing itself, so it needs no settings of its own.</p>
 <h2 id="next-steps">Next steps</h2>

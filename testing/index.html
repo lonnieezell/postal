@@ -1338,23 +1338,27 @@
 
 <h1 id="testing-mail">Testing Mail</h1>
 <p>Postal ships an in-memory test double so you can assert on what your application <em>would have</em> sent without ever touching a real transport or the network. Call <code>Mailer::fake()</code> at the top of a test; it swaps the bound <code>service('mailer')</code> for a recorder and hands that recorder back to you.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="x">use Myth\Postal\Mailer;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="x">$fake = Mailer::fake();</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">use</span> <span class="nx">Myth\Postal\Mailer</span><span class="p">;</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="x">// ...exercise the code under test, which sends as usual...</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="x">service(&#39;mailer&#39;)-&gt;send($email);</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="x">$fake-&gt;assertSentTo(&#39;user@example.com&#39;);</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nv">$fake</span> <span class="o">=</span> <span class="nx">Mailer</span><span class="o">::</span><span class="na">fake</span><span class="p">();</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1">// ...exercise the code under test, which sends as usual...</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="nx">service</span><span class="p">(</span><span class="s1">&#39;mailer&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">send</span><span class="p">(</span><span class="nv">$email</span><span class="p">);</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">assertSentTo</span><span class="p">(</span><span class="s1">&#39;user@example.com&#39;</span><span class="p">);</span>
 </code></pre></div>
 <p>Every mailer resolved from <code>service('mailer')</code> — the default and any named mailer — routes through the same double, so you don't need to know which mailer your code reaches for.</p>
 <h2 id="faking-sends">Faking sends</h2>
 <p><code>Mailer::fake()</code> returns a <code>FakeTransport</code>. From that point on, no message leaves your application: each send is recorded in memory and reports success, so the code under test behaves as though delivery worked.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="x">$fake = Mailer::fake();</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="x">(new WelcomeEmailService())-&gt;sendTo($user);</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nv">$fake</span> <span class="o">=</span> <span class="nx">Mailer</span><span class="o">::</span><span class="na">fake</span><span class="p">();</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="x">$fake-&gt;assertSentCount(1);</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">(</span><span class="k">new</span> <span class="nx">WelcomeEmailService</span><span class="p">())</span><span class="o">-&gt;</span><span class="na">sendTo</span><span class="p">(</span><span class="nv">$user</span><span class="p">);</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">assertSentCount</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Reset between tests</p>
@@ -1362,49 +1366,69 @@
 </div>
 <h2 id="inspecting-what-was-sent">Inspecting what was sent</h2>
 <p><code>sent()</code> returns the recorded messages as an array of <code>Email</code> objects, in the order they were sent:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="x">$messages = $fake-&gt;sent();</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="x">$this-&gt;assertSame(&#39;Welcome!&#39;, $messages[0]-&gt;subject);</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nv">$messages</span> <span class="o">=</span> <span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">sent</span><span class="p">();</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSame</span><span class="p">(</span><span class="s1">&#39;Welcome!&#39;</span><span class="p">,</span> <span class="nv">$messages</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">subject</span><span class="p">);</span>
 </code></pre></div>
 <p>Pass a content matcher — a closure that receives an <code>Email</code> and returns a bool — to filter:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="x">$welcomes = $fake-&gt;sent(static fn (Email $email): bool =&gt; $email-&gt;subject === &#39;Welcome!&#39;);</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="nv">$welcomes</span> <span class="o">=</span> <span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">sent</span><span class="p">(</span><span class="k">static</span> <span class="nx">fn</span> <span class="p">(</span><span class="nx">Email</span> <span class="nv">$email</span><span class="p">)</span><span class="o">:</span> <span class="nx">bool</span> <span class="o">=&gt;</span> <span class="nv">$email</span><span class="o">-&gt;</span><span class="na">subject</span> <span class="o">===</span> <span class="s1">&#39;Welcome!&#39;</span><span class="p">);</span>
 </code></pre></div>
 <p>If you send <a href="../mailables/">Mailables</a>, pass the class name instead to get just the messages that came from that Mailable:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="x">$welcomes = $fake-&gt;sent(WelcomeEmail::class);</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nv">$welcomes</span> <span class="o">=</span> <span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">sent</span><span class="p">(</span><span class="nx">WelcomeEmail</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="assertions">Assertions</h2>
 <p>All assertions integrate with PHPUnit, so a failure fails the test with a readable message.</p>
 <h3 id="assertsentclosure-callback"><code>assertSent(Closure $callback)</code></h3>
 <p>Passes when at least one recorded message satisfies the matcher:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="x">$fake-&gt;assertSent(static fn (Email $email): bool =&gt;</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="x">    $email-&gt;subject === &#39;Welcome!&#39;</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="x">    &amp;&amp; str_contains((string) $email-&gt;htmlBody, &#39;Thanks for joining&#39;));</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">assertSent</span><span class="p">(</span><span class="k">static</span> <span class="nx">fn</span> <span class="p">(</span><span class="nx">Email</span> <span class="nv">$email</span><span class="p">)</span><span class="o">:</span> <span class="nx">bool</span> <span class="o">=&gt;</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="nv">$email</span><span class="o">-&gt;</span><span class="na">subject</span> <span class="o">===</span> <span class="s1">&#39;Welcome!&#39;</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="o">&amp;&amp;</span> <span class="nb">str_contains</span><span class="p">((</span><span class="nx">string</span><span class="p">)</span> <span class="nv">$email</span><span class="o">-&gt;</span><span class="na">htmlBody</span><span class="p">,</span> <span class="s1">&#39;Thanks for joining&#39;</span><span class="p">));</span>
 </code></pre></div>
 <h3 id="by-mailable-class">By Mailable class</h3>
 <p>When you send a <a href="../mailables/">Mailable</a>, <code>send()</code> tags the message with its class, so you can assert on the type instead of matching content. Pass the class name to <code>assertSent()</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="x">$fake-&gt;assertSent(WelcomeEmail::class);</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">assertSent</span><span class="p">(</span><span class="nx">WelcomeEmail</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
 </code></pre></div>
 <p>Add a closure as a second argument to narrow it further — both must match:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="x">$fake-&gt;assertSent(</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="x">    WelcomeEmail::class,</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="x">    static fn (Email $email): bool =&gt; $email-&gt;subject === &#39;Welcome aboard&#39;,</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="x">);</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">assertSent</span><span class="p">(</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="nx">WelcomeEmail</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="k">static</span> <span class="nx">fn</span> <span class="p">(</span><span class="nx">Email</span> <span class="nv">$email</span><span class="p">)</span><span class="o">:</span> <span class="nx">bool</span> <span class="o">=&gt;</span> <span class="nv">$email</span><span class="o">-&gt;</span><span class="na">subject</span> <span class="o">===</span> <span class="s1">&#39;Welcome aboard&#39;</span><span class="p">,</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="p">);</span>
 </code></pre></div>
 <h3 id="assertsenttostring-email"><code>assertSentTo(string $email)</code></h3>
 <p>Passes when at least one recorded message was addressed to the given email — in any of the <code>To</code>, <code>Cc</code>, or <code>Bcc</code> buckets. The match is case-insensitive:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="x">$fake-&gt;assertSentTo(&#39;user@example.com&#39;);</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">assertSentTo</span><span class="p">(</span><span class="s1">&#39;user@example.com&#39;</span><span class="p">);</span>
 </code></pre></div>
 <h3 id="assertnotsentclosure-callback"><code>assertNotSent(Closure $callback)</code></h3>
 <p>Passes when <strong>no</strong> recorded message satisfies the matcher:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="x">$fake-&gt;assertNotSent(static fn (Email $email): bool =&gt; $email-&gt;subject === &#39;Password reset&#39;);</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">assertNotSent</span><span class="p">(</span><span class="k">static</span> <span class="nx">fn</span> <span class="p">(</span><span class="nx">Email</span> <span class="nv">$email</span><span class="p">)</span><span class="o">:</span> <span class="nx">bool</span> <span class="o">=&gt;</span> <span class="nv">$email</span><span class="o">-&gt;</span><span class="na">subject</span> <span class="o">===</span> <span class="s1">&#39;Password reset&#39;</span><span class="p">);</span>
 </code></pre></div>
 <h3 id="assertnothingsent"><code>assertNothingSent()</code></h3>
 <p>Passes when no message was recorded at all:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="x">$fake-&gt;assertNothingSent();</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">assertNothingSent</span><span class="p">();</span>
 </code></pre></div>
 <h3 id="assertsentcountint-count"><code>assertSentCount(int $count)</code></h3>
 <p>Passes when exactly the given number of messages were recorded:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="x">$fake-&gt;assertSentCount(3);</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">assertSentCount</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="next-steps">Next steps</h2>
 <ul>
