@@ -1149,26 +1149,29 @@
 <h1 id="postal">Postal</h1>
 <p>A modern, driver-based email library for CodeIgniter 4.</p>
 <p>Postal replaces CodeIgniter 4's monolithic <code>Email</code> class with a clean transport-driver
-architecture: compose a message once and send it through SMTP, Sendmail, PHP <code>mail()</code>, a log,
-or — in later phases — first-class HTTP API providers such as Amazon SES, Mailgun, Postmark,
-and Resend. It keeps the familiar CodeIgniter email API working for a painless migration, and
-it is fully testable without ever sending a real message.</p>
-<div class="admonition note">
-<p class="admonition-title">Early development</p>
-<p>Postal is in <code>0.x</code>. The API is still settling and may change before <code>1.0</code>. Phase 1 — the
-core pipeline plus the SMTP-era transports — is the current focus.</p>
-</div>
+architecture: compose a message once and send it through SMTP, Sendmail, PHP <code>mail()</code>,
+Amazon SES, or a failover chain — without changing your application code. It keeps the
+familiar CI4 email API working for a painless migration, and it's fully testable without ever
+sending a real message.</p>
 <h2 id="highlights">Highlights</h2>
 <ul>
 <li><strong>Driver-based transports</strong> — change how mail is delivered through configuration, not code.</li>
+<li><strong>Amazon SES</strong> — deliver through SesV2 with SigV4 signing; no SMTP relay required.</li>
+<li><strong>DKIM signing</strong> — sign outbound messages at the library level with a one-line config
+  addition.</li>
+<li><strong>Failover chain</strong> — wrap mailers in a priority-ordered fallback so a provider outage
+  doesn't drop mail.</li>
+<li><strong>Suppression lists &amp; unsubscribe</strong> — filter recipients before send and auto-inject
+  <code>List-Unsubscribe</code> headers.</li>
+<li><strong>Inline image embedding</strong> — local paths and <code>data:</code> URIs in HTML are automatically
+  rewritten to <code>cid:</code> attachments.</li>
+<li><strong>Mailable classes</strong> — reusable, class-based emails with browser preview in development.</li>
 <li><strong>Drop-in friendly</strong> — existing <code>service('email')</code> calls keep working via a compatibility
   adapter.</li>
 <li><strong>Zero required dependencies</strong> — PHP standard extensions only; no database, queue, or view
   renderer needed to send mail.</li>
 <li><strong>Built for testing</strong> — a fake transport and expressive assertions verify mail in PHPUnit
   with no network access.</li>
-<li><strong>Extensible</strong> — a clean <code>TransportInterface</code> plus optional contracts for companion
-  packages (campaigns, tracking, templates).</li>
 </ul>
 <h2 id="a-quick-taste">A quick taste</h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">&lt;?php</span>
