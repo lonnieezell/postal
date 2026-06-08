@@ -921,6 +921,10 @@
 <p><code>privateKey</code> accepts either a path to a readable PEM file (as above) or the PEM text itself — handy when the key comes from an environment variable or a secrets manager:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="x">&#39;privateKey&#39; =&gt; env(&#39;DKIM_PRIVATE_KEY&#39;),</span>
 </code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Protect the private key</p>
+<p>The signing key is a secret. Never paste the PEM text inline into <code>Config\Email</code> (it's committed to version control) — point <code>privateKey</code> at a key file kept <strong>outside</strong> your repository, or load the PEM from <code>.env</code>/a secrets manager via <code>env()</code>. Restrict the key file's permissions to the web user (for example <code>chmod 600</code>).</p>
+</div>
 <p>The matching public key lives in DNS as a <code>TXT</code> record at <code>&lt;selector&gt;._domainkey.&lt;domain&gt;</code> — for the example above, <code>postal._domainkey.example.com</code>. Until that record is published, receivers can't verify the signature, so set up DNS before you switch signing on.</p>
 <p>A <code>dkim</code> block that's missing its <code>domain</code>, <code>selector</code>, or a usable <code>privateKey</code> is a configuration error: the mailer throws a <code>PostalException</code> the first time it's resolved, rather than sending unsigned mail and hoping you notice.</p>
 <h2 id="how-it-works">How it works</h2>

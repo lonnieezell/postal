@@ -967,7 +967,9 @@
 <li><strong>Word wrap</strong> maps to the renderer's hard wrap (see <a href="../mime-rendering/">MIME Rendering</a>).</li>
 </ul>
 <h2 id="attachments">Attachments</h2>
-<p><code>attach()</code> and <code>setAttachmentCID()</code> are present and record their inputs, but attachment rendering is not implemented yet. A send with attachments returns <code>false</code> with an explanatory note in <code>printDebugger()</code> rather than silently dropping the files. Full attachment support is tracked separately.</p>
+<p><code>attach()</code> accepts a file path and the message is delivered with the file attached, just like the native service. <code>setAttachmentCID()</code> marks a previously attached file as an inline image and returns its Content-ID, so HTML bodies can reference it with a <code>cid:</code> URL.</p>
+<p>An unreadable attachment path fails the send: <code>send()</code> returns <code>false</code> with an explanatory note in <code>printDebugger()</code> rather than throwing.</p>
+<p><strong>Limitation:</strong> the in-memory buffer form of CI4's <code>attach()</code> — passing raw file <em>contents</em> as the first argument together with an explicit MIME type instead of a path — is not supported. Such a value is treated as a path, found to be unreadable, and fails the send. Attach files by path instead.</p>
 
 
 
