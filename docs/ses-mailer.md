@@ -19,6 +19,8 @@ If the SES transport is used without the SDK present, it throws a `Myth\Postal\E
 Add a named mailer that points at the `ses` transport and carries its settings:
 
 ```php
+<?php
+
 public array $mailers = [
     'ses' => [
         'transport' => 'ses',
@@ -32,6 +34,8 @@ public array $mailers = [
 Send through it by name, exactly like any other mailer:
 
 ```php
+<?php
+
 use Myth\Postal\Email;
 
 $email = (new Email())
@@ -61,6 +65,8 @@ $result->messageId; // the SES message id on success
 Set `key` and `secret` explicitly, or leave them unset to let the AWS SDK resolve credentials from its [default provider chain](https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/guide_credentials.html) — environment variables, shared credentials files, or the IAM role attached to your EC2/ECS/Lambda runtime. On AWS infrastructure, **omitting `key`/`secret` and using an IAM role is the recommended setup**: there are no long-lived secrets to store or rotate.
 
 ```php
+<?php
+
 'ses' => [
     'transport' => 'ses',
     'region'    => 'us-east-1',
@@ -89,6 +95,8 @@ Everything else — plain text, or HTML with a matching text part — goes as Si
 Attach key/value metadata to a message with `Email::metadata()`. The SES transport maps each pair onto an SES **EmailTag**, which you can use for filtering CloudWatch metrics and event streams:
 
 ```php
+<?php
+
 $email->metadata('campaign', 'spring_2026')
       ->metadata('tier', 'gold');
 ```
@@ -102,6 +110,8 @@ Metadata is ignored by transports that have no tagging concept (SMTP, sendmail, 
 Point the mailer at an SES configuration set to apply it to every message — useful for event publishing (deliveries, bounces, complaints), dedicated IP pools, or custom tracking:
 
 ```php
+<?php
+
 'ses' => [
     'transport'        => 'ses',
     'region'           => 'us-east-1',
@@ -114,6 +124,8 @@ Point the mailer at an SES configuration set to apply it to every message — us
 The transport takes a `SesV2Client` as its second constructor argument, so you can unit-test against a mocked client with no network access. Build a client with the AWS SDK's `MockHandler`:
 
 ```php
+<?php
+
 use Aws\MockHandler;
 use Aws\Result;
 use Aws\SesV2\SesV2Client;
@@ -140,6 +152,8 @@ Append a closure instead of a `Result` to capture the parameters SES would have 
 A rejected send never throws. An SES (or AWS) error is caught and returned as `SendResult::fail()`, carrying the AWS error message and the original exception as its raw payload:
 
 ```php
+<?php
+
 $result = service('mailer')->mailer('ses')->send($email);
 
 if (! $result->success) {

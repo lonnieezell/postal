@@ -31,6 +31,8 @@ Transports are defined as named **mailers** in `Config\Email`, with a `$default`
 environment:
 
 ```php
+<?php
+
 public string $default = match (ENVIRONMENT) {
     'production' => 'ses',
     'testing'    => 'null',

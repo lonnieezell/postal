@@ -15,6 +15,8 @@ CodeIgniter auto-discovers the package — nothing else to register.
 Create `app/Config/Email.php`:
 
 ```php
+<?php
+
 namespace Config;
 
 use Myth\Postal\Config\Email as BaseEmail;
@@ -50,6 +52,8 @@ php spark make:mailable Welcome
 That writes `app/Mails/Welcome.php`. Open it and fill in `build()`:
 
 ```php
+<?php
+
 namespace App\Mails;
 
 use Myth\Postal\Mailable;
@@ -76,6 +80,8 @@ class Welcome extends Mailable
 ## 4. Send it
 
 ```php
+<?php
+
 use App\Mails\Welcome;
 
 (new Welcome('Alice', 'alice@example.com'))->send();
@@ -86,6 +92,8 @@ Open `writable/logs/` and you'll see the subject, headers, and body exactly as t
 ## 5. Test it
 
 ```php
+<?php
+
 use Myth\Postal\Mailer;
 use App\Mails\Welcome;
 

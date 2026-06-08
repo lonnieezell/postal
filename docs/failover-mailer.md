@@ -9,6 +9,8 @@ It composes mailers you've already defined, so each child keeps its own transpor
 Define the child mailers as usual, then add a `failover` mailer that lists them by name, in priority order, under a `chain` key:
 
 ```php
+<?php
+
 public array $mailers = [
     'ses' => [
         'transport' => 'ses',
@@ -31,6 +33,8 @@ public array $mailers = [
 Send through it by name, exactly like any other mailer:
 
 ```php
+<?php
+
 use Myth\Postal\Email;
 
 $email = (new Email())
@@ -63,6 +67,8 @@ That a thrown error is treated as just another failure is deliberate: a provider
 If no child succeeds, you get a single failed `SendResult` whose error rolls up what each child reported, so you can see why every attempt fell through:
 
 ```php
+<?php
+
 $result = service('mailer')->mailer('primary')->send($email);
 
 if (! $result->success) {
@@ -78,6 +84,8 @@ A failover mailer must list at least one child. An entry with a missing or empty
 The transport composes plain `TransportInterface` instances, so in a unit test you can construct it directly with whatever children you need — including doubles that simulate a primary outage:
 
 ```php
+<?php
+
 use Myth\Postal\Transport\FailoverTransport;
 
 $failover = new FailoverTransport([

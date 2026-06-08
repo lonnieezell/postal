@@ -3,6 +3,8 @@
 `MessageRenderer` turns an `Email` into a complete, RFC 5322 / MIME message as a raw string. Transports that speak raw MIME — like the [log mailer](log-mailer.md) and the SMTP-era transports — hand their message to it. You rarely call it directly, but knowing what it produces helps you reason about what actually leaves your app.
 
 ```php
+<?php
+
 use Myth\Postal\Email;
 use Myth\Postal\MessageRenderer;
 
@@ -37,6 +39,8 @@ If you want full control over the plain-text version, just set it yourself with 
 Three builder methods add files to a message:
 
 ```php
+<?php
+
 $email = (new Email())
     ->from('you@example.com')
     ->to('user@example.com')
@@ -77,6 +81,8 @@ Path-based attachments (`attach()` and `embedImage()`) are **read from disk at r
 You don't have to call `embedImage()` yourself for every image. By default the renderer scans the HTML body for `<img>` sources, turns the embeddable ones into inline parts, and rewrites the reference to a `cid:` URL — so the images travel with the message instead of being hot-linked. Two source kinds are embedded:
 
 ```php
+<?php
+
 $email->html('
     <img src="data:image/png;base64,iVBORw0KGgo...">   <!-- decoded in memory -->
     <img src="/var/www/assets/logo.png">               <!-- read from disk -->
@@ -90,6 +96,8 @@ $email->html('
 Identical sources are de-duplicated into a single part, and the generated `Content-ID` is content-derived. Turn the whole pass off per message when you'd rather ship the HTML verbatim:
 
 ```php
+<?php
+
 $email->autoEmbedImages = false;
 ```
 
@@ -101,6 +109,8 @@ $email->autoEmbedImages = false;
 The renderer emits the standard envelope and structural headers — `From`, `To`, `Cc`, `Reply-To`, `Subject`, `Date`, `Message-ID`, `MIME-Version`, and the content headers — plus everything you added through the `Email` builder:
 
 ```php
+<?php
+
 $email = (new Email())
     ->from('you@example.com')
     ->to('user@example.com')
@@ -120,6 +130,8 @@ $email = (new Email())
 `render()` also records the header set it produced. Call `headers()` afterward to get it back as an array — used by the message debugger:
 
 ```php
+<?php
+
 $renderer = new MessageRenderer();
 $renderer->render($email);
 $headers = $renderer->headers(); // ['From' => '...', 'Subject' => '...', ...]

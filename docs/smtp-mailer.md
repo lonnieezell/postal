@@ -7,6 +7,8 @@ When it's time to send real email, the `smtp` transport speaks SMTP directly to 
 Transports are wired through configuration, not code. Add a named mailer to your `Config\Email` and point it at the `smtp` transport, then give it your server's settings:
 
 ```php
+<?php
+
 public array $mailers = [
     'smtp' => [
         'transport'  => 'smtp',
@@ -28,6 +30,8 @@ public array $mailers = [
 Send through it by name, exactly like any other mailer:
 
 ```php
+<?php
+
 use Myth\Postal\Email;
 
 $email = (new Email())
@@ -67,6 +71,8 @@ Pick the method your provider expects with `authType`:
 - **`xoauth2`** — OAuth2 bearer tokens. Put your access token in `password` and the account in `username`.
 
 ```php
+<?php
+
 'authType' => 'xoauth2',
 'username' => 'you@gmail.com',
 'password' => $oauthAccessToken,
@@ -80,6 +86,8 @@ Two encryption modes, matching the two common ports:
 
 === "STARTTLS (port 587)"
     ```php
+<?php
+
     'port'       => 587,
     'encryption' => 'tls',
     ```
@@ -87,6 +95,8 @@ Two encryption modes, matching the two common ports:
 
 === "Implicit SSL (port 465)"
     ```php
+<?php
+
     'port'       => 465,
     'encryption' => 'ssl',
     ```
@@ -100,6 +110,8 @@ Two encryption modes, matching the two common ports:
 By default each send opens a fresh connection and closes it with `QUIT`. When you're sending a batch in one request, that handshake-per-message overhead adds up. Set `keepAlive` to `true` to reuse a single connection:
 
 ```php
+<?php
+
 $mailer = service('mailer')->mailer('smtp');
 
 foreach ($users as $user) {
@@ -117,6 +129,8 @@ The first send connects and authenticates; each later send issues a quick `RSET`
 SMTP can ask the server to report back on delivery with [DSN](https://www.rfc-editor.org/rfc/rfc3461). Configure it with the `dsn` key:
 
 ```php
+<?php
+
 'dsn' => [
     'notify' => 'FAILURE,DELAY',
     'ret'    => 'HDRS',
@@ -137,6 +151,8 @@ The transport talks through a small seam, `Myth\Postal\Transport\SmtpSocket`, ra
 That seam exists so the SMTP conversation is fully testable. Pass your own `SmtpSocket` as the transport's second argument to drive the protocol in a unit test:
 
 ```php
+<?php
+
 use Myth\Postal\Transport\SmtpTransport;
 
 $transport = new SmtpTransport(['host' => 'mail.test'], $myFakeSocket);

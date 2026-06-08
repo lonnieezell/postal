@@ -27,6 +27,8 @@ it is fully testable without ever sending a real message.
 ## A quick taste
 
 ```php
+<?php
+
 use Myth\Postal\Email;
 
 $email = (new Email())
@@ -38,4 +40,4 @@ $email = (new Email())
 $result = service('mailer')->send($email);
 ```
 
-Continue to [Installation](installation.md) to get started.
+Continue to [Quick Start](quick-start.md) to get started.

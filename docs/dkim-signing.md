@@ -9,6 +9,8 @@ You enable it by adding one `dkim` block to a mailer. The transport renders the 
 Add a `dkim` key to any SMTP or sendmail mailer. It takes three values: the `domain` you're signing as, the `selector` that names the public key in DNS, and the `privateKey` used to sign:
 
 ```php
+<?php
+
 public array $mailers = [
     'primary' => [
         'transport'  => 'smtp',
@@ -28,6 +30,8 @@ public array $mailers = [
 `privateKey` accepts either a path to a readable PEM file (as above) or the PEM text itself — handy when the key comes from an environment variable or a secrets manager:
 
 ```php
+<?php
+
 'privateKey' => env('DKIM_PRIVATE_KEY'),
 ```
 
@@ -59,6 +63,8 @@ DKIM signing is available on the transports that deliver raw MIME and can carry 
 It is **not** available on `ses`, `mail`, `null`, or `log`. Adding a `dkim` block to one of those raises a `PostalException` when the mailer is resolved:
 
 ```php
+<?php
+
 'broken' => [
     'transport' => 'ses',
     'dkim'      => ['domain' => 'example.com', 'selector' => 'postal', 'privateKey' => '...'],
@@ -74,6 +80,8 @@ This isn't a missing feature — it's the right boundary. Amazon SES and similar
 DKIM is applied **per leaf**. A [failover mailer](failover-mailer.md) is just a coordinator — it never renders or delivers a message itself — so it stays signing-agnostic. Each child that needs signing carries its own `dkim` block:
 
 ```php
+<?php
+
 public array $mailers = [
     'relay-a' => [
         'transport' => 'smtp',
