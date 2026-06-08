@@ -9,6 +9,8 @@ No configuration changes are required: the adapter reads the flat `Config\Email`
 `service('email')` returns a `Myth\Postal\LegacyEmailAdapter`. The adapter composes a new `Email` value object from the legacy setters and sends it through a `Mailer` built from your configured protocol. The new `Email` itself carries none of the legacy API — the compatibility layer lives entirely in the adapter.
 
 ```php
+<?php
+
 $email = service('email');
 
 $email->setFrom('me@example.com', 'Me')

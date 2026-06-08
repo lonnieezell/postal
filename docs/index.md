@@ -27,6 +27,8 @@ it is fully testable without ever sending a real message.
 ## A quick taste
 
 ```php
+<?php
+
 use Myth\Postal\Email;
 
 $email = (new Email())

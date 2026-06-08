@@ -3,6 +3,8 @@
 A Mailable is a reusable, class-based email. Instead of building an `Email` inline every time you need to send a welcome message, you describe it once in a class and send it wherever you need it.
 
 ```php
+<?php
+
 (new WelcomeEmail($user))->send();
 ```
 
@@ -13,6 +15,8 @@ That's the whole idea: the message lives in one place, the call site stays a sin
 A Mailable extends `Myth\Postal\Mailable` and composes the message in `build()`:
 
 ```php
+<?php
+
 namespace App\Mails;
 
 use Myth\Postal\Mailable;
@@ -38,6 +42,8 @@ class WelcomeEmail extends Mailable
 Send it from anywhere:
 
 ```php
+<?php
+
 $result = (new WelcomeEmail($user))->send();
 ```
 
@@ -67,6 +73,8 @@ Each returns `$this`, so they chain.
 By default a Mailable sends through your default mailer. To route through a named mailer from `Config\Email`, call `transport()` in `build()`:
 
 ```php
+<?php
+
 protected function build(): void
 {
     $this->transport('marketing')
@@ -111,6 +119,8 @@ Either lock alone keeps previews hidden, so a stray flag can't leak mail in prod
 Create `app/Config/Postal.php` (or set the value from `.env`):
 
 ```php
+<?php
+
 namespace Config;
 
 use Myth\Postal\Config\Postal as BasePostal;
@@ -140,6 +150,8 @@ A few more knobs on `Config\Postal`:
 Add a pair to `$mailableNamespaces` for every place your Mailables live:
 
 ```php
+<?php
+
 public array $mailableNamespaces = [
     'App\Mails'           => APPPATH . 'Mails',
     'Acme\Billing\Mails'  => ROOTPATH . 'modules/Billing/Mails',
@@ -151,6 +163,8 @@ public array $mailableNamespaces = [
 The preview needs sample data to render with — a Mailable usually takes a real `User`, and there isn't one at preview time. Implement `Myth\Postal\Previewable` and return an instance built from fake data:
 
 ```php
+<?php
+
 namespace App\Mails;
 
 use Myth\Postal\Mailable;
@@ -197,6 +211,8 @@ If a Mailable throws while building its preview, it still appears in the list wi
 The preview is built on `Mailable::render()`, a public seam you can use anywhere:
 
 ```php
+<?php
+
 $email = (new WelcomeEmail($user))->render();
 
 echo $email->subject;

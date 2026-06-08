@@ -7,6 +7,8 @@ Sometimes you don't want to send real email — you just want to *see* what woul
 Postal ships a ready-to-use `log` mailer. Grab it by name and send as usual:
 
 ```php
+<?php
+
 use Myth\Postal\Email;
 
 $email = (new Email())
@@ -25,6 +27,8 @@ Nothing leaves your machine. The complete message — headers and body — lands
 To route *all* mail to the log while developing, point the `default` mailer at `log` in your `Config\Email`:
 
 ```php
+<?php
+
 public string $default = 'log';
 ```
 
@@ -35,12 +39,16 @@ Now `service('mailer')->send($email)` logs instead of sends — no per-call chan
 `LogTransport` writes at the `debug` level by default. That keeps full message dumps out of your production `info`-and-above logs. Pick a different level with the `level` key on the `log` mailer in your `Config\Email`:
 
 ```php
+<?php
+
 'log' => ['transport' => 'log', 'level' => 'info'],
 ```
 
 Or set it when you construct the transport yourself — settings come first as an array:
 
 ```php
+<?php
+
 use Myth\Postal\Transport\LogTransport;
 
 $transport = new LogTransport(['level' => 'info']);
@@ -49,6 +57,8 @@ $transport = new LogTransport(['level' => 'info']);
 By default the transport uses CodeIgniter's shared logger (`service('logger')`). Pass any PSR-3 `LoggerInterface` as the second argument — handy for directing mail to a dedicated channel or for asserting on it in tests.
 
 ```php
+<?php
+
 $transport = new LogTransport(['level' => 'debug'], $myPsr3Logger);
 ```
 

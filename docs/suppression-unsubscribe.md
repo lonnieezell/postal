@@ -35,6 +35,8 @@ class DatabaseSuppressionList implements SuppressionListInterface
 Point `$suppressionList` at your class in `app/Config/Email.php`:
 
 ```php
+<?php
+
 use App\Mail\DatabaseSuppressionList;
 
 public ?string $suppressionList = DatabaseSuppressionList::class;
@@ -47,6 +49,8 @@ That's it. `MailerManager` instantiates the class once per mailer and passes it 
 Postal calls `isSuppressed()` for every address in `to`, `cc`, and `bcc`. Addresses that return `true` are dropped silently. If every recipient is suppressed, the transport is never called and `send()` returns a cancelled result:
 
 ```php
+<?php
+
 $result = service('mailer')->send($email);
 
 if ($result->cancelled) {
@@ -60,6 +64,8 @@ if ($result->cancelled) {
 Each removed address fires an `email.suppressed` event so you can log or audit it:
 
 ```php
+<?php
+
 use CodeIgniter\Events\Events;
 use Myth\Postal\Address;
 
@@ -112,6 +118,8 @@ class TokenUnsubscribeUrl implements UnsubscribeUrlInterface
 Point `$unsubscribeUrl` at your class in `app/Config/Email.php`:
 
 ```php
+<?php
+
 use App\Mail\TokenUnsubscribeUrl;
 
 public ?string $unsubscribeUrl = TokenUnsubscribeUrl::class;
@@ -144,6 +152,8 @@ The one-click header signals to mail clients (and Gmail in particular) that a `P
 Call `listUnsubscribe()` on the message to set the header yourself. This always wins over auto-injection:
 
 ```php
+<?php
+
 $email = (new Email())
     ->from('newsletters@example.com')
     ->to('user@example.com')

@@ -11,6 +11,8 @@ The `sendmail` transport opens the configured binary and writes the complete mes
 Add a named mailer pointing at the `sendmail` transport and tell it where the binary lives:
 
 ```php
+<?php
+
 public array $mailers = [
     'sendmail' => [
         'transport' => 'sendmail',
@@ -22,6 +24,8 @@ public array $mailers = [
 Send through it by name, exactly like any other mailer:
 
 ```php
+<?php
+
 use Myth\Postal\Email;
 
 $email = (new Email())
@@ -48,12 +52,16 @@ The `mail` transport delivers through PHP's built-in `mail()`. It renders the me
 It takes no settings, so the mailer entry is just the transport name:
 
 ```php
+<?php
+
 public array $mailers = [
     'mail' => ['transport' => 'mail'],
 ];
 ```
 
 ```php
+<?php
+
 $result = service('mailer')->mailer('mail')->send($email);
 ```
 
@@ -67,6 +75,8 @@ Whether `mail()` itself reaches a real MTA is a matter of your PHP configuration
 Both transports deliver to `Bcc` recipients. Because they let the MTA fan out the envelope, the blind addresses travel as a `Bcc` header that the MTA delivers to and then strips before the message goes on the wire — so the recipients each receive their copy without ever seeing one another.
 
 ```php
+<?php
+
 $email->bcc('audit@example.com');
 ```
 
@@ -77,6 +87,8 @@ Nothing extra to configure: add blind recipients to the message and they're hand
 Both transports set the envelope sender (the bounce address) with sendmail's `-f` flag. The address is your message's return path when you set one, falling back to the `From` address otherwise:
 
 ```php
+<?php
+
 $email->from('you@example.com')
     ->returnPath('bounces@example.com'); // -f bounces@example.com
 ```
@@ -91,6 +103,8 @@ Neither transport touches the real `popen`/`mail()` machinery directly — each 
 - **Mail** calls through `Myth\Postal\Transport\MailFunction`. The shipped `NativeMailFunction` invokes `mail()`; pass your own to assert on the arguments.
 
 ```php
+<?php
+
 use Myth\Postal\Transport\MailTransport;
 use Myth\Postal\Transport\SendmailTransport;
 

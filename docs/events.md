@@ -20,6 +20,8 @@ A send fires `composing`, then `sending`, then exactly one of `sent` or `failed`
 Register a listener with CodeIgniter's `Events::on()`, usually in your app's `app/Config/Events.php`:
 
 ```php
+<?php
+
 use CodeIgniter\Events\Events;
 use Myth\Postal\Email;
 use Myth\Postal\SendResult;
@@ -35,6 +37,8 @@ Events::on('email.sent', static function (Email $message, SendResult $result): v
 The `sent` and `failed` listeners get the `SendResult` too, so you can record the provider message ID on success or the error on failure:
 
 ```php
+<?php
+
 Events::on('email.failed', static function (Email $message, SendResult $result): void {
     log_message('error', 'Mail failed: {error}', ['error' => $result->error]);
 });
@@ -45,6 +49,8 @@ Events::on('email.failed', static function (Email $message, SendResult $result):
 `composing` and `sending` listeners receive the live message object, so anything you change there goes out with the email. It's the clean place to enforce app-wide rules — add a compliance BCC, stamp a header, or set a default `from`:
 
 ```php
+<?php
+
 Events::on('email.composing', static function (Email $message): void {
     $message->bcc('archive@example.com');
     $message->header('X-App-Version', '2.4.0');
@@ -58,6 +64,8 @@ Use `composing` for broad defaults and `sending` for last-second changes — the
 Return `false` from an `email.sending` listener to abort delivery. The transport is never called, and `send()` returns a cancelled result:
 
 ```php
+<?php
+
 Events::on('email.sending', static function (Email $message): bool {
     if (str_ends_with($message->to[0]->email, '@blocked.example')) {
         return false; // stop the send
@@ -70,6 +78,8 @@ Events::on('email.sending', static function (Email $message): bool {
 The caller sees this in the result:
 
 ```php
+<?php
+
 $result = service('mailer')->send($email);
 
 if ($result->cancelled) {
@@ -85,6 +95,8 @@ if ($result->cancelled) {
 Events fire on every send by default. To silence all four, set `$fireEvents` to `false` in your `Config\Email`:
 
 ```php
+<?php
+
 public bool $fireEvents = false;
 ```
 

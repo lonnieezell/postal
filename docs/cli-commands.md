@@ -45,6 +45,8 @@ Recipient address: you@example.com
 `email:test` reads the `From` address from the framework's `Config\Email` — `fromEmail` and `fromName`. If `fromEmail` is empty, it falls back to sending from the recipient address so the message always has a valid sender.
 
 ```php
+<?php
+
 // app/Config/Email.php
 public string $fromEmail = 'postmaster@example.com';
 public string $fromName  = 'Example App';
