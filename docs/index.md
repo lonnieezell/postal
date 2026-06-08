@@ -38,4 +38,4 @@ $email = (new Email())
 $result = service('mailer')->send($email);
 ```
 
-Continue to [Installation](installation.md) to get started.
+Continue to [Quick Start](quick-start.md) to get started.
