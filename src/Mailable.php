@@ -101,7 +101,7 @@ abstract class Mailable
     }
 
     /**
-     * Selects the named mailer to send through (as configured in Config\Email).
+     * Selects the named mailer to send through (as configured in Config\Mailer).
      */
     protected function transport(string $name): static
     {

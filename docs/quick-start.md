@@ -12,16 +12,22 @@ CodeIgniter auto-discovers the package — nothing else to register.
 
 ## 2. Configure a mailer
 
-Create `app/Config/Email.php`:
+Publish the config file into your application:
+
+```bash
+php spark publish
+```
+
+Then edit `app/Config/Mailer.php`:
 
 ```php
 <?php
 
 namespace Config;
 
-use Myth\Postal\Config\Email as BaseEmail;
+use Myth\Postal\Config\Mailer as PostalMailer;
 
-class Email extends BaseEmail
+class Mailer extends PostalMailer
 {
     public string $default = 'log'; // switch to 'smtp' for production
 

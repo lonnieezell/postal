@@ -32,7 +32,7 @@ class DatabaseSuppressionList implements SuppressionListInterface
 
 ### Wiring it up
 
-Point `$suppressionList` at your class in `app/Config/Email.php`:
+Point `$suppressionList` at your class in `app/Config/Mailer.php`:
 
 ```php
 <?php
@@ -115,7 +115,7 @@ class TokenUnsubscribeUrl implements UnsubscribeUrlInterface
 
 ### Wiring it up
 
-Point `$unsubscribeUrl` at your class in `app/Config/Email.php`:
+Point `$unsubscribeUrl` at your class in `app/Config/Mailer.php`:
 
 ```php
 <?php
@@ -172,4 +172,4 @@ This is the right approach for pre-rendered bulk mail where you've already built
 ## Next steps
 
 - [Events](events.md) — listen to `email.suppressed` and the rest of the lifecycle
-- [Installation](installation.md) — wiring up `Config\Email` for your environment
+- [Installation](installation.md) — wiring up `Config\Mailer` for your environment

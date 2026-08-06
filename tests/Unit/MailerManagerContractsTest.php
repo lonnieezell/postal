@@ -15,7 +15,7 @@ namespace Tests\Unit;
 
 use CodeIgniter\Test\CIUnitTestCase;
 use Myth\Postal\Address;
-use Myth\Postal\Config\Email as EmailConfig;
+use Myth\Postal\Config\Mailer as MailerConfig;
 use Myth\Postal\Email;
 use Myth\Postal\MailerManager;
 use Myth\Postal\SendResult;
@@ -30,7 +30,7 @@ final class MailerManagerContractsTest extends CIUnitTestCase
 {
     public function testManagerInjectsSuppressionListFromConfig(): void
     {
-        $config                  = new EmailConfig();
+        $config                  = new MailerConfig();
         $config->suppressionList = SuppressAllForTest::class;
 
         $manager = new MailerManager($config);
@@ -43,7 +43,7 @@ final class MailerManagerContractsTest extends CIUnitTestCase
 
     public function testManagerInjectsUnsubscribeUrlFromConfig(): void
     {
-        $config                 = new EmailConfig();
+        $config                 = new MailerConfig();
         $config->unsubscribeUrl = UnsubscribeUrlForTest::class;
         $config->transports     = ['capturing' => CapturingTransportForTest::class];
         $config->mailers        = ['default' => ['transport' => 'capturing']];
@@ -61,7 +61,7 @@ final class MailerManagerContractsTest extends CIUnitTestCase
 
     public function testNullContractsInConfigAreIgnored(): void
     {
-        $config                  = new EmailConfig();
+        $config                  = new MailerConfig();
         $config->suppressionList = null;
         $config->unsubscribeUrl  = null;
 

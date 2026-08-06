@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Myth\Postal;
 
-use Myth\Postal\Config\Email as EmailConfig;
+use Myth\Postal\Config\Mailer as MailerConfig;
 use Myth\Postal\Exceptions\PostalException;
 use Myth\Postal\Transport\DkimSigningTransport;
 use Myth\Postal\Transport\FailoverTransport;
@@ -21,25 +21,23 @@ use Myth\Postal\Transport\RawMimeTransport;
 use Myth\Postal\Transport\TransportInterface;
 
 /**
- * Resolves named mailers from Config\Email into Mailer instances backed by
+ * Resolves named mailers from Config\Mailer into Mailer instances backed by
  * their configured transport. Resolution is lazy and cached per mailer name.
  */
 class MailerManager
 {
-    private readonly EmailConfig $config;
+    private readonly MailerConfig $config;
 
     /**
      * @var array<string, Mailer>
      */
     private array $mailers = [];
 
-    public function __construct(?EmailConfig $config = null)
+    public function __construct(?MailerConfig $config = null)
     {
-        // Resolve by FQCN, not the short name: config('Email') would resolve to
-        // the framework's Config\Email, not this package's config class. The
-        // FQCN form still honours app-level overrides via Factories.
-        // @phpstan-ignore codeigniter.factoriesClassConstFetch
-        $this->config = $config ?? config(EmailConfig::class);
+        // Resolved by short name so that an application's Config\Mailer, if one
+        // has been published, is preferred over the package's default.
+        $this->config = $config ?? config('Mailer');
     }
 
     /**

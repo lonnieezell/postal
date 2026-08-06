@@ -19,7 +19,7 @@ Sent. Message ID: <abc123@mail.example.com>
 
 ### Choosing a mailer
 
-By default the message goes through your configured default mailer. Pass `--mailer` (or its alias `--transport`) to pick a [named mailer](smtp-mailer.md) from `Config\Email`:
+By default the message goes through your configured default mailer. Pass `--mailer` (or its alias `--transport`) to pick a [named mailer](smtp-mailer.md) from `Config\Mailer`:
 
 ```bash
 php spark email:test you@example.com --mailer smtp

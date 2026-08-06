@@ -19,12 +19,12 @@ class PostalException extends RuntimeException
 {
     public static function forUnknownMailer(string $name): self
     {
-        return new self("No mailer named \"{$name}\" is defined in Config\\Email.");
+        return new self("No mailer named \"{$name}\" is defined in Config\\Mailer.");
     }
 
     public static function forUnknownTransport(string $name): self
     {
-        return new self("No transport named \"{$name}\" is mapped in Config\\Email::\$transports.");
+        return new self("No transport named \"{$name}\" is mapped in Config\\Mailer::\$transports.");
     }
 
     public static function forMissingPackage(string $package, string $transport): self

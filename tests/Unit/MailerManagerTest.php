@@ -16,7 +16,7 @@ namespace Tests\Unit;
 use CodeIgniter\Config\Services;
 use CodeIgniter\Events\Events;
 use CodeIgniter\Test\CIUnitTestCase;
-use Myth\Postal\Config\Email as EmailConfig;
+use Myth\Postal\Config\Mailer as MailerConfig;
 use Myth\Postal\Email;
 use Myth\Postal\Exceptions\PostalException;
 use Myth\Postal\MailerManager;
@@ -40,14 +40,14 @@ final class MailerManagerTest extends CIUnitTestCase
 
     public function testConfigEnablesEventsByDefault(): void
     {
-        $this->assertTrue((new EmailConfig())->fireEvents);
+        $this->assertTrue((new MailerConfig())->fireEvents);
     }
 
     public function testManagerHonoursFireEventsFalse(): void
     {
         Events::on('email.sending', static fn (): bool => false);
 
-        $config             = new EmailConfig();
+        $config             = new MailerConfig();
         $config->fireEvents = false;
 
         $manager = new MailerManager($config);
@@ -60,7 +60,7 @@ final class MailerManagerTest extends CIUnitTestCase
 
     public function testConfigShipsNullMailerAsDefault(): void
     {
-        $config = new EmailConfig();
+        $config = new MailerConfig();
 
         $this->assertSame('null', $config->default);
         $this->assertArrayHasKey('null', $config->mailers);
@@ -69,7 +69,7 @@ final class MailerManagerTest extends CIUnitTestCase
 
     public function testConfigShipsLogMailer(): void
     {
-        $config = new EmailConfig();
+        $config = new MailerConfig();
 
         $this->assertArrayHasKey('log', $config->mailers);
         $this->assertArrayHasKey('log', $config->transports);
@@ -77,12 +77,12 @@ final class MailerManagerTest extends CIUnitTestCase
 
     public function testConfigShipsSmtpTransport(): void
     {
-        $this->assertArrayHasKey('smtp', (new EmailConfig())->transports);
+        $this->assertArrayHasKey('smtp', (new MailerConfig())->transports);
     }
 
     public function testResolvesSmtpMailerFromSettings(): void
     {
-        $config          = new EmailConfig();
+        $config          = new MailerConfig();
         $config->mailers = [
             'smtp' => [
                 'transport' => 'smtp',
@@ -100,14 +100,14 @@ final class MailerManagerTest extends CIUnitTestCase
 
     public function testMailerInstancesAreCached(): void
     {
-        $manager = new MailerManager(new EmailConfig());
+        $manager = new MailerManager(new MailerConfig());
 
         $this->assertSame($manager->mailer('null'), $manager->mailer('null'));
     }
 
     public function testSendUsesDefaultMailer(): void
     {
-        $manager = new MailerManager(new EmailConfig());
+        $manager = new MailerManager(new MailerConfig());
 
         $email = (new Email())->from('me@example.com')->to('you@example.com');
 
@@ -126,7 +126,7 @@ final class MailerManagerTest extends CIUnitTestCase
         };
         Services::injectMock('logger', $logger);
 
-        $manager = new MailerManager(new EmailConfig());
+        $manager = new MailerManager(new MailerConfig());
 
         $email = (new Email())
             ->from('me@example.com')
@@ -146,12 +146,12 @@ final class MailerManagerTest extends CIUnitTestCase
 
     public function testConfigShipsFailoverTransport(): void
     {
-        $this->assertArrayHasKey('failover', (new EmailConfig())->transports);
+        $this->assertArrayHasKey('failover', (new MailerConfig())->transports);
     }
 
     public function testResolvesFailoverChildrenByName(): void
     {
-        $config          = new EmailConfig();
+        $config          = new MailerConfig();
         $config->mailers = [
             'broken'   => ['transport' => 'broken'],
             'null'     => ['transport' => 'null'],
@@ -170,7 +170,7 @@ final class MailerManagerTest extends CIUnitTestCase
 
     public function testFailoverWithoutChildrenThrows(): void
     {
-        $config          = new EmailConfig();
+        $config          = new MailerConfig();
         $config->mailers = [
             'failover' => ['transport' => 'failover'],
         ];
@@ -184,7 +184,7 @@ final class MailerManagerTest extends CIUnitTestCase
 
     public function testWrapsRawLeafWithDkimWhenConfigured(): void
     {
-        $config          = new EmailConfig();
+        $config          = new MailerConfig();
         $config->mailers = [
             'signed' => [
                 'transport' => 'smtp',
@@ -201,7 +201,7 @@ final class MailerManagerTest extends CIUnitTestCase
 
     public function testEnablingDkimOnApiTransportThrows(): void
     {
-        $config          = new EmailConfig();
+        $config          = new MailerConfig();
         $config->mailers = [
             'signed' => ['transport' => 'ses', 'dkim' => $this->dkimConfig()],
         ];
@@ -217,7 +217,7 @@ final class MailerManagerTest extends CIUnitTestCase
 
     public function testEnablingDkimOnMailTransportThrows(): void
     {
-        $config          = new EmailConfig();
+        $config          = new MailerConfig();
         $config->mailers = [
             'signed' => ['transport' => 'mail', 'dkim' => $this->dkimConfig()],
         ];
@@ -231,7 +231,7 @@ final class MailerManagerTest extends CIUnitTestCase
 
     public function testFailoverChildLeafIsDkimSignedWhileCompositeStaysAgnostic(): void
     {
-        $config          = new EmailConfig();
+        $config          = new MailerConfig();
         $config->mailers = [
             'primary'  => ['transport' => 'smtp', 'host' => 'smtp.example.com', 'dkim' => $this->dkimConfig()],
             'backup'   => ['transport' => 'null'],
@@ -251,7 +251,7 @@ final class MailerManagerTest extends CIUnitTestCase
 
     public function testUnknownMailerThrows(): void
     {
-        $manager = new MailerManager(new EmailConfig());
+        $manager = new MailerManager(new MailerConfig());
 
         $this->expectException(PostalException::class);
         $manager->mailer('does-not-exist');
@@ -259,7 +259,7 @@ final class MailerManagerTest extends CIUnitTestCase
 
     public function testUnknownTransportThrows(): void
     {
-        $config          = new EmailConfig();
+        $config          = new MailerConfig();
         $config->mailers = ['broken' => ['transport' => 'ghost']];
         $config->default = 'broken';
 

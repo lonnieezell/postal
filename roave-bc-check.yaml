@@ -1,3 +1,9 @@
 parameters:
     ignoreErrors:
         - '#\[BC\] SKIPPED: .+ could not be found in the located source#'
+
+        # Accepted break, beta: the mailer config was renamed from
+        # Myth\Postal\Config\Email to Myth\Postal\Config\Mailer so that an
+        # application's Config\Mailer can override it. See docs/adr/0001.
+        - '#\[BC\] REMOVED: Class Myth\\Postal\\Config\\Email has been deleted#'
+        - '#\[BC\] CHANGED: The parameter \$config of Myth\\Postal\\MailerManager\#\#__construct\(\) changed from \?Myth\\Postal\\Config\\Email to \?Myth\\Postal\\Config\\Mailer#'

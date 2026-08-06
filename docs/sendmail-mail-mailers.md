@@ -68,7 +68,7 @@ $result = service('mailer')->mailer('mail')->send($email);
 Whether `mail()` itself reaches a real MTA is a matter of your PHP configuration (`sendmail_path` in `php.ini`). Postal hands the message off correctly; the rest is up to your server.
 
 !!! note "Make either one the default"
-    Set `public string $default = 'sendmail';` (or `'mail'`) in your `Config\Email` to route every `service('mailer')->send($email)` call through it without naming the mailer each time.
+    Set `public string $default = 'sendmail';` (or `'mail'`) in your `Config\Mailer` to route every `service('mailer')->send($email)` call through it without naming the mailer each time.
 
 ## Blind recipients (Bcc)
 

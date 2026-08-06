@@ -165,13 +165,15 @@ $email->send();
 | Postmark             | `postmark`  | Planned   |
 | Resend               | `resend`    | Planned   |
 
-Register your own transport by adding it to the `$transports` map in `Config\Email`.
+Register your own transport by adding it to the `$transports` map in `Config\Mailer`.
 
 ---
 
 ## Configuration
 
-Transports are defined as named **mailers** in `Config\Email`, with a `$default` chosen per
+Run `php spark publish` to write `app/Config/Mailer.php` into your application — a
+`Config\Mailer` extending the package's config, which Postal resolves in preference to its
+own default. Transports are defined there as named **mailers**, with a `$default` chosen per
 environment:
 
 ```php
@@ -215,7 +217,7 @@ Postal fires events through CodeIgniter's `Events` system at each stage of the s
 | `email.suppressed` | per recipient removed by a suppression list | No          |
 
 Returning `false` from an `email.sending` listener cancels the send. Event emission can be
-disabled with `Config\Email::$fireEvents = false`.
+disabled with `Config\Mailer::$fireEvents = false`.
 
 ---
 

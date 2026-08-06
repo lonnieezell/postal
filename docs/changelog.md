@@ -2,7 +2,23 @@
 
 ## [Unreleased]
 
+### Changed
+
+- **BREAKING:** the mailer configuration class is now `Myth\Postal\Config\Mailer`
+  (was `Myth\Postal\Config\Email`), and `MailerManager` resolves it by its short
+  name. The old name collided with the framework's legacy `Config\Email`, which
+  forced resolution by fully-qualified class name — and that form never consults
+  an application subclass, so the documented override path could not work.
+  Applications that published a `Config\Email` extending the package config
+  should rename it to `Config\Mailer` and extend `Myth\Postal\Config\Mailer`.
+  The framework's own legacy `Config\Email`, used by `LegacyEmailAdapter` and
+  `spark email:test`, is unaffected. See ADR 0001.
+
 ### Added
+
+- `spark publish` writes `app/Config/Mailer.php`, a `Config\Mailer` extending
+  the package's config, which Postal then resolves in preference to its own
+  default. Re-running publish never overwrites an existing file.
 
 - Failover transport (`failover` mailer): a composite that tries an ordered list
   of child mailers (named under a `chain` key) and falls through to the next on
@@ -41,10 +57,10 @@
 - `Address` value object that parses and renders `"Name <email>"`.
 - `SendResult` with `ok()`/`fail()`/`cancelled()` factories.
 - `TransportInterface` and the `NullTransport` implementation.
-- `MailerManager` (resolves the default and named mailers from `Config\Email` via an
+- `MailerManager` (resolves the default and named mailers from `Config\Mailer` via an
   extensible transport map, lazily and cached) and a minimal `Mailer` that clones the
   message at the dispatch boundary.
-- `Config\Email` configuration and the `service('mailer')` service.
+- `Config\Mailer` configuration and the `service('mailer')` service.
 - `MessageRenderer` that serialises an `Email` into a raw RFC 5322 / MIME string:
   `text/plain`, or `multipart/alternative` whenever HTML is present (with an
   automatically generated HTML→text fallback when no text body is set). Emits
@@ -59,7 +75,7 @@
   start), `email.sending` (immediately before the transport — returning `false`
   cancels the send and yields `SendResult::cancelled()`), and `email.sent` /
   `email.failed` afterwards (each receiving the `Email` and `SendResult`). All
-  emission is gated behind `Config\Email::$fireEvents` (default `true`).
+  emission is gated behind `Config\Mailer::$fireEvents` (default `true`).
 - `SendmailTransport`/`MailTransport` and the `sendmail` and `mail` mailers,
   which hand the rendered MIME to a local MTA: `sendmail` pipes it to the
   configured binary (`path`) with `-oi -t`, and `mail` splits it across PHP's

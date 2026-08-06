@@ -27,7 +27,7 @@ error if it failed).
 
 ## Configuration
 
-Transports are defined as named **mailers** in `Config\Email`, with a `$default` chosen per
+Transports are defined as named **mailers** in `Config\Mailer`, with a `$default` chosen per
 environment:
 
 ```php
@@ -53,6 +53,18 @@ public array $mailers = [
 ];
 ```
 
-To override the defaults in your application, copy the config into `app/Config/Email.php` (in
-your application's namespace) and adjust the values. The full configuration reference is
-covered in later sections of the documentation.
+To override the defaults in your application, publish the config file:
+
+```bash
+php spark publish
+```
+
+That writes `app/Config/Mailer.php` — a `Config\Mailer` class extending the package's
+`Myth\Postal\Config\Mailer`. Redeclare only the properties you want to change; everything else
+is inherited. Postal resolves the application's copy in preference to its own, so the settings
+you put there are the ones that take effect.
+
+Publishing never overwrites an existing `app/Config/Mailer.php`, so it is safe to re-run after
+upgrading the package.
+
+The full configuration reference is covered in later sections of the documentation.

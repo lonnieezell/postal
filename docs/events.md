@@ -92,7 +92,7 @@ if ($result->cancelled) {
 
 ## Turning events off
 
-Events fire on every send by default. To silence all four, set `$fireEvents` to `false` in your `Config\Email`:
+Events fire on every send by default. To silence all four, set `$fireEvents` to `false` in your `Config\Mailer`:
 
 ```php
 <?php

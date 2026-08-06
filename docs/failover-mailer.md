@@ -49,7 +49,7 @@ $result = service('mailer')->mailer('primary')->send($email);
 The children are resolved by name, so each one is built with its own settings — including any decoration it would normally receive. A failover mailer is just a coordinator; it never renders or delivers a message itself.
 
 !!! note "Make it the default"
-    Set `public string $default = 'primary';` in your `Config\Email` to route every `service('mailer')->send($email)` call through the failover chain without naming it each time.
+    Set `public string $default = 'primary';` in your `Config\Mailer` to route every `service('mailer')->send($email)` call through the failover chain without naming it each time.
 
 ## How it works
 

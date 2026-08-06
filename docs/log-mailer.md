@@ -24,7 +24,7 @@ Nothing leaves your machine. The complete message — headers and body — lands
 
 ## Making it the default
 
-To route *all* mail to the log while developing, point the `default` mailer at `log` in your `Config\Email`:
+To route *all* mail to the log while developing, point the `default` mailer at `log` in your `Config\Mailer`:
 
 ```php
 <?php
@@ -36,7 +36,7 @@ Now `service('mailer')->send($email)` logs instead of sends — no per-call chan
 
 ## Choosing the log level
 
-`LogTransport` writes at the `debug` level by default. That keeps full message dumps out of your production `info`-and-above logs. Pick a different level with the `level` key on the `log` mailer in your `Config\Email`:
+`LogTransport` writes at the `debug` level by default. That keeps full message dumps out of your production `info`-and-above logs. Pick a different level with the `level` key on the `log` mailer in your `Config\Mailer`:
 
 ```php
 <?php

@@ -69,3 +69,5 @@ nav:
     - CLI Commands: cli-commands.md
     - Installation: installation.md
     - Changelog: changelog.md
+  - Decisions:
+    - 0001 Renaming the mailer config: adr/0001-rename-mailer-config-to-mailer.md

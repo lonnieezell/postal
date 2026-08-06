@@ -4,7 +4,7 @@ When it's time to send real email, the `smtp` transport speaks SMTP directly to 
 
 ## Configuring an SMTP mailer
 
-Transports are wired through configuration, not code. Add a named mailer to your `Config\Email` and point it at the `smtp` transport, then give it your server's settings:
+Transports are wired through configuration, not code. Add a named mailer to your `Config\Mailer` and point it at the `smtp` transport, then give it your server's settings:
 
 ```php
 <?php
@@ -25,7 +25,7 @@ public array $mailers = [
 ```
 
 !!! warning "Keep credentials out of committed config"
-    Source `username` and `password` from your environment with `env('SMTP_USER')` / `env('SMTP_PASS')` (backed by `.env`), as shown above — never hardcode them in `Config\Email`, which is committed to version control. Add the variables to `.env` (which is git-ignored) and to your deployment's secret store.
+    Source `username` and `password` from your environment with `env('SMTP_USER')` / `env('SMTP_PASS')` (backed by `.env`), as shown above — never hardcode them in `Config\Mailer`, which is committed to version control. Add the variables to `.env` (which is git-ignored) and to your deployment's secret store.
 
 Send through it by name, exactly like any other mailer:
 
@@ -163,7 +163,7 @@ Postal's own suite uses a scripted double for exactly this. That double ships in
 ## Security
 
 !!! danger "Handle credentials and untrusted addresses with care"
-    - **Source secrets from the environment.** Read `username`/`password` from `.env` via `env()` and never commit them in `Config\Email`. See the warning above.
+    - **Source secrets from the environment.** Read `username`/`password` from `.env` via `env()` and never commit them in `Config\Mailer`. See the warning above.
     - **SMTP command injection is blocked.** CR/LF is stripped from every command line, so an address, HELO name, or DSN value can't smuggle extra SMTP commands. Still, validate addresses at your application boundary.
     - **Credentials never reach your logs.** A failed `AUTH` reports against a safe label, so base64-encoded usernames and passwords stay out of exception messages and `SendResult` errors.
     - **Use encryption for authenticated sends.** `login` and `plain` put your credentials on the wire. Pair them with `encryption => 'tls'` or `'ssl'` so they're never sent in the clear.

@@ -70,7 +70,7 @@ Each returns `$this`, so they chain.
 
 ## Choosing a mailer
 
-By default a Mailable sends through your default mailer. To route through a named mailer from `Config\Email`, call `transport()` in `build()`:
+By default a Mailable sends through your default mailer. To route through a named mailer from `Config\Mailer`, call `transport()` in `build()`:
 
 ```php
 <?php

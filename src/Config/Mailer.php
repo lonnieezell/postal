@@ -27,8 +27,11 @@ use Myth\Postal\UnsubscribeUrlInterface;
 
 /**
  * Postal mailer configuration.
+ *
+ * Publish a subclass of this into your application with `php spark publish`
+ * and edit that copy: the application's version is what Postal resolves.
  */
-class Email extends BaseConfig
+class Mailer extends BaseConfig
 {
     /**
      * The name of the mailer used when none is named explicitly.

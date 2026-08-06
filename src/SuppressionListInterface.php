@@ -16,7 +16,7 @@ namespace Myth\Postal;
 /**
  * Determines whether a recipient address should be excluded from a send.
  *
- * Bind an implementation in Config\Email::$suppressionList to have the
+ * Bind an implementation in Config\Mailer::$suppressionList to have the
  * Mailer automatically remove suppressed recipients before dispatch.
  */
 interface SuppressionListInterface

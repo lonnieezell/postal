@@ -36,7 +36,7 @@ public array $mailers = [
 ```
 
 !!! warning "Protect the private key"
-    The signing key is a secret. Never paste the PEM text inline into `Config\Email` (it's committed to version control) — point `privateKey` at a key file kept **outside** your repository, or load the PEM from `.env`/a secrets manager via `env()`. Restrict the key file's permissions to the web user (for example `chmod 600`).
+    The signing key is a secret. Never paste the PEM text inline into `Config\Mailer` (it's committed to version control) — point `privateKey` at a key file kept **outside** your repository, or load the PEM from `.env`/a secrets manager via `env()`. Restrict the key file's permissions to the web user (for example `chmod 600`).
 
 The matching public key lives in DNS as a `TXT` record at `<selector>._domainkey.<domain>` — for the example above, `postal._domainkey.example.com`. Until that record is published, receivers can't verify the signature, so set up DNS before you switch signing on.
 

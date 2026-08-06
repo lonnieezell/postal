@@ -16,7 +16,7 @@ namespace Myth\Postal;
 /**
  * Generates a per-recipient unsubscribe URL for automatic List-Unsubscribe injection.
  *
- * Bind an implementation in Config\Email::$unsubscribeUrl to have the Mailer
+ * Bind an implementation in Config\Mailer::$unsubscribeUrl to have the Mailer
  * automatically inject a List-Unsubscribe header when the message has exactly
  * one To recipient and the header has not already been set explicitly.
  */
