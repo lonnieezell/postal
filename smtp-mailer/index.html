@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1103,6 +1103,88 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decisions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adr/0001-rename-mailer-config-to-mailer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0001 Renaming the mailer config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1207,7 +1289,7 @@
 <h1 id="the-smtp-mailer">The SMTP Mailer</h1>
 <p>When it's time to send real email, the <code>smtp</code> transport speaks SMTP directly to your mail server. It handles the full conversation — EHLO, authentication, the envelope, and the message body — and supports STARTTLS, implicit SSL/TLS, every common auth method, and connection reuse across a batch.</p>
 <h2 id="configuring-an-smtp-mailer">Configuring an SMTP mailer</h2>
-<p>Transports are wired through configuration, not code. Add a named mailer to your <code>Config\Email</code> and point it at the <code>smtp</code> transport, then give it your server's settings:</p>
+<p>Transports are wired through configuration, not code. Add a named mailer to your <code>Config\Mailer</code> and point it at the <code>smtp</code> transport, then give it your server's settings:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">public</span> <span class="k">array</span> <span class="nv">$mailers</span> <span class="o">=</span> <span class="p">[</span>
@@ -1226,7 +1308,7 @@
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Keep credentials out of committed config</p>
-<p>Source <code>username</code> and <code>password</code> from your environment with <code>env('SMTP_USER')</code> / <code>env('SMTP_PASS')</code> (backed by <code>.env</code>), as shown above — never hardcode them in <code>Config\Email</code>, which is committed to version control. Add the variables to <code>.env</code> (which is git-ignored) and to your deployment's secret store.</p>
+<p>Source <code>username</code> and <code>password</code> from your environment with <code>env('SMTP_USER')</code> / <code>env('SMTP_PASS')</code> (backed by <code>.env</code>), as shown above — never hardcode them in <code>Config\Mailer</code>, which is committed to version control. Add the variables to <code>.env</code> (which is git-ignored) and to your deployment's secret store.</p>
 </div>
 <p>Send through it by name, exactly like any other mailer:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cp">&lt;?php</span>
@@ -1402,7 +1484,7 @@ Postal's own suite uses a scripted double for exactly this. That double ships in
 ## Security
 
 !!! danger "Handle credentials and untrusted addresses with care"
-    - **Source secrets from the environment.** Read `username`/`password` from `.env` via `env()` and never commit them in `Config\Email`. See the warning above.
+    - **Source secrets from the environment.** Read `username`/`password` from `.env` via `env()` and never commit them in `Config\Mailer`. See the warning above.
     - **SMTP command injection is blocked.** CR/LF is stripped from every command line, so an address, HELO name, or DSN value can't smuggle extra SMTP commands. Still, validate addresses at your application boundary.
     - **Credentials never reach your logs.** A failed `AUTH` reports against a safe label, so base64-encoded usernames and passwords stay out of exception messages and `SendResult` errors.
     - **Use encryption for authenticated sends.** `login` and `plain` put your credentials on the wire. Pair them with `encryption => 'tls'` or `'ssl'` so they're never sent in the clear.
@@ -1516,7 +1598,7 @@ Postal's own suite uses a scripted double for exactly this. That double ships in
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "content.code.copy", "navigation.footer", "content.action.edit", "navigation.top", "search.suggest", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

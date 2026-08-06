@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1097,6 +1097,88 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decisions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adr/0001-rename-mailer-config-to-mailer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0001 Renaming the mailer config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1210,7 +1292,7 @@
 <p>The command runs the full send pipeline and prints the result (provider message ID, or the
 error if it failed).</p>
 <h2 id="configuration">Configuration</h2>
-<p>Transports are defined as named <strong>mailers</strong> in <code>Config\Email</code>, with a <code>$default</code> chosen per
+<p>Transports are defined as named <strong>mailers</strong> in <code>Config\Mailer</code>, with a <code>$default</code> chosen per
 environment:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
@@ -1233,9 +1315,16 @@ environment:</p>
 <a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>    <span class="s1">&#39;null&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;transport&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;null&#39;</span><span class="p">],</span>
 <a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="p">];</span>
 </code></pre></div>
-<p>To override the defaults in your application, copy the config into <code>app/Config/Email.php</code> (in
-your application's namespace) and adjust the values. The full configuration reference is
-covered in later sections of the documentation.</p>
+<p>To override the defaults in your application, publish the config file:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>php<span class="w"> </span>spark<span class="w"> </span>publish
+</code></pre></div>
+<p>That writes <code>app/Config/Mailer.php</code> — a <code>Config\Mailer</code> class extending the package's
+<code>Myth\Postal\Config\Mailer</code>. Redeclare only the properties you want to change; everything else
+is inherited. Postal resolves the application's copy in preference to its own, so the settings
+you put there are the ones that take effect.</p>
+<p>Publishing never overwrites an existing <code>app/Config/Mailer.php</code>, so it is safe to re-run after
+upgrading the package.</p>
+<p>The full configuration reference is covered in later sections of the documentation.</p>
 
 
 
@@ -1338,7 +1427,7 @@ covered in later sections of the documentation.</p>
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "content.code.copy", "navigation.footer", "content.action.edit", "navigation.top", "search.suggest", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
