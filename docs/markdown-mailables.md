@@ -2,8 +2,7 @@
 
 Instead of hand-rolling HTML for every email, you can author the body as plain CommonMark markdown. Postal converts it to HTML (and derives a plain-text fallback from the same source), drops in reusable pre-styled components for things like buttons and callout panels, and wraps the result in a shared page layout.
 
-!!! note "This page documents the building blocks"
-    `Mailable::markdown()` — the one-call helper that wires all of this into a Mailable's `build()` — is landing in an upcoming release. Until then, everything below is available directly: the `markdown()` helper, Mail Components, and `LayoutRenderer` all work standalone today.
+The quickest way in is `Mailable::markdown()`, covered in [Markdown Mailables in `build()`](#markdown-mailables-in-build) below. The rest of this page documents the pieces it's built from — the `markdown()` helper, Mail Components, and `LayoutRenderer` — which also work standalone if you need finer control.
 
 ## Converting markdown to HTML
 
@@ -134,6 +133,51 @@ $html = (new LayoutRenderer())->render((string) $rendered, 'mail/layouts/marketi
 !!! tip "The `<style>` block stays"
     CSS inlining adds `style=""` attributes for clients that need them, but it doesn't strip the original `<style>` block — clients that *do* render `<head>` styles get the benefit of both.
 
+## Markdown Mailables in `build()`
+
+`Mailable::markdown()` wires everything above into one call: it resolves and converts the view via the `markdown()` helper, wraps the HTML in the resolved Layout, runs CSS inlining, and sets both outputs on the Mailable — `html()` with the rendered HTML, `text()` with the plain-text fallback derived from the same markdown source.
+
+```php
+<?php
+
+namespace App\Mails;
+
+use Myth\Postal\Mailable;
+
+class WelcomeEmail extends Mailable
+{
+    public function __construct(private readonly User $user)
+    {
+        parent::__construct();
+    }
+
+    protected function build(): void
+    {
+        $this->from('hello@example.com', 'Acme')
+            ->to($this->user->email, $this->user->name)
+            ->subject('Welcome aboard')
+            ->markdown('emails/welcome', ['user' => $this->user]);
+    }
+}
+```
+
+From the outside, a Mailable calling `->markdown(...)` behaves exactly like one calling `->html()->text()` directly — same `Email::$htmlBody`/`$textBody`, same `Mailable::fake()`/`assertSent()` surface.
+
+Call `layout()` before `markdown()` to use a different Layout view for just that Mailable, instead of `Config\Postal::$defaultLayout`:
+
+```php
+<?php
+
+protected function build(): void
+{
+    $this->from('news@example.com')
+        ->to($this->user->email)
+        ->subject('This month at Acme')
+        ->layout('mail/layouts/marketing')
+        ->markdown('emails/newsletter', ['user' => $this->user]);
+}
+```
+
 ## Config reference
 
 | Property | Default | What it does |
@@ -144,5 +188,5 @@ $html = (new LayoutRenderer())->render((string) $rendered, 'mail/layouts/marketi
 
 ## Next steps
 
-- [Mailables](mailables.md) — the class-based email `Mailable::markdown()` will eventually plug into
+- [Mailables](mailables.md) — the class-based email `Mailable::markdown()` plugs into
 - [MIME Rendering](mime-rendering.md) — how the HTML and text bodies a Mailable produces become a wire-ready message
