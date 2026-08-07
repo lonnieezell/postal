@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Myth\Postal;
 
+use Myth\Postal\Markdown\LayoutRenderer;
+
 /**
  * A reusable, class-based email definition. Subclasses compose the message in
  * build(), which runs lazily at send time. Sending routes through the bound
@@ -27,6 +29,12 @@ abstract class Mailable
      * The named mailer to route through, or null for the default mailer.
      */
     protected ?string $mailerName = null;
+
+    /**
+     * The Layout view markdown() wraps its converted HTML in, or null to
+     * fall back to Config\Postal::$defaultLayout.
+     */
+    protected ?string $layoutView = null;
 
     public function __construct()
     {
@@ -108,5 +116,32 @@ abstract class Mailable
         $this->mailerName = $name;
 
         return $this;
+    }
+
+    /**
+     * Overrides the Layout view used by markdown() for this Mailable,
+     * instead of Config\Postal::$defaultLayout.
+     */
+    protected function layout(string $view): static
+    {
+        $this->layoutView = $view;
+
+        return $this;
+    }
+
+    /**
+     * Resolves and converts $view via the markdown() helper, wraps the
+     * resulting HTML in the resolved Layout with CSS inlined, and sets both
+     * outputs onto the Email: html() with the rendered HTML, text() with
+     * the plain-text fallback derived from the same raw markdown source.
+     *
+     * @param array<string, mixed> $data
+     */
+    protected function markdown(string $view, array $data = []): static
+    {
+        $rendered = markdown($view, $data);
+        $html     = (new LayoutRenderer())->render((string) $rendered, $this->layoutView);
+
+        return $this->html($html)->text($rendered->text());
     }
 }
