@@ -24,6 +24,45 @@ use Myth\Postal\Config\Postal as PostalConfig;
  */
 class MarkdownRenderer
 {
+    /**
+     * Per-line markdown-syntax replacements, applied before lines are
+     * rejoined: heading marker, blockquote marker(s) (including nested), and
+     * normalizing "*"/"+" list markers to "-".
+     *
+     * @var array<string, string>
+     */
+    private const LINE_REPLACEMENTS = [
+        '/^#{1,6}\s+/'      => '',
+        '/^(>\s?)+/'        => '',
+        '/^(\s*)[*+](\s+)/' => '$1-$2',
+    ];
+
+    /**
+     * Whole-text markdown-syntax replacements, applied after lines are
+     * rejoined, in order: images before links (link syntax is a substring of
+     * image syntax), emphasis longest-delimiter-first so "**" isn't consumed
+     * by the "*" pattern, code fences before inline code spans, and the
+     * blank-line collapse last.
+     *
+     * The "/s" modifier on emphasis/strikethrough lets a pair span a
+     * hand-wrapped line break; requiring a non-space on the inner edge of
+     * each delimiter keeps "3 * 4 * 5" from being read as emphasis around
+     * " 4 ".
+     *
+     * @var array<string, string>
+     */
+    private const TEXT_REPLACEMENTS = [
+        '/!\[([^\]]*)\]\([^)]*\)/'                   => '$1',
+        '/\[([^\]]*)\]\(([^)]*)\)/'                  => '$1 ($2)',
+        '/(\*\*\*|___)(?!\s)(.+?)(?<!\s)\1/s'        => '$2',
+        '/(\*\*|__)(?!\s)(.+?)(?<!\s)\1/s'           => '$2',
+        '/(?<!\w)(\*|_)(?!\s)(.+?)(?<!\s)\1(?!\w)/s' => '$2',
+        '/~~(?!\s)(.+?)(?<!\s)~~/s'                  => '$1',
+        '/^```.*$/m'                                 => '',
+        '/`([^`]*)`/'                                => '$1',
+        '/\n{3,}/'                                   => "\n\n",
+    ];
+
     private readonly MarkdownConverter $converter;
 
     public function __construct(?PostalConfig $config = null)
@@ -76,36 +115,18 @@ class MarkdownRenderer
                 $line = implode(' | ', array_map(trim(...), explode('|', $matches[1])));
             }
 
-            $line = preg_replace('/^#{1,6}\s+/', '', $line) ?? $line;
-            $line = preg_replace('/^(>\s?)+/', '', $line) ?? $line;
-            $line = preg_replace('/^(\s*)[*+](\s+)/', '$1-$2', $line) ?? $line;
+            foreach (self::LINE_REPLACEMENTS as $pattern => $replacement) {
+                $line = preg_replace($pattern, $replacement, $line) ?? $line;
+            }
 
             $lines[] = $line;
         }
 
         $text = implode("\n", $lines);
 
-        // Images: "![alt](url)" -> "alt".
-        $text = preg_replace('/!\[([^\]]*)\]\([^)]*\)/', '$1', $text) ?? $text;
-
-        // Links: "[text](url)" -> "text (url)".
-        $text = preg_replace('/\[([^\]]*)\]\(([^)]*)\)/', '$1 ($2)', $text) ?? $text;
-
-        // Emphasis and strikethrough markers, longest first so "**" isn't
-        // consumed by the single-character "*" pattern. The "/s" modifier lets
-        // a pair span a hand-wrapped line break; requiring a non-space on the
-        // inner edge of each delimiter keeps "3 * 4 * 5" from being read as
-        // emphasis around " 4 ".
-        $text = preg_replace('/(\*\*\*|___)(?!\s)(.+?)(?<!\s)\1/s', '$2', $text) ?? $text;
-        $text = preg_replace('/(\*\*|__)(?!\s)(.+?)(?<!\s)\1/s', '$2', $text) ?? $text;
-        $text = preg_replace('/(?<!\w)(\*|_)(?!\s)(.+?)(?<!\s)\1(?!\w)/s', '$2', $text) ?? $text;
-        $text = preg_replace('/~~(?!\s)(.+?)(?<!\s)~~/s', '$1', $text) ?? $text;
-
-        // Code fences and inline code spans.
-        $text = preg_replace('/^```.*$/m', '', $text) ?? $text;
-        $text = preg_replace('/`([^`]*)`/', '$1', $text) ?? $text;
-
-        $text = preg_replace('/\n{3,}/', "\n\n", $text) ?? $text;
+        foreach (self::TEXT_REPLACEMENTS as $pattern => $replacement) {
+            $text = preg_replace($pattern, $replacement, $text) ?? $text;
+        }
 
         return trim($text);
     }
