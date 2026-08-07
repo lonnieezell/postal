@@ -56,4 +56,9 @@ class PostalException extends RuntimeException
     {
         return new self("<mail-{$tag}> requires a \"{$attribute}\" attribute.");
     }
+
+    public static function forLayoutAfterMarkdown(): self
+    {
+        return new self('layout() must be called before markdown() in build() - markdown() resolves the layout as soon as it runs.');
+    }
 }

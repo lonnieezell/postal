@@ -66,7 +66,7 @@ Inside `build()` you have protected helpers that mirror the [`Email`](index.md) 
 | `html(string $html)` | The HTML body |
 | `text(string $text)` | The plain-text body |
 | `markdown(string $view, array $data = [])` | Both bodies at once, from a markdown view — see [Markdown Mailables](markdown-mailables.md) |
-| `layout(string $view)` | Overrides the Layout `markdown()` wraps its HTML in, for this Mailable only |
+| `layout(string $view)` | Overrides the Layout `markdown()` wraps its HTML in, for this Mailable only — call it *before* `markdown()` |
 
 Each returns `$this`, so they chain.
 

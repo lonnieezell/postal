@@ -16,6 +16,8 @@ namespace Tests\Unit;
 use CodeIgniter\Config\Services;
 use CodeIgniter\Test\CIUnitTestCase;
 use Myth\Postal\Email;
+use Myth\Postal\Exceptions\PostalException;
+use Myth\Postal\Mailable;
 use Myth\Postal\Mailer;
 use Tests\Support\Mailables\MarkdownComponents;
 use Tests\Support\Mailables\MarkdownCustomLayout;
@@ -81,6 +83,25 @@ final class MailableMarkdownTest extends CIUnitTestCase
 
         $fake->assertSent(static fn (Email $email): bool => str_contains((string) $email->htmlBody, 'custom-layout-marker')
             && ! str_contains((string) $email->htmlBody, 'class="container"'));
+    }
+
+    public function testLayoutCalledAfterMarkdownThrowsInsteadOfSilentlyIgnoringTheOverride(): void
+    {
+        Mailer::fake();
+
+        $mailable = new class () extends Mailable {
+            protected function build(): void
+            {
+                $this->from('me@example.com')
+                    ->to('you@example.com')
+                    ->subject('Too late')
+                    ->markdown('Tests\Views\markdown\welcome', ['name' => 'World'])
+                    ->layout('Tests\Views\mail\layouts\custom');
+            }
+        };
+
+        $this->expectException(PostalException::class);
+        $mailable->send();
     }
 
     public function testMarkdownRendersMailButtonAndMailPanelComponentsEndToEnd(): void

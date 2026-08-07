@@ -163,7 +163,7 @@ class WelcomeEmail extends Mailable
 
 From the outside, a Mailable calling `->markdown(...)` behaves exactly like one calling `->html()->text()` directly — same `Email::$htmlBody`/`$textBody`, same `Mailable::fake()`/`assertSent()` surface.
 
-Call `layout()` before `markdown()` to use a different Layout view for just that Mailable, instead of `Config\Postal::$defaultLayout`:
+Call `layout()` *before* `markdown()` to use a different Layout view for just that Mailable, instead of `Config\Postal::$defaultLayout` — `markdown()` resolves the layout as soon as it runs, so calling `layout()` afterward throws a `Myth\Postal\Exceptions\PostalException` rather than silently having no effect:
 
 ```php
 <?php
