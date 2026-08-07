@@ -56,6 +56,18 @@ class Postal extends BaseConfig
     ];
 
     /**
+     * The view path Mail Component tags (e.g. <mail-button>) resolve
+     * against: <mail-{tag}> resolves to "{componentViewPath}/{tag}".
+     */
+    public string $componentViewPath = 'mail/components';
+
+    /**
+     * The Layout view a Markdown Mailable's converted HTML is wrapped in
+     * when no per-Mailable override is set.
+     */
+    public string $defaultLayout = 'mail/layouts/default';
+
+    /**
      * Whether the preview is reachable in the given environment. Two independent
      * locks must both pass: the environment must not be production AND the
      * enablePreview flag must be set.
