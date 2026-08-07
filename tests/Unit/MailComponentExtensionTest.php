@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use CodeIgniter\Test\CIUnitTestCase;
+use Myth\Postal\Exceptions\PostalException;
 use Myth\Postal\Markdown\MarkdownRenderer;
 
 /**
@@ -32,6 +33,28 @@ final class MailComponentExtensionTest extends CIUnitTestCase
             (string) preg_replace('/^.*href="([^"]*)".*$/s', '$1', $html),
         ));
         $this->assertStringContainsString('Confirm Email', $html);
+    }
+
+    public function testMailButtonWithoutAUrlAttributeThrowsAClearException(): void
+    {
+        $this->expectException(PostalException::class);
+        $this->expectExceptionMessage('<mail-button> requires a "url" attribute.');
+
+        (new MarkdownRenderer())->toHtml('<mail-button>Confirm Email</mail-button>');
+    }
+
+    public function testSameLineClosingTagFollowedByTrailingContentFallsBackToRawHtmlInsteadOfSwallowingContent(): void
+    {
+        // Not the documented single-line usage (nothing may trail the closing
+        // tag), so this falls back to CommonMark's own raw-HTML passthrough
+        // rather than being claimed as a Mail Component - and, critically,
+        // doesn't swallow the rest of the document into an unclosed block.
+        $html = (new MarkdownRenderer())->toHtml(
+            "<mail-button url=\"https://example.com\">Confirm</mail-button> Thanks!\n\nA later paragraph.",
+        );
+
+        $this->assertStringContainsString('Thanks!', $html);
+        $this->assertStringContainsString('<p>A later paragraph.</p>', $html);
     }
 
     public function testMultiLineMailPanelParsesNestedMarkdownInItsBody(): void
@@ -64,6 +87,15 @@ final class MailComponentExtensionTest extends CIUnitTestCase
         $html = (new MarkdownRenderer())->toHtml($markdown);
 
         $this->assertStringContainsString('Click</a>', $html);
+    }
+
+    public function testSingleLineComponentSlotHonoursConfiguredGfmExtensions(): void
+    {
+        $html = (new MarkdownRenderer())->toHtml(
+            '<mail-button url="https://example.com">~~Old~~ New</mail-button>',
+        );
+
+        $this->assertStringContainsString('<del>Old</del> New', $html);
     }
 
     public function testMarkdownFixtureWithButtonAndPanelRendersExpectedHtml(): void

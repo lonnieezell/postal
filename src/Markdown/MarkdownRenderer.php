@@ -78,7 +78,7 @@ class MarkdownRenderer
             $environment->addExtension(new $extension());
         }
 
-        $environment->addExtension(new MailComponentExtension($config->componentViewPath));
+        $environment->addExtension(new MailComponentExtension($config->componentViewPath, $config->markdownExtensions));
 
         $this->converter = new MarkdownConverter($environment);
     }

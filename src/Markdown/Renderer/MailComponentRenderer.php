@@ -16,6 +16,7 @@ namespace Myth\Postal\Markdown\Renderer;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Renderer\ChildNodeRendererInterface;
 use League\CommonMark\Renderer\NodeRendererInterface;
+use Myth\Postal\Exceptions\PostalException;
 use Myth\Postal\Markdown\Node\MailComponentNode;
 use Myth\Postal\Markdown\PackageView;
 
@@ -26,6 +27,18 @@ use Myth\Postal\Markdown\PackageView;
  */
 final readonly class MailComponentRenderer implements NodeRendererInterface
 {
+    /**
+     * Attributes each Default Theme component requires. Checked before
+     * view() is called - checking inside the view itself would throw from
+     * within CodeIgniter's output-buffered include, leaving a dangling
+     * output buffer open on the way out.
+     *
+     * @var array<string, list<string>>
+     */
+    private const REQUIRED_ATTRIBUTES = [
+        'button' => ['url'],
+    ];
+
     public function __construct(private string $componentViewPath)
     {
     }
@@ -34,6 +47,12 @@ final readonly class MailComponentRenderer implements NodeRendererInterface
     {
         MailComponentNode::assertInstanceOf($node);
         assert($node instanceof MailComponentNode);
+
+        foreach (self::REQUIRED_ATTRIBUTES[$node->tag] ?? [] as $attribute) {
+            if (! array_key_exists($attribute, $node->attributes)) {
+                throw PostalException::forMissingComponentAttribute($node->tag, $attribute);
+            }
+        }
 
         $slot = $node->inlineSlot ?? $this->unwrapSingleParagraph($childRenderer->renderNodes($node->children()));
 

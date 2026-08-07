@@ -28,14 +28,19 @@ use Myth\Postal\Markdown\Renderer\MailComponentRenderer;
  */
 final readonly class MailComponentExtension implements ExtensionInterface
 {
-    public function __construct(private string $componentViewPath)
-    {
+    /**
+     * @param array<int, class-string<ExtensionInterface>> $markdownExtensions
+     */
+    public function __construct(
+        private string $componentViewPath,
+        private array $markdownExtensions = [],
+    ) {
     }
 
     public function register(EnvironmentBuilderInterface $environment): void
     {
         $environment
-            ->addBlockStartParser(new MailComponentStartParser(), 100)
+            ->addBlockStartParser(new MailComponentStartParser($this->markdownExtensions), 100)
             ->addRenderer(MailComponentNode::class, new MailComponentRenderer($this->componentViewPath));
     }
 }

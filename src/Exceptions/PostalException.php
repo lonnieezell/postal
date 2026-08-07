@@ -51,4 +51,9 @@ class PostalException extends RuntimeException
     {
         return new self("Invalid email address: \"{$address}\".");
     }
+
+    public static function forMissingComponentAttribute(string $tag, string $attribute): self
+    {
+        return new self("<mail-{$tag}> requires a \"{$attribute}\" attribute.");
+    }
 }

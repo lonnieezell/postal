@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Myth\Postal\Markdown\Parser;
 
 use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\ExtensionInterface;
 use League\CommonMark\Extension\InlinesOnly\InlinesOnlyExtension;
 use League\CommonMark\MarkdownConverter;
 use League\CommonMark\Parser\Block\BlockStart;
@@ -37,6 +38,13 @@ final class MailComponentStartParser implements BlockStartParserInterface
 
     private ?MarkdownConverter $inlineConverter = null;
 
+    /**
+     * @param array<int, class-string<ExtensionInterface>> $markdownExtensions
+     */
+    public function __construct(private readonly array $markdownExtensions = [])
+    {
+    }
+
     public function tryStart(Cursor $cursor, MarkdownParserStateInterface $parserState): ?BlockStart
     {
         if ($cursor->isIndented()) {
@@ -59,7 +67,17 @@ final class MailComponentStartParser implements BlockStartParserInterface
 
         $cursor->advanceToNextNonSpaceOrTab();
 
-        if ($closePos !== false && trim(substr($afterOpen, $closePos + strlen($closeTag))) === '') {
+        if ($closePos !== false) {
+            if (trim(substr($afterOpen, $closePos + strlen($closeTag))) !== '') {
+                // A closing tag exists on this line but isn't the last thing
+                // on it - not a clean single-line usage. Bail out entirely
+                // rather than falling through to the multi-line container
+                // path, which would swallow the literal closing tag text
+                // (and everything after it, forever, since no later line
+                // will ever match a bare closing tag) into the slot.
+                return BlockStart::none();
+            }
+
             $inner = substr($afterOpen, 0, $closePos);
             $node  = new MailComponentNode($tag, $attributes, $this->convertInline($inner));
             $cursor->advanceBy(strlen($match[0]) + $closePos + strlen($closeTag));
@@ -91,15 +109,23 @@ final class MailComponentStartParser implements BlockStartParserInterface
 
     /**
      * Converts a single-line component's slot text as inline-only markdown
-     * (emphasis, links, code spans, etc.) with no block-level wrapping -
-     * nested `<mail-*>` tags are not supported here, only in the multi-line
-     * container form.
+     * (emphasis, links, code spans, etc.), honouring the same configured
+     * markdown extensions (e.g. GFM strikethrough) as the outer document,
+     * with no block-level wrapping. Nested `<mail-*>` tags are not
+     * supported here, only in the multi-line container form.
      */
     private function convertInline(string $text): string
     {
-        $this->inlineConverter ??= new MarkdownConverter(
-            (new Environment())->addExtension(new InlinesOnlyExtension()),
-        );
+        if ($this->inlineConverter === null) {
+            $environment = new Environment();
+            $environment->addExtension(new InlinesOnlyExtension());
+
+            foreach ($this->markdownExtensions as $extension) {
+                $environment->addExtension(new $extension());
+            }
+
+            $this->inlineConverter = new MarkdownConverter($environment);
+        }
 
         return trim((string) $this->inlineConverter->convert($text));
     }
