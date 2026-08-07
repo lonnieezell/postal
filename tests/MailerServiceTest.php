@@ -18,6 +18,7 @@ use CodeIgniter\Test\CIUnitTestCase;
 use Myth\Postal\Config\Services as PostalServices;
 use Myth\Postal\Email;
 use Myth\Postal\LegacyEmailAdapter;
+use Myth\Postal\Markdown\MarkdownRenderer;
 
 /**
  * @internal
@@ -68,5 +69,23 @@ final class MailerServiceTest extends CIUnitTestCase
             PostalServices::email(null, false),
             PostalServices::email(null, false),
         );
+    }
+
+    public function testMarkdownServiceIsShared(): void
+    {
+        $this->assertSame(service('markdown'), service('markdown'));
+    }
+
+    public function testMarkdownServiceConvertsMarkdownWithConfiguredExtensions(): void
+    {
+        $renderer = service('markdown');
+
+        // Verifies runtime service discovery resolves the override; the static
+        // type is certain from additionalServices, but the resolution is not.
+        // @phpstan-ignore method.alreadyNarrowedType
+        $this->assertInstanceOf(MarkdownRenderer::class, $renderer);
+        // Table support comes from the GFM extension in the default
+        // Config\Postal::$markdownExtensions, not CommonMarkCoreExtension alone.
+        $this->assertStringContainsString('<table>', $renderer->toHtml("| A |\n| --- |\n| 1 |"));
     }
 }

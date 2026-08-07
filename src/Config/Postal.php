@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Myth\Postal\Config;
 
 use CodeIgniter\Config\BaseConfig;
+use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 
 /**
  * Configuration for the Postal package features that live outside the mailer
@@ -42,6 +43,16 @@ class Postal extends BaseConfig
      */
     public array $mailableNamespaces = [
         'App\Mails' => APPPATH . 'Mails',
+    ];
+
+    /**
+     * CommonMark extensions loaded by service('markdown'), in addition to the
+     * always-on CommonMarkCoreExtension.
+     *
+     * @var array<int, class-string>
+     */
+    public array $markdownExtensions = [
+        GithubFlavoredMarkdownExtension::class,
     ];
 
     /**
