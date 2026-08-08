@@ -68,6 +68,7 @@ class MakeMailable extends BaseCommand
     protected $options = [
         '--namespace' => 'Set root namespace. Default: "APP_NAMESPACE".',
         '--force'     => 'Force overwrite existing file.',
+        '--markdown'  => 'Also scaffold a markdown view, and generate a build() using ->markdown() instead of ->html().',
     ];
 
     /**
@@ -77,13 +78,51 @@ class MakeMailable extends BaseCommand
      */
     public function run(array $params): int
     {
+        $isMarkdown = array_key_exists('markdown', $params);
+
         $this->component    = 'Mailable';
         $this->directory    = 'Mails';
-        $this->template     = 'mailable.tpl.php';
-        $this->templatePath = 'Myth\Postal\Commands\Views\mailable.tpl.php';
+        $this->template     = $isMarkdown ? 'mailable_markdown.tpl.php' : 'mailable.tpl.php';
+        $this->templatePath = $isMarkdown
+            ? 'Myth\Postal\Commands\Views\mailable_markdown.tpl.php'
+            : 'Myth\Postal\Commands\Views\mailable.tpl.php';
 
         $this->generateClass($params);
 
+        if ($isMarkdown) {
+            $this->generateMarkdownView($params);
+        }
+
         return 0;
+    }
+
+    /**
+     * Scaffolds the markdown view the generated Mailable's build() points at.
+     *
+     * @param array<int|string, string|null> $params
+     */
+    private function generateMarkdownView(array $params): void
+    {
+        helper('inflector');
+
+        $view = 'emails/' . decamelize(class_basename($this->qualifyClassName()));
+
+        $this->template     = 'markdown_view.tpl.php';
+        $this->templatePath = 'Myth\Postal\Commands\Views\markdown_view.tpl.php';
+
+        $this->generateView($this->getNamespace() . '\Views\\' . str_replace('/', '\\', $view), $params);
+    }
+
+    /**
+     * Injects the {view} placeholder (the markdown view the generated
+     * build() points at) alongside the base {namespace}/{class} pair.
+     */
+    protected function prepare(string $class): string
+    {
+        helper('inflector');
+
+        $view = 'emails/' . decamelize(class_basename($class));
+
+        return $this->parseTemplate($class, ['{view}'], [$view]);
     }
 }
