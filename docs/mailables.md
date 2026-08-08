@@ -106,6 +106,14 @@ That writes `app/Mails/Welcome.php` in the `App\Mails` namespace, with an empty 
 php spark make:mailable Welcome --force
 ```
 
+Pass `--markdown` to scaffold a [Markdown Mailable](markdown-mailables.md) instead: alongside the class, it writes a starter markdown view at `app/Views/emails/welcome.php`, and generates a `build()` that calls `->markdown('emails/welcome')` rather than `->html('')`:
+
+```bash
+php spark make:mailable Welcome --markdown
+```
+
+`--force` applies to both files, independently — each is only overwritten if it already exists and `--force` was passed.
+
 ## Previewing Mailables
 
 Designing an email is a lot easier when you can see it. Postal can render any Mailable straight to your browser — HTML, plain text, and the raw MIME — without sending a thing.

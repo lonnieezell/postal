@@ -72,24 +72,31 @@ class MakeMailable extends BaseCommand
     ];
 
     /**
+     * Whether --markdown was passed, set at the top of run() and read by
+     * prepare() so the {view} placeholder substitution only applies to
+     * markdown-flavored generation.
+     */
+    private bool $isMarkdown = false;
+
+    /**
      * Actually execute the command.
      *
      * @param array<int|string, string|null> $params
      */
     public function run(array $params): int
     {
-        $isMarkdown = array_key_exists('markdown', $params);
+        $this->isMarkdown = array_key_exists('markdown', $params);
 
         $this->component    = 'Mailable';
         $this->directory    = 'Mails';
-        $this->template     = $isMarkdown ? 'mailable_markdown.tpl.php' : 'mailable.tpl.php';
-        $this->templatePath = $isMarkdown
+        $this->template     = $this->isMarkdown ? 'mailable_markdown.tpl.php' : 'mailable.tpl.php';
+        $this->templatePath = $this->isMarkdown
             ? 'Myth\Postal\Commands\Views\mailable_markdown.tpl.php'
             : 'Myth\Postal\Commands\Views\mailable.tpl.php';
 
         $this->generateClass($params);
 
-        if ($isMarkdown) {
+        if ($this->isMarkdown) {
             $this->generateMarkdownView($params);
         }
 
@@ -114,11 +121,16 @@ class MakeMailable extends BaseCommand
     }
 
     /**
-     * Injects the {view} placeholder (the markdown view the generated
-     * build() points at) alongside the base {namespace}/{class} pair.
+     * For --markdown generation, injects the {view} placeholder (the
+     * markdown view the generated build() points at) alongside the base
+     * {namespace}/{class} pair. Non-markdown generation is untouched.
      */
     protected function prepare(string $class): string
     {
+        if (! $this->isMarkdown) {
+            return $this->parseTemplate($class);
+        }
+
         helper('inflector');
 
         $view = 'emails/' . decamelize(class_basename($class));
