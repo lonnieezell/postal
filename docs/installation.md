@@ -67,4 +67,10 @@ you put there are the ones that take effect.
 Publishing never overwrites an existing `app/Config/Mailer.php`, so it is safe to re-run after
 upgrading the package.
 
+The same `php spark publish` run also copies the default email Layout and Mail Components —
+`app/Views/mail/layouts/default.php` and `app/Views/mail/components/{button,panel}.php` — so you
+can restyle them to match your brand. As with the config file, publishing never overwrites a copy
+you've already customized. See [Markdown Mailables](markdown-mailables.md) for what those files
+do.
+
 The full configuration reference is covered in later sections of the documentation.

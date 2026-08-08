@@ -92,6 +92,11 @@ Both are styled with inline `style=""` attributes directly on their markup — n
 
 ## Layouts
 
+!!! tip "Customizing the default Layout and Mail Components"
+    Run `php spark publish` to copy the default Layout and Mail Components into your app —
+    see [Installation](installation.md#configuration) — then edit the copies in
+    `app/Views/mail/` freely; Postal always prefers your app's version over its own.
+
 A Layout is a single-slot wrapper template applied *after* your markdown has already been converted to HTML — not CodeIgniter's `extend()`/`section()`, which composes at the raw view level before conversion. The Layout view receives the converted content as `$content`:
 
 ```php
