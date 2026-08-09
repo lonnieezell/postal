@@ -183,6 +183,24 @@ protected function build(): void
 }
 ```
 
+## Security: raw HTML passthrough
+
+CommonMark's raw-HTML passthrough is left at its default (`allow`): any HTML you write directly in a markdown view — including a value interpolated without `esc()` — reaches the rendered email unescaped, exactly as it would in a regular CI4 view.
+
+!!! warning "Escape untrusted data yourself"
+    Markdown mailables carry the same trust model as any other CodeIgniter view: nothing here sanitizes interpolated values automatically. If a markdown view interpolates data a user controls — a name, a comment, a URL — wrap it in `esc()` yourself, exactly as you would in a regular `.php` view:
+
+    ```php
+    <?php
+    // app/Views/emails/comment-notification.php
+    ?>
+    New comment from **<?= esc($comment->authorName) ?>**:
+
+    > <?= esc($comment->body) ?>
+    ```
+
+    Skipping this is no more or less risky than skipping `esc()` in an HTML view — but it's easy to assume markdown is "just text" and let your guard down. It isn't: it compiles to HTML, and unescaped interpolation compiles right along with it.
+
 ## Config reference
 
 | Property | Default | What it does |

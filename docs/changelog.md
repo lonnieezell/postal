@@ -16,6 +16,29 @@
 
 ### Added
 
+- Markdown Mailables: author an email body as CommonMark markdown via the
+  `markdown()` global helper or `Mailable::markdown($view, $data)`, which
+  resolves a view to raw markdown, converts it (`service('markdown')`, a
+  `MarkdownRenderer` built from a `League\CommonMark` `Environment`), wraps
+  the result in a shared `Layout` (`LayoutRenderer`, single-slot, applied
+  after conversion — falls back to `Config\Postal::$defaultLayout`, or
+  overridden per-Mailable with `Mailable::layout()`), and inlines the
+  Layout's CSS for email-client compatibility. Also derives a plain-text
+  fallback directly from the markdown source (`MarkdownString::text()`)
+  rather than reverse-engineering it from HTML. Ships two pre-styled Mail
+  Components — `<mail-button url="...">` and `<mail-panel color="...">` —
+  resolved by a real CommonMark parser/renderer extension
+  (`MailComponentExtension`), not regex or DOM post-processing. Adds
+  `league/commonmark` and `tijsverkoyen/css-to-inline-styles` as hard
+  dependencies. `ViewPublisher`, discovered and run by `spark publish`
+  alongside `ConfigPublisher`, copies the default Layout and Mail Component
+  views into `app/Views/mail/`, never overwriting existing files, so host
+  apps can restyle them freely. Raw-HTML
+  passthrough stays at its default throughout, so markdown views inherit
+  CI4's usual `esc()`-it-yourself trust
+  model; see [Markdown Mailables](markdown-mailables.md#security-raw-html-passthrough).
+  `make:mailable` gains a `--markdown` flag that scaffolds a starter markdown
+  view alongside a `build()` calling `->markdown()` instead of `->html()`.
 - `spark publish` writes `app/Config/Mailer.php`, a `Config\Mailer` extending
   the package's config, which Postal then resolves in preference to its own
   default. Re-running publish never overwrites an existing file.
