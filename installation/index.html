@@ -450,6 +450,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../markdown-mailables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Markdown Mailables
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../testing/" class="md-nav__link">
         
   
@@ -1242,6 +1270,11 @@ is inherited. Postal resolves the application's copy in preference to its own, s
 you put there are the ones that take effect.</p>
 <p>Publishing never overwrites an existing <code>app/Config/Mailer.php</code>, so it is safe to re-run after
 upgrading the package.</p>
+<p>The same <code>php spark publish</code> run also copies the default email Layout and Mail Components —
+<code>app/Views/mail/layouts/default.php</code> and <code>app/Views/mail/components/{button,panel}.php</code> — so you
+can restyle them to match your brand. As with the config file, publishing never overwrites a copy
+you've already customized. See <a href="../markdown-mailables/">Markdown Mailables</a> for what those files
+do.</p>
 <p>The full configuration reference is covered in later sections of the documentation.</p>
 
 

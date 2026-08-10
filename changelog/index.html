@@ -448,6 +448,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../markdown-mailables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Markdown Mailables
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../testing/" class="md-nav__link">
         
   
@@ -1196,6 +1224,29 @@
 </ul>
 <h3 id="added">Added</h3>
 <ul>
+<li>Markdown Mailables: author an email body as CommonMark markdown via the
+  <code>markdown()</code> global helper or <code>Mailable::markdown($view, $data)</code>, which
+  resolves a view to raw markdown, converts it (<code>service('markdown')</code>, a
+  <code>MarkdownRenderer</code> built from a <code>League\CommonMark</code> <code>Environment</code>), wraps
+  the result in a shared <code>Layout</code> (<code>LayoutRenderer</code>, single-slot, applied
+  after conversion — falls back to <code>Config\Postal::$defaultLayout</code>, or
+  overridden per-Mailable with <code>Mailable::layout()</code>), and inlines the
+  Layout's CSS for email-client compatibility. Also derives a plain-text
+  fallback directly from the markdown source (<code>MarkdownString::text()</code>)
+  rather than reverse-engineering it from HTML. Ships two pre-styled Mail
+  Components — <code>&lt;mail-button url="..."&gt;</code> and <code>&lt;mail-panel color="..."&gt;</code> —
+  resolved by a real CommonMark parser/renderer extension
+  (<code>MailComponentExtension</code>), not regex or DOM post-processing. Adds
+  <code>league/commonmark</code> and <code>tijsverkoyen/css-to-inline-styles</code> as hard
+  dependencies. <code>ViewPublisher</code>, discovered and run by <code>spark publish</code>
+  alongside <code>ConfigPublisher</code>, copies the default Layout and Mail Component
+  views into <code>app/Views/mail/</code>, never overwriting existing files, so host
+  apps can restyle them freely. Raw-HTML
+  passthrough stays at its default throughout, so markdown views inherit
+  CI4's usual <code>esc()</code>-it-yourself trust
+  model; see <a href="../markdown-mailables/#security-raw-html-passthrough">Markdown Mailables</a>.
+  <code>make:mailable</code> gains a <code>--markdown</code> flag that scaffolds a starter markdown
+  view alongside a <code>build()</code> calling <code>-&gt;markdown()</code> instead of <code>-&gt;html()</code>.</li>
 <li>
 <p><code>spark publish</code> writes <code>app/Config/Mailer.php</code>, a <code>Config\Mailer</code> extending
   the package's config, which Postal then resolves in preference to its own

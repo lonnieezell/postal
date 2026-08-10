@@ -14,7 +14,7 @@
         <link rel="prev" href="../quick-start/">
       
       
-        <link rel="next" href="../testing/">
+        <link rel="next" href="../markdown-mailables/">
       
       
         
@@ -603,6 +603,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../markdown-mailables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Markdown Mailables
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1409,9 +1437,21 @@
 <td><code>text(string $text)</code></td>
 <td>The plain-text body</td>
 </tr>
+<tr>
+<td><code>markdown(string $view, array $data = [])</code></td>
+<td>Both bodies at once, from a markdown view — see <a href="../markdown-mailables/">Markdown Mailables</a></td>
+</tr>
+<tr>
+<td><code>layout(string $view)</code></td>
+<td>Overrides the Layout <code>markdown()</code> wraps its HTML in, for this Mailable only — call it <em>before</em> <code>markdown()</code></td>
+</tr>
 </tbody>
 </table>
 <p>Each returns <code>$this</code>, so they chain.</p>
+<div class="admonition tip">
+<p class="admonition-title">Prefer <code>markdown()</code> over hand-rolled <code>html()</code>/<code>text()</code></p>
+<p>If your body is prose rather than bespoke markup, <code>-&gt;markdown('emails/welcome', [...])</code> gets you converted HTML, a matching plain-text fallback, and a shared page layout in one call. See <a href="../markdown-mailables/">Markdown Mailables</a>.</p>
+</div>
 <h2 id="choosing-a-mailer">Choosing a mailer</h2>
 <p>By default a Mailable sends through your default mailer. To route through a named mailer from <code>Config\Mailer</code>, call <code>transport()</code> in <code>build()</code>:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">&lt;?php</span>
@@ -1433,6 +1473,10 @@
 <p>That writes <code>app/Mails/Welcome.php</code> in the <code>App\Mails</code> namespace, with an empty <code>build()</code> ready to fill in. The generated class also implements <a href="#previewing-mailables"><code>Previewable</code></a> with a <code>previewInstance()</code> stub, so it shows up in the browser preview out of the box. Pass <code>--force</code> to overwrite an existing file:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>php<span class="w"> </span>spark<span class="w"> </span>make:mailable<span class="w"> </span>Welcome<span class="w"> </span>--force
 </code></pre></div>
+<p>Pass <code>--markdown</code> to scaffold a <a href="../markdown-mailables/">Markdown Mailable</a> instead: alongside the class, it writes a starter markdown view at <code>app/Views/emails/welcome.php</code>, and generates a <code>build()</code> that calls <code>-&gt;markdown('emails/welcome')</code> rather than <code>-&gt;html('')</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>php<span class="w"> </span>spark<span class="w"> </span>make:mailable<span class="w"> </span>Welcome<span class="w"> </span>--markdown
+</code></pre></div>
+<p><code>--force</code> applies to both files, independently — each is only overwritten if it already exists and <code>--force</code> was passed.</p>
 <h2 id="previewing-mailables">Previewing Mailables</h2>
 <p>Designing an email is a lot easier when you can see it. Postal can render any Mailable straight to your browser — HTML, plain text, and the raw MIME — without sending a thing.</p>
 <p>It's <strong>off by default</strong> and <strong>never runs in production</strong>. You opt in per environment.</p>
@@ -1444,21 +1488,21 @@
 </ol>
 <p>Either lock alone keeps previews hidden, so a stray flag can't leak mail in production and a misconfigured environment can't expose it on its own.</p>
 <p>Create <code>app/Config/Postal.php</code> (or set the value from <code>.env</code>):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">namespace</span> <span class="nx">Config</span><span class="p">;</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="k">use</span> <span class="nx">Myth\Postal\Config\Postal</span> <span class="k">as</span> <span class="nx">BasePostal</span><span class="p">;</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="k">class</span> <span class="nc">Postal</span> <span class="k">extends</span> <span class="nx">BasePostal</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="p">{</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    <span class="k">public</span> <span class="nx">bool</span> <span class="nv">$enablePreview</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="k">namespace</span> <span class="nx">Config</span><span class="p">;</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">use</span> <span class="nx">Myth\Postal\Config\Postal</span> <span class="k">as</span> <span class="nx">BasePostal</span><span class="p">;</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="k">class</span> <span class="nc">Postal</span> <span class="k">extends</span> <span class="nx">BasePostal</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="p">{</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>    <span class="k">public</span> <span class="nx">bool</span> <span class="nv">$enablePreview</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="p">}</span>
 </code></pre></div>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:1"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">.env</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="na">postal.enablePreview</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="na">postal.enablePreview</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
 </code></pre></div>
 </div>
 </div>
@@ -1495,39 +1539,39 @@
 </tbody>
 </table>
 <p>Add a pair to <code>$mailableNamespaces</code> for every place your Mailables live:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">public</span> <span class="k">array</span> <span class="nv">$mailableNamespaces</span> <span class="o">=</span> <span class="p">[</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="s1">&#39;App\Mails&#39;</span>           <span class="o">=&gt;</span> <span class="nx">APPPATH</span> <span class="o">.</span> <span class="s1">&#39;Mails&#39;</span><span class="p">,</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="s1">&#39;Acme\Billing\Mails&#39;</span>  <span class="o">=&gt;</span> <span class="nx">ROOTPATH</span> <span class="o">.</span> <span class="s1">&#39;modules/Billing/Mails&#39;</span><span class="p">,</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="p">];</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="k">public</span> <span class="k">array</span> <span class="nv">$mailableNamespaces</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="s1">&#39;App\Mails&#39;</span>           <span class="o">=&gt;</span> <span class="nx">APPPATH</span> <span class="o">.</span> <span class="s1">&#39;Mails&#39;</span><span class="p">,</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="s1">&#39;Acme\Billing\Mails&#39;</span>  <span class="o">=&gt;</span> <span class="nx">ROOTPATH</span> <span class="o">.</span> <span class="s1">&#39;modules/Billing/Mails&#39;</span><span class="p">,</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="p">];</span>
 </code></pre></div>
 <h3 id="making-a-mailable-previewable">Making a Mailable previewable</h3>
 <p>The preview needs sample data to render with — a Mailable usually takes a real <code>User</code>, and there isn't one at preview time. Implement <code>Myth\Postal\Previewable</code> and return an instance built from fake data:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="k">namespace</span> <span class="nx">App\Mails</span><span class="p">;</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="k">use</span> <span class="nx">Myth\Postal\Mailable</span><span class="p">;</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="k">use</span> <span class="nx">Myth\Postal\Previewable</span><span class="p">;</span>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="k">class</span> <span class="nc">WelcomeEmail</span> <span class="k">extends</span> <span class="nx">Mailable</span> <span class="k">implements</span> <span class="nx">Previewable</span>
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="p">{</span>
-<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="k">private</span> <span class="k">readonly</span> <span class="nx">User</span> <span class="nv">$user</span><span class="p">)</span>
-<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>    <span class="p">{</span>
-<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>        <span class="k">parent</span><span class="o">::</span><span class="na">__construct</span><span class="p">();</span>
-<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>    <span class="p">}</span>
-<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>
-<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">previewInstance</span><span class="p">()</span><span class="o">:</span> <span class="k">static</span>
-<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>    <span class="p">{</span>
-<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>        <span class="k">return</span> <span class="k">new</span> <span class="k">static</span><span class="p">(</span><span class="nx">User</span><span class="o">::</span><span class="na">makeSample</span><span class="p">());</span>
-<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>    <span class="p">}</span>
-<a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a>
-<a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a>    <span class="k">protected</span> <span class="k">function</span> <span class="nf">build</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
-<a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a>    <span class="p">{</span>
-<a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a>        <span class="c1">// ...</span>
-<a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a>    <span class="p">}</span>
-<a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">namespace</span> <span class="nx">App\Mails</span><span class="p">;</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="k">use</span> <span class="nx">Myth\Postal\Mailable</span><span class="p">;</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="k">use</span> <span class="nx">Myth\Postal\Previewable</span><span class="p">;</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="k">class</span> <span class="nc">WelcomeEmail</span> <span class="k">extends</span> <span class="nx">Mailable</span> <span class="k">implements</span> <span class="nx">Previewable</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="p">{</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="k">private</span> <span class="k">readonly</span> <span class="nx">User</span> <span class="nv">$user</span><span class="p">)</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>    <span class="p">{</span>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>        <span class="k">parent</span><span class="o">::</span><span class="na">__construct</span><span class="p">();</span>
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>    <span class="p">}</span>
+<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>
+<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">previewInstance</span><span class="p">()</span><span class="o">:</span> <span class="k">static</span>
+<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>    <span class="p">{</span>
+<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>        <span class="k">return</span> <span class="k">new</span> <span class="k">static</span><span class="p">(</span><span class="nx">User</span><span class="o">::</span><span class="na">makeSample</span><span class="p">());</span>
+<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>    <span class="p">}</span>
+<a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a>
+<a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a>    <span class="k">protected</span> <span class="k">function</span> <span class="nf">build</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+<a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>    <span class="p">{</span>
+<a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a>        <span class="c1">// ...</span>
+<a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a>    <span class="p">}</span>
+<a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="p">}</span>
 </code></pre></div>
 <p>Keeping the sample data right here in the class means it travels with the Mailable — discoverable, version-controlled, and refactor-safe. Only Mailables that implement <code>Previewable</code> show up in the preview; the rest are ignored.</p>
 <div class="admonition tip">
@@ -1545,12 +1589,12 @@
 <p>If a Mailable throws while building its preview, it still appears in the list with an error badge, and its detail page shows the exception inline. One broken Mailable never takes down the whole preview.</p>
 <h3 id="rendering-without-sending">Rendering without sending</h3>
 <p>The preview is built on <code>Mailable::render()</code>, a public seam you can use anywhere:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="nv">$email</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nx">WelcomeEmail</span><span class="p">(</span><span class="nv">$user</span><span class="p">))</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">();</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="k">echo</span> <span class="nv">$email</span><span class="o">-&gt;</span><span class="na">subject</span><span class="p">;</span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="k">echo</span> <span class="nv">$email</span><span class="o">-&gt;</span><span class="na">htmlBody</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="nv">$email</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nx">WelcomeEmail</span><span class="p">(</span><span class="nv">$user</span><span class="p">))</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">();</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="k">echo</span> <span class="nv">$email</span><span class="o">-&gt;</span><span class="na">subject</span><span class="p">;</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="k">echo</span> <span class="nv">$email</span><span class="o">-&gt;</span><span class="na">htmlBody</span><span class="p">;</span>
 </code></pre></div>
 <p><code>render()</code> runs <code>build()</code> and hands back the composed <a href="../"><code>Email</code></a> — it never sends. It's the build-without-send counterpart to <code>send()</code>.</p>
 <h2 id="next-steps">Next steps</h2>
@@ -1610,13 +1654,13 @@
         
         
           
-          <a href="../testing/" class="md-footer__link md-footer__link--next" aria-label="Next: Testing">
+          <a href="../markdown-mailables/" class="md-footer__link md-footer__link--next" aria-label="Next: Markdown Mailables">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Testing
+                Markdown Mailables
               </div>
             </div>
             <div class="md-footer__button md-icon">

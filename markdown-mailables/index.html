@@ -11,10 +11,10 @@
       
       
       
-        <link rel="prev" href="../markdown-mailables/">
+        <link rel="prev" href="../mailables/">
       
       
-        <link rel="next" href="../smtp-mailer/">
+        <link rel="next" href="../testing/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Testing - Postal</title>
+        <title>Markdown Mailables - Postal</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#testing-mail" class="md-skip">
+        <a href="#markdown-mailables" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Testing
+              Markdown Mailables
             
           </span>
         </div>
@@ -449,34 +449,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../markdown-mailables/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Markdown Mailables
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -496,7 +468,7 @@
   <span class="md-ellipsis">
     
   
-    Testing
+    Markdown Mailables
   
 
     
@@ -514,7 +486,7 @@
   <span class="md-ellipsis">
     
   
-    Testing
+    Markdown Mailables
   
 
     
@@ -540,10 +512,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#faking-sends" class="md-nav__link">
+  <a href="#quick-start-mailablemarkdown" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Faking sends
+        Quick start: Mailable::markdown()
       
     </span>
   </a>
@@ -551,33 +523,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#inspecting-what-was-sent" class="md-nav__link">
+  <a href="#mail-components" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Inspecting what was sent
+        Mail Components
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#assertions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Assertions
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Assertions">
+    <nav class="md-nav" aria-label="Mail Components">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#assertsentclosure-callback" class="md-nav__link">
+  <a href="#single-line-vs-multi-line" class="md-nav__link">
     <span class="md-ellipsis">
       
-        assertSent(Closure $callback)
+        Single-line vs. multi-line
       
     </span>
   </a>
@@ -585,54 +546,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#by-mailable-class" class="md-nav__link">
+  <a href="#the-shipped-components" class="md-nav__link">
     <span class="md-ellipsis">
       
-        By Mailable class
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#assertsenttostring-email" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        assertSentTo(string $email)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#assertnotsentclosure-callback" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        assertNotSent(Closure $callback)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#assertnothingsent" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        assertNothingSent()
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#assertsentcountint-count" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        assertSentCount(int $count)
+        The shipped components
       
     </span>
   </a>
@@ -641,6 +558,50 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#customizing-the-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Customizing the Layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-converting-markdown-directly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced: converting markdown directly
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-raw-html-passthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security: raw HTML passthrough
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#config-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Config reference
+      
+    </span>
+  </a>
   
 </li>
       
@@ -659,6 +620,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1224,10 +1213,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#faking-sends" class="md-nav__link">
+  <a href="#quick-start-mailablemarkdown" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Faking sends
+        Quick start: Mailable::markdown()
       
     </span>
   </a>
@@ -1235,33 +1224,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#inspecting-what-was-sent" class="md-nav__link">
+  <a href="#mail-components" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Inspecting what was sent
+        Mail Components
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#assertions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Assertions
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Assertions">
+    <nav class="md-nav" aria-label="Mail Components">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#assertsentclosure-callback" class="md-nav__link">
+  <a href="#single-line-vs-multi-line" class="md-nav__link">
     <span class="md-ellipsis">
       
-        assertSent(Closure $callback)
+        Single-line vs. multi-line
       
     </span>
   </a>
@@ -1269,54 +1247,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#by-mailable-class" class="md-nav__link">
+  <a href="#the-shipped-components" class="md-nav__link">
     <span class="md-ellipsis">
       
-        By Mailable class
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#assertsenttostring-email" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        assertSentTo(string $email)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#assertnotsentclosure-callback" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        assertNotSent(Closure $callback)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#assertnothingsent" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        assertNothingSent()
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#assertsentcountint-count" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        assertSentCount(int $count)
+        The shipped components
       
     </span>
   </a>
@@ -1325,6 +1259,50 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#customizing-the-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Customizing the Layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-converting-markdown-directly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced: converting markdown directly
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-raw-html-passthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security: raw HTML passthrough
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#config-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Config reference
+      
+    </span>
+  </a>
   
 </li>
       
@@ -1356,7 +1334,7 @@
 
 
   
-    <a href="https://github.com/lonnieezell/postal/edit/main/docs/testing.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/lonnieezell/postal/edit/main/docs/markdown-mailables.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1364,104 +1342,221 @@
   
 
 
-<h1 id="testing-mail">Testing Mail</h1>
-<p>Postal ships an in-memory test double so you can assert on what your application <em>would have</em> sent without ever touching a real transport or the network. Call <code>Mailer::fake()</code> at the top of a test; it swaps the bound <code>service('mailer')</code> for a recorder and hands that recorder back to you.</p>
+<h1 id="markdown-mailables">Markdown Mailables</h1>
+<p>Instead of hand-rolling HTML for every email, write the body as plain CommonMark markdown. Postal converts it to HTML, derives a plain-text fallback from that same source, wraps the result in a shared page layout, and gives you pre-styled components for things like buttons and callout panels — so your emails stay visually consistent without every mailable reinventing its own markup.</p>
+<h2 id="quick-start-mailablemarkdown">Quick start: <code>Mailable::markdown()</code></h2>
+<p>The fast path is a single call in your Mailable's <code>build()</code>: point <code>markdown()</code> at a view file, and it handles conversion, layout, and the plain-text fallback for you.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">use</span> <span class="nx">Myth\Postal\Mailer</span><span class="p">;</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">namespace</span> <span class="nx">App\Mails</span><span class="p">;</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nv">$fake</span> <span class="o">=</span> <span class="nx">Mailer</span><span class="o">::</span><span class="na">fake</span><span class="p">();</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">use</span> <span class="nx">Myth\Postal\Mailable</span><span class="p">;</span>
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1">// ...exercise the code under test, which sends as usual...</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="nx">service</span><span class="p">(</span><span class="s1">&#39;mailer&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">send</span><span class="p">(</span><span class="nv">$email</span><span class="p">);</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">assertSentTo</span><span class="p">(</span><span class="s1">&#39;user@example.com&#39;</span><span class="p">);</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="k">class</span> <span class="nc">WelcomeEmail</span> <span class="k">extends</span> <span class="nx">Mailable</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">{</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="k">private</span> <span class="k">readonly</span> <span class="nx">User</span> <span class="nv">$user</span><span class="p">)</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="p">{</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>        <span class="k">parent</span><span class="o">::</span><span class="na">__construct</span><span class="p">();</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="p">}</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="k">protected</span> <span class="k">function</span> <span class="nf">build</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="p">{</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">from</span><span class="p">(</span><span class="s1">&#39;hello@example.com&#39;</span><span class="p">,</span> <span class="s1">&#39;Acme&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>            <span class="o">-&gt;</span><span class="na">to</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">user</span><span class="o">-&gt;</span><span class="na">email</span><span class="p">,</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">user</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">)</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>            <span class="o">-&gt;</span><span class="na">subject</span><span class="p">(</span><span class="s1">&#39;Welcome aboard&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>            <span class="o">-&gt;</span><span class="na">markdown</span><span class="p">(</span><span class="s1">&#39;emails/welcome&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;user&#39;</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">user</span><span class="p">]);</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="p">}</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="p">}</span>
 </code></pre></div>
-<p>Every mailer resolved from <code>service('mailer')</code> — the default and any named mailer — routes through the same double, so you don't need to know which mailer your code reaches for.</p>
-<h2 id="faking-sends">Faking sends</h2>
-<p><code>Mailer::fake()</code> returns a <code>FakeTransport</code>. From that point on, no message leaves your application: each send is recorded in memory and reports success, so the code under test behaves as though delivery worked.</p>
+<p><code>emails/welcome</code> is a plain CI4 view file (<code>app/Views/emails/welcome.php</code>) written in markdown, not HTML — headings, bold text, links, and the <a href="#mail-components">Mail Components</a> below all just work. Behind the scenes, <code>-&gt;markdown()</code>:</p>
+<ol>
+<li>Resolves the view and converts it from markdown to HTML.</li>
+<li>Wraps that HTML in a <a href="#customizing-the-layout">Layout</a> — a shared page template.</li>
+<li>Inlines the layout's CSS, so styling survives in email clients that strip <code>&lt;style&gt;</code> blocks.</li>
+<li>Sets both outputs on the Mailable: <code>html()</code> with the rendered HTML, <code>text()</code> with a plain-text fallback generated from the markdown source.</li>
+</ol>
+<p>From the outside, a Mailable calling <code>-&gt;markdown(...)</code> behaves exactly like one calling <code>-&gt;html()-&gt;text()</code> directly — same <code>Email::$htmlBody</code>/<code>$textBody</code>, same <code>Mailable::fake()</code>/<code>assertSent()</code> surface.</p>
+<p>Want a different layout for one Mailable? Call <code>layout()</code> <em>before</em> <code>markdown()</code>:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nv">$fake</span> <span class="o">=</span> <span class="nx">Mailer</span><span class="o">::</span><span class="na">fake</span><span class="p">();</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">(</span><span class="k">new</span> <span class="nx">WelcomeEmailService</span><span class="p">())</span><span class="o">-&gt;</span><span class="na">sendTo</span><span class="p">(</span><span class="nv">$user</span><span class="p">);</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">assertSentCount</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">protected</span> <span class="k">function</span> <span class="nf">build</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="p">{</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">from</span><span class="p">(</span><span class="s1">&#39;news@example.com&#39;</span><span class="p">)</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>        <span class="o">-&gt;</span><span class="na">to</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">user</span><span class="o">-&gt;</span><span class="na">email</span><span class="p">)</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>        <span class="o">-&gt;</span><span class="na">subject</span><span class="p">(</span><span class="s1">&#39;This month at Acme&#39;</span><span class="p">)</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>        <span class="o">-&gt;</span><span class="na">layout</span><span class="p">(</span><span class="s1">&#39;mail/layouts/marketing&#39;</span><span class="p">)</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>        <span class="o">-&gt;</span><span class="na">markdown</span><span class="p">(</span><span class="s1">&#39;emails/newsletter&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;user&#39;</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">user</span><span class="p">]);</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p">}</span>
 </code></pre></div>
-<div class="admonition note">
-<p class="admonition-title">Reset between tests</p>
-<p>The swap lives in the service container for the rest of the test. If your test case doesn't already reset services, call <code>Services::reset()</code> in <code>tearDown()</code> so one test's fake doesn't leak into the next.</p>
+<p><code>markdown()</code> resolves the layout the moment it runs, so <code>layout()</code> has to come first — call it afterward and Postal throws a <code>Myth\Postal\Exceptions\PostalException</code> instead of silently ignoring it.</p>
+<div class="admonition tip">
+<p class="admonition-title">Generate the scaffolding for you</p>
+<p><code>php spark make:mailable Welcome --markdown</code> scaffolds both the Mailable class and a starter markdown view, with <code>build()</code> already wired up to call <code>-&gt;markdown()</code>. See <a href="../mailables/#generating-a-mailable">Mailables</a>.</p>
 </div>
-<h2 id="inspecting-what-was-sent">Inspecting what was sent</h2>
-<p><code>sent()</code> returns the recorded messages as an array of <code>Email</code> objects, in the order they were sent:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nv">$messages</span> <span class="o">=</span> <span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">sent</span><span class="p">();</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSame</span><span class="p">(</span><span class="s1">&#39;Welcome!&#39;</span><span class="p">,</span> <span class="nv">$messages</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">subject</span><span class="p">);</span>
+<h2 id="mail-components">Mail Components</h2>
+<p>Mail Components are reusable, pre-styled elements you drop straight into your markdown using <code>mail-</code>-prefixed tags. Postal ships two: a button and a panel.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>&lt;mail-button url=&quot;https://example.com/confirm&quot;&gt;Confirm Email&lt;/mail-button&gt;
 </code></pre></div>
-<p>Pass a content matcher — a closure that receives an <code>Email</code> and returns a bool — to filter:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="nv">$welcomes</span> <span class="o">=</span> <span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">sent</span><span class="p">(</span><span class="k">static</span> <span class="nx">fn</span> <span class="p">(</span><span class="nx">Email</span> <span class="nv">$email</span><span class="p">)</span><span class="o">:</span> <span class="nx">bool</span> <span class="o">=&gt;</span> <span class="nv">$email</span><span class="o">-&gt;</span><span class="na">subject</span> <span class="o">===</span> <span class="s1">&#39;Welcome!&#39;</span><span class="p">);</span>
+<p>They aren't a regex trick — Mail Component tags are parsed as real nodes in the markdown document, right alongside headings and lists. There's nothing to enable; they're always available inside any markdown view.</p>
+<p>A tag's attributes become the component view's data, and its inner content becomes a <code>$slot</code> variable, so the example above resolves to:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="x">view(&#39;mail/components/button&#39;, [&#39;url&#39; =&gt; &#39;https://example.com/confirm&#39;, &#39;slot&#39; =&gt; &#39;Confirm Email&#39;])</span>
 </code></pre></div>
-<p>If you send <a href="../mailables/">Mailables</a>, pass the class name instead to get just the messages that came from that Mailable:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nv">$welcomes</span> <span class="o">=</span> <span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">sent</span><span class="p">(</span><span class="nx">WelcomeEmail</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+<h3 id="single-line-vs-multi-line">Single-line vs. multi-line</h3>
+<p>Write a component two ways, depending on how much content it needs to wrap:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Single-line</label><label for="__tabbed_1_2">Multi-line</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>&lt;mail-button url=&quot;https://example.com/confirm&quot;&gt;Confirm Email&lt;/mail-button&gt;
 </code></pre></div>
-<h2 id="assertions">Assertions</h2>
-<p>All assertions integrate with PHPUnit, so a failure fails the test with a readable message.</p>
-<h3 id="assertsentclosure-callback"><code>assertSent(Closure $callback)</code></h3>
-<p>Passes when at least one recorded message satisfies the matcher:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">assertSent</span><span class="p">(</span><span class="k">static</span> <span class="nx">fn</span> <span class="p">(</span><span class="nx">Email</span> <span class="nv">$email</span><span class="p">)</span><span class="o">:</span> <span class="nx">bool</span> <span class="o">=&gt;</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="nv">$email</span><span class="o">-&gt;</span><span class="na">subject</span> <span class="o">===</span> <span class="s1">&#39;Welcome!&#39;</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="o">&amp;&amp;</span> <span class="nb">str_contains</span><span class="p">((</span><span class="nx">string</span><span class="p">)</span> <span class="nv">$email</span><span class="o">-&gt;</span><span class="na">htmlBody</span><span class="p">,</span> <span class="s1">&#39;Thanks for joining&#39;</span><span class="p">));</span>
+<p>Everything between the tags is inline content — <code>**bold**</code>, links, and code spans all work, but nested Mail Components don't.</p>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>&lt;mail-panel color=&quot;#fef3c7&quot;&gt;
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>Heads up — your trial ends <span class="gs">**Friday**</span>.
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>[<span class="nt">Upgrade now</span>](<span class="na">https://example.com/upgrade</span>) to keep your data.
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>&lt;/mail-panel&gt;
 </code></pre></div>
-<h3 id="by-mailable-class">By Mailable class</h3>
-<p>When you send a <a href="../mailables/">Mailable</a>, <code>send()</code> tags the message with its class, so you can assert on the type instead of matching content. Pass the class name to <code>assertSent()</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">assertSent</span><span class="p">(</span><span class="nx">WelcomeEmail</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+<p>The closing tag lives on its own line. Everything in between is parsed as full markdown, including multiple paragraphs and nested Mail Components.</p>
+</div>
+</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Keep the closing tag clean</p>
+<p>On a single-line tag, the closing <code>&lt;/mail-...&gt;</code> has to be the last thing on the line. Write something after it — <code>&lt;mail-button url="..."&gt;Confirm&lt;/mail-button&gt; and click here</code> — and Postal won't recognize it as a Mail Component at all. It falls back to plain HTML in the markdown, tag and all.</p>
+</div>
+<h3 id="the-shipped-components">The shipped components</h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Attributes</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;mail-button&gt;</code></td>
+<td><code>url</code> (<strong>required</strong>)</td>
+<td>Renders a styled link. Omitting <code>url</code> throws a <code>Myth\Postal\Exceptions\PostalException</code> with a clear message, rather than rendering a broken link.</td>
+</tr>
+<tr>
+<td><code>&lt;mail-panel&gt;</code></td>
+<td><code>color</code> (optional)</td>
+<td>A callout box. Defaults to a light blue background when <code>color</code> isn't set.</td>
+</tr>
+</tbody>
+</table>
+<p>Both are styled with inline <code>style=""</code> attributes directly on their own markup, rather than relying solely on the layout's CSS inlining — so they still look right even in clients that strip <code>&lt;style&gt;</code> blocks entirely.</p>
+<p>Want to restyle them, or add your own? <code>Config\Postal::$componentViewPath</code> (default <code>'mail/components'</code>) controls where <code>&lt;mail-{tag}&gt;</code> looks for its view — <code>&lt;mail-button&gt;</code> resolves to <code>{componentViewPath}/button</code>. See the tip below for copying the shipped views into your own app.</p>
+<h2 id="customizing-the-layout">Customizing the Layout</h2>
+<p>A Layout is the shared page template your markdown gets wrapped in — a single slot, filled in with the HTML your markdown converted to. It's applied <em>after</em> conversion, which is a deliberate difference from CodeIgniter's own <code>extend()</code>/<code>section()</code>: those compose at the raw view level, before anything's been converted, and don't give Postal a clean point to run CSS inlining or resolve Mail Components against the final HTML.</p>
+<p>The default layout ships at <code>mail/layouts/default</code>, and receives the converted content as <code>$content</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="x">&lt;!-- app/Views/mail/layouts/default.php --&gt;</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="x">&lt;!doctype html&gt;</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="x">&lt;html&gt;</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="x">&lt;head&gt;</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="x">&lt;style&gt;</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="x">  body { font-family: sans-serif; background: #f4f4f5; }</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="x">  .container { max-width: 600px; margin: 0 auto; padding: 24px; }</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="x">&lt;/style&gt;</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="x">&lt;/head&gt;</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="x">&lt;body&gt;</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="x">  &lt;div class=&quot;container&quot;&gt;</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="x">    </span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$content</span> <span class="cp">?&gt;</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="x">  &lt;/div&gt;</span>
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="x">&lt;/body&gt;</span>
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="x">&lt;/html&gt;</span>
 </code></pre></div>
-<p>Add a closure as a second argument to narrow it further — both must match:</p>
+<div class="admonition tip">
+<p class="admonition-title">Make it yours</p>
+<p>Run <code>php spark publish</code> to copy the default Layout and Mail Components into your app — see <a href="../installation/#configuration">Installation</a> — then edit the copies in <code>app/Views/mail/</code> freely. Postal always prefers your app's version over its own, and publishing never overwrites a file you've already customized.</p>
+</div>
+<p><code>Mailable::markdown()</code> uses <code>Config\Postal::$defaultLayout</code> (default <code>'mail/layouts/default'</code>) unless you override it per-Mailable with <code>layout()</code>, as shown in the <a href="#quick-start-mailablemarkdown">quick start</a> above.</p>
+<div class="admonition tip">
+<p class="admonition-title">The <code>&lt;style&gt;</code> block stays</p>
+<p>CSS inlining adds <code>style=""</code> attributes for clients that need them, but it doesn't strip the original <code>&lt;style&gt;</code> block — clients that <em>do</em> render <code>&lt;head&gt;</code> styles get the benefit of both.</p>
+</div>
+<h2 id="advanced-converting-markdown-directly">Advanced: converting markdown directly</h2>
+<p><code>Mailable::markdown()</code> covers the common case, but its two building blocks — the <code>markdown()</code> helper and <code>LayoutRenderer</code> — are useful on their own too, if you want converted HTML without the full pipeline.</p>
+<p>The <code>markdown()</code> helper resolves a view file to raw markdown and converts it in one call. It's a global helper, always available — no <code>helper()</code> call needed, same as CodeIgniter's own <code>view()</code>:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">assertSent</span><span class="p">(</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="nx">WelcomeEmail</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="k">static</span> <span class="nx">fn</span> <span class="p">(</span><span class="nx">Email</span> <span class="nv">$email</span><span class="p">)</span><span class="o">:</span> <span class="nx">bool</span> <span class="o">=&gt;</span> <span class="nv">$email</span><span class="o">-&gt;</span><span class="na">subject</span> <span class="o">===</span> <span class="s1">&#39;Welcome aboard&#39;</span><span class="p">,</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="p">);</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nv">$rendered</span> <span class="o">=</span> <span class="nx">markdown</span><span class="p">(</span><span class="s1">&#39;emails/welcome&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">]);</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">echo</span> <span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="nv">$rendered</span><span class="p">;</span>   <span class="c1">// the converted HTML</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="k">echo</span> <span class="nv">$rendered</span><span class="o">-&gt;</span><span class="na">text</span><span class="p">();</span>    <span class="c1">// a plain-text fallback, derived from the same markdown source</span>
 </code></pre></div>
-<h3 id="assertsenttostring-email"><code>assertSentTo(string $email)</code></h3>
-<p>Passes when at least one recorded message was addressed to the given email — in any of the <code>To</code>, <code>Cc</code>, or <code>Bcc</code> buckets. The match is case-insensitive:</p>
+<p>If you already have a markdown string rather than a view file, call the conversion service directly:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">assertSentTo</span><span class="p">(</span><span class="s1">&#39;user@example.com&#39;</span><span class="p">);</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="nv">$html</span> <span class="o">=</span> <span class="nx">service</span><span class="p">(</span><span class="s1">&#39;markdown&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">toHtml</span><span class="p">(</span><span class="s1">&#39;# Hello **World**&#39;</span><span class="p">);</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="nv">$text</span> <span class="o">=</span> <span class="nx">service</span><span class="p">(</span><span class="s1">&#39;markdown&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">toText</span><span class="p">(</span><span class="s1">&#39;# Hello **World**&#39;</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="assertnotsentclosure-callback"><code>assertNotSent(Closure $callback)</code></h3>
-<p>Passes when <strong>no</strong> recorded message satisfies the matcher:</p>
+<p><code>Config\Postal::$markdownExtensions</code> controls which CommonMark extensions load on top of the core parser. By default that's GitHub-Flavored Markdown (tables, strikethrough, autolinks):</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">assertNotSent</span><span class="p">(</span><span class="k">static</span> <span class="nx">fn</span> <span class="p">(</span><span class="nx">Email</span> <span class="nv">$email</span><span class="p">)</span><span class="o">:</span> <span class="nx">bool</span> <span class="o">=&gt;</span> <span class="nv">$email</span><span class="o">-&gt;</span><span class="na">subject</span> <span class="o">===</span> <span class="s1">&#39;Password reset&#39;</span><span class="p">);</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="k">public</span> <span class="k">array</span> <span class="nv">$markdownExtensions</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="nx">League\CommonMark\Extension\GithubFlavoredMarkdownExtension</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="p">];</span>
 </code></pre></div>
-<h3 id="assertnothingsent"><code>assertNothingSent()</code></h3>
-<p>Passes when no message was recorded at all:</p>
+<p>To apply a Layout yourself — without going through a Mailable — use <code>LayoutRenderer</code>, which wraps content in a Layout and inlines its CSS:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">assertNothingSent</span><span class="p">();</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">use</span> <span class="nx">Myth\Postal\Markdown\LayoutRenderer</span><span class="p">;</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="nv">$html</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nx">LayoutRenderer</span><span class="p">())</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">((</span><span class="nx">string</span><span class="p">)</span> <span class="nv">$rendered</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="assertsentcountint-count"><code>assertSentCount(int $count)</code></h3>
-<p>Passes when exactly the given number of messages were recorded:</p>
+<p>That uses <code>Config\Postal::$defaultLayout</code> too, unless you pass a second argument to use a different layout for just this call:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="nv">$fake</span><span class="o">-&gt;</span><span class="na">assertSentCount</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="nv">$html</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nx">LayoutRenderer</span><span class="p">())</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">((</span><span class="nx">string</span><span class="p">)</span> <span class="nv">$rendered</span><span class="p">,</span> <span class="s1">&#39;mail/layouts/marketing&#39;</span><span class="p">);</span>
 </code></pre></div>
+<h2 id="security-raw-html-passthrough">Security: raw HTML passthrough</h2>
+<p>CommonMark's raw-HTML passthrough is left at its default (<code>allow</code>): any HTML you write directly in a markdown view — including a value interpolated without <code>esc()</code> — reaches the rendered email unescaped, exactly as it would in a regular CI4 view.</p>
+<div class="admonition warning">
+<p class="admonition-title">Escape untrusted data yourself</p>
+<p>Markdown mailables carry the same trust model as any other CodeIgniter view: nothing here sanitizes interpolated values automatically. If a markdown view interpolates data a user controls — a name, a comment, a URL — wrap it in <code>esc()</code> yourself, exactly as you would in a regular <code>.php</code> view:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="c1">// app/Views/emails/comment-notification.php</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="cp">?&gt;</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="x">New comment from **</span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nx">esc</span><span class="p">(</span><span class="nv">$comment</span><span class="o">-&gt;</span><span class="na">authorName</span><span class="p">)</span> <span class="cp">?&gt;</span><span class="x">**:</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="x">&gt; </span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nx">esc</span><span class="p">(</span><span class="nv">$comment</span><span class="o">-&gt;</span><span class="na">body</span><span class="p">)</span> <span class="cp">?&gt;</span>
+</code></pre></div>
+<p>Skipping this is no more or less risky than skipping <code>esc()</code> in an HTML view — but it's easy to assume markdown is "just text" and let your guard down. It isn't: it compiles to HTML, and unescaped interpolation compiles right along with it.</p>
+</div>
+<h2 id="config-reference">Config reference</h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$markdownExtensions</code></td>
+<td><code>[GithubFlavoredMarkdownExtension::class]</code></td>
+<td>CommonMark extensions loaded by <code>service('markdown')</code></td>
+</tr>
+<tr>
+<td><code>$componentViewPath</code></td>
+<td><code>'mail/components'</code></td>
+<td>Base path Mail Component tags resolve views against</td>
+</tr>
+<tr>
+<td><code>$defaultLayout</code></td>
+<td><code>'mail/layouts/default'</code></td>
+<td>The Layout view used when no per-call override is given</td>
+</tr>
+</tbody>
+</table>
 <h2 id="next-steps">Next steps</h2>
 <ul>
-<li><a href="../events/">Events</a> — the lifecycle events that still fire through the faked mailer</li>
-<li><a href="../log-mailer/">The Log Mailer</a> — render messages to a log channel instead of delivering them</li>
+<li><a href="../mailables/">Mailables</a> — the class-based email <code>Mailable::markdown()</code> plugs into</li>
+<li><a href="../mime-rendering/">MIME Rendering</a> — how the HTML and text bodies a Mailable produces become a wire-ready message</li>
 </ul>
 
 
@@ -1498,7 +1593,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../markdown-mailables/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Markdown Mailables">
+          <a href="../mailables/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Mailables">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1508,20 +1603,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Markdown Mailables
+                Mailables
               </div>
             </div>
           </a>
         
         
           
-          <a href="../smtp-mailer/" class="md-footer__link md-footer__link--next" aria-label="Next: SMTP">
+          <a href="../testing/" class="md-footer__link md-footer__link--next" aria-label="Next: Testing">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                SMTP
+                Testing
               </div>
             </div>
             <div class="md-footer__button md-icon">
