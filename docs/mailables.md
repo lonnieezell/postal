@@ -65,8 +65,13 @@ Inside `build()` you have protected helpers that mirror the [`Email`](index.md) 
 | `subject(string $subject)` | The subject line |
 | `html(string $html)` | The HTML body |
 | `text(string $text)` | The plain-text body |
+| `markdown(string $view, array $data = [])` | Both bodies at once, from a markdown view — see [Markdown Mailables](markdown-mailables.md) |
+| `layout(string $view)` | Overrides the Layout `markdown()` wraps its HTML in, for this Mailable only — call it *before* `markdown()` |
 
 Each returns `$this`, so they chain.
+
+!!! tip "Prefer `markdown()` over hand-rolled `html()`/`text()`"
+    If your body is prose rather than bespoke markup, `->markdown('emails/welcome', [...])` gets you converted HTML, a matching plain-text fallback, and a shared page layout in one call. See [Markdown Mailables](markdown-mailables.md).
 
 ## Choosing a mailer
 
@@ -100,6 +105,14 @@ That writes `app/Mails/Welcome.php` in the `App\Mails` namespace, with an empty 
 ```bash
 php spark make:mailable Welcome --force
 ```
+
+Pass `--markdown` to scaffold a [Markdown Mailable](markdown-mailables.md) instead: alongside the class, it writes a starter markdown view at `app/Views/emails/welcome.php`, and generates a `build()` that calls `->markdown('emails/welcome')` rather than `->html('')`:
+
+```bash
+php spark make:mailable Welcome --markdown
+```
+
+`--force` applies to both files, independently — each is only overwritten if it already exists and `--force` was passed.
 
 ## Previewing Mailables
 

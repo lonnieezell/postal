@@ -52,6 +52,7 @@ nav:
     - Quick Start: quick-start.md
   - Sending Mail:
     - Mailables: mailables.md
+    - Markdown Mailables: markdown-mailables.md
     - Testing: testing.md
   - Transports:
     - SMTP: smtp-mailer.md

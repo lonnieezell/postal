@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Myth\Postal\Config;
 
 use CodeIgniter\Config\BaseConfig;
+use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 
 /**
  * Configuration for the Postal package features that live outside the mailer
@@ -43,6 +44,28 @@ class Postal extends BaseConfig
     public array $mailableNamespaces = [
         'App\Mails' => APPPATH . 'Mails',
     ];
+
+    /**
+     * CommonMark extensions loaded by service('markdown'), in addition to the
+     * always-on CommonMarkCoreExtension.
+     *
+     * @var array<int, class-string>
+     */
+    public array $markdownExtensions = [
+        GithubFlavoredMarkdownExtension::class,
+    ];
+
+    /**
+     * The view path Mail Component tags (e.g. <mail-button>) resolve
+     * against: <mail-{tag}> resolves to "{componentViewPath}/{tag}".
+     */
+    public string $componentViewPath = 'mail/components';
+
+    /**
+     * The Layout view a Markdown Mailable's converted HTML is wrapped in
+     * when no per-Mailable override is set.
+     */
+    public string $defaultLayout = 'mail/layouts/default';
 
     /**
      * Whether the preview is reachable in the given environment. Two independent

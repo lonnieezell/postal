@@ -17,6 +17,7 @@ use CodeIgniter\Config\BaseService;
 use Config\Email as LegacyEmailConfig;
 use Myth\Postal\LegacyEmailAdapter;
 use Myth\Postal\MailerManager;
+use Myth\Postal\Markdown\MarkdownRenderer;
 
 class Services extends BaseService
 {
@@ -62,5 +63,18 @@ class Services extends BaseService
         }
 
         return new MailerManager();
+    }
+
+    /**
+     * Converts markdown into HTML/text for Markdown Mailables, backing the
+     * global markdown() helper.
+     */
+    public static function markdown(bool $getShared = true): MarkdownRenderer
+    {
+        if ($getShared) {
+            return static::getSharedInstance('markdown');
+        }
+
+        return new MarkdownRenderer();
     }
 }

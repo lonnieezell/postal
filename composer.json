@@ -23,7 +23,9 @@
         }
     ],
     "require": {
-        "php": "^8.2"
+        "php": "^8.2",
+        "league/commonmark": "^2.4",
+        "tijsverkoyen/css-to-inline-styles": "^2.2"
     },
     "require-dev": {
         "aws/aws-sdk-php": "^3.0",
@@ -42,7 +44,10 @@
     "autoload": {
         "psr-4": {
             "Myth\\Postal\\": "src"
-        }
+        },
+        "files": [
+            "src/Helpers/postal_helper.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
