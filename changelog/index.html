@@ -1076,6 +1076,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#fixed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#changed" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1157,6 +1168,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#fixed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#changed" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1210,6 +1232,30 @@
 
 <h1 id="changelog">Changelog</h1>
 <h2 id="unreleased">[Unreleased]</h2>
+<h3 id="fixed">Fixed</h3>
+<ul>
+<li>Mail Components: <code>&lt;mail-button&gt;</code> emitted its <code>url</code> through the <code>attr</code> escaper
+  context, which is meant for unquoted attribute values and encodes every
+  non-alphanumeric character. The <code>href</code> came out as
+  <code>https&amp;#x3A;&amp;#x2F;&amp;#x2F;example.com</code> — which email clients still follow, but
+  which hides the link from anything post-processing the rendered HTML by
+  matching <code>href="http..."</code>, such as click tracking or link rewriting. The href
+  is double-quoted, so the <code>html</code> context is the correct one: it neutralises the
+  characters that could end the attribute and leaves the URL readable.</li>
+<li>Mail Components: <code>&lt;mail-panel&gt;</code>'s <code>color</code> never reached the email. It was
+  emitted through the <code>css</code> escaper, which encodes <code>#</code> as <code>\23</code>, producing
+  <code>background-color: \23 eff6ff</code> — an ident token where a hash token is
+  required, so the declaration was invalid and dropped. Panels rendered with no
+  background at all, including at the default colour. The value is now validated
+  as a hex colour or colour keyword, falling back to the default when it is
+  neither: for a value that lands in a CSS property position, escaping and
+  rendering are mutually exclusive, so validation is the only workable approach.</li>
+<li>Mail Components: each component now renders with <code>saveData</code> off. CodeIgniter's
+  renderer carries view data between <code>render()</code> calls, so an optional attribute
+  set on one component leaked into the next component that omitted it — a
+  <code>&lt;mail-panel&gt;</code> with no <code>color</code> picked up the colour of an earlier panel in the
+  same email.</li>
+</ul>
 <h3 id="changed">Changed</h3>
 <ul>
 <li><strong>BREAKING:</strong> the mailer configuration class is now <code>Myth\Postal\Config\Mailer</code>
