@@ -58,7 +58,11 @@ final readonly class MailComponentRenderer implements NodeRendererInterface
 
         $view = PackageView::resolve(trim($this->componentViewPath, '/') . '/' . $node->tag);
 
-        return view($view, [...$node->attributes, 'slot' => $slot], ['debug' => false]);
+        // saveData is off so each component renders against only its own
+        // attributes: CodeIgniter's renderer otherwise carries data between
+        // render() calls, letting an optional attribute on one component leak
+        // into the next one that omits it.
+        return view($view, [...$node->attributes, 'slot' => $slot], ['debug' => false, 'saveData' => false]);
     }
 
     /**

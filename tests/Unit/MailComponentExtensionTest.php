@@ -28,11 +28,30 @@ final class MailComponentExtensionTest extends CIUnitTestCase
             '<mail-button url="https://example.com/confirm">Confirm Email</mail-button>',
         );
 
-        $this->assertMatchesRegularExpression('/href="[^"]*"/', $html, 'expected an href attribute');
-        $this->assertSame('https://example.com/confirm', html_entity_decode(
-            (string) preg_replace('/^.*href="([^"]*)".*$/s', '$1', $html),
-        ));
+        // The URL has to survive verbatim: consumers post-process rendered HTML
+        // by matching href="http...", and an over-escaped scheme hides the link
+        // from them.
+        $this->assertStringContainsString('href="https://example.com/confirm"', $html);
         $this->assertStringContainsString('Confirm Email', $html);
+    }
+
+    public function testButtonUrlKeepsItsQueryStringWithTheAmpersandEscapedForHtml(): void
+    {
+        $html = (new MarkdownRenderer())->toHtml(
+            '<mail-button url="https://example.com/r?a=1&b=2">Read</mail-button>',
+        );
+
+        $this->assertStringContainsString('href="https://example.com/r?a=1&amp;b=2"', $html);
+    }
+
+    public function testButtonUrlCannotInjectMarkupThroughTheHrefAttribute(): void
+    {
+        $html = (new MarkdownRenderer())->toHtml(
+            '<mail-button url="https://example.com/<script>alert(1)</script>">Go</mail-button>',
+        );
+
+        $this->assertStringNotContainsString('<script>', $html);
+        $this->assertStringContainsString('&lt;script&gt;', $html);
     }
 
     public function testMailButtonWithoutAUrlAttributeThrowsAClearException(): void
@@ -69,11 +88,55 @@ final class MailComponentExtensionTest extends CIUnitTestCase
 
         $html = (new MarkdownRenderer())->toHtml($markdown);
 
-        // The color attribute is emitted through esc(..., 'css'), so a literal
-        // "#fef3c7" is expected to come back CSS-escaped, not verbatim.
-        $this->assertStringContainsString('fef3c7', $html);
+        $this->assertStringContainsString('background-color: #fef3c7', $html);
         $this->assertStringContainsString('<p>Some <strong>bold</strong> text inside the panel.</p>', $html);
         $this->assertStringContainsString('<p>Another paragraph.</p>', $html);
+    }
+
+    public function testPanelWithoutAColorUsesTheDefaultBackground(): void
+    {
+        $html = (new MarkdownRenderer())->toHtml("<mail-panel>\nHello.\n</mail-panel>");
+
+        $this->assertStringContainsString('background-color: #eff6ff', $html);
+    }
+
+    public function testPanelColorDoesNotLeakIntoALaterPanel(): void
+    {
+        // Each component gets its own view render; an optional attribute set on
+        // one must not survive into the next component in the same document.
+        $markdown = <<<'MARKDOWN'
+            <mail-panel color="#fef3c7">
+            First.
+            </mail-panel>
+
+            <mail-panel>
+            Second.
+            </mail-panel>
+            MARKDOWN;
+
+        $html = (new MarkdownRenderer())->toHtml($markdown);
+
+        $this->assertSame(1, substr_count($html, 'background-color: #fef3c7'));
+        $this->assertSame(1, substr_count($html, 'background-color: #eff6ff'));
+    }
+
+    public function testPanelColorSupportsAKeyword(): void
+    {
+        $html = (new MarkdownRenderer())->toHtml("<mail-panel color=\"linen\">\nHello.\n</mail-panel>");
+
+        $this->assertStringContainsString('background-color: linen', $html);
+    }
+
+    public function testPanelFallsBackToTheDefaultWhenTheColorIsNotAColor(): void
+    {
+        // The attribute value is author-supplied and lands inside style="...",
+        // so anything that isn't a plain colour must not reach the stylesheet.
+        $html = (new MarkdownRenderer())->toHtml(
+            "<mail-panel color=\"red; background-image: url(https://evil.test/x)\">\nHello.\n</mail-panel>",
+        );
+
+        $this->assertStringNotContainsString('evil.test', $html);
+        $this->assertStringContainsString('background-color: #eff6ff', $html);
     }
 
     public function testNestedMailComponentsInsideAPanelAreParsed(): void

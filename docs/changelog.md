@@ -2,6 +2,30 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Mail Components: `<mail-button>` emitted its `url` through the `attr` escaper
+  context, which is meant for unquoted attribute values and encodes every
+  non-alphanumeric character. The `href` came out as
+  `https&#x3A;&#x2F;&#x2F;example.com` — which email clients still follow, but
+  which hides the link from anything post-processing the rendered HTML by
+  matching `href="http..."`, such as click tracking or link rewriting. The href
+  is double-quoted, so the `html` context is the correct one: it neutralises the
+  characters that could end the attribute and leaves the URL readable.
+- Mail Components: `<mail-panel>`'s `color` never reached the email. It was
+  emitted through the `css` escaper, which encodes `#` as `\23 `, producing
+  `background-color: \23 eff6ff` — an ident token where a hash token is
+  required, so the declaration was invalid and dropped. Panels rendered with no
+  background at all, including at the default colour. The value is now validated
+  as a hex colour or colour keyword, falling back to the default when it is
+  neither: for a value that lands in a CSS property position, escaping and
+  rendering are mutually exclusive, so validation is the only workable approach.
+- Mail Components: each component now renders with `saveData` off. CodeIgniter's
+  renderer carries view data between `render()` calls, so an optional attribute
+  set on one component leaked into the next component that omitted it — a
+  `<mail-panel>` with no `color` picked up the colour of an earlier panel in the
+  same email.
+
 ### Changed
 
 - **BREAKING:** the mailer configuration class is now `Myth\Postal\Config\Mailer`
