@@ -105,7 +105,7 @@ Write a component two ways, depending on how much content it needs to wrap:
 | Component | Attributes | Notes |
 |-----------|------------|-------|
 | `<mail-button>` | `url` (**required**) | Renders a styled link. Omitting `url` throws a `Myth\Postal\Exceptions\PostalException` with a clear message, rather than rendering a broken link. |
-| `<mail-panel>` | `color` (optional) | A callout box. Defaults to a light blue background when `color` isn't set. |
+| `<mail-panel>` | `color` (optional) | A callout box. Takes a hex value (`#fef3c7`) or a CSS colour keyword (`linen`); anything else falls back to the default light blue, since the value lands directly in a `style` attribute. |
 
 Both are styled with inline `style=""` attributes directly on their own markup, rather than relying solely on the layout's CSS inlining — so they still look right even in clients that strip `<style>` blocks entirely.
 
