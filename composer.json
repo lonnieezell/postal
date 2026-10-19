@@ -37,7 +37,9 @@
         "roave/security-advisories": "dev-latest"
     },
     "suggest": {
-        "aws/aws-sdk-php": "^3.0 to use the Amazon SES (SesTransport) delivery transport"
+        "aws/aws-sdk-php": "^3.0 to use the Amazon SES (SesTransport) delivery transport",
+        "ext-curl": "to use the API transports (e.g. ResendTransport) with the default CurlHttpClient",
+        "psr/http-client": "^1.0 to send API transport requests through your own PSR-18 client (Psr18HttpClient)"
     },
     "minimum-stability": "stable",
     "prefer-stable": true,

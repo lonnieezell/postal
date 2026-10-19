@@ -22,6 +22,7 @@ use Myth\Postal\Exceptions\PostalException;
 use Myth\Postal\MailerManager;
 use Myth\Postal\Transport\DkimSigningTransport;
 use Myth\Postal\Transport\FailoverTransport;
+use Myth\Postal\Transport\ResendTransport;
 use Psr\Log\AbstractLogger;
 use Stringable;
 use Tests\Support\AlwaysFailsTransport;
@@ -180,6 +181,16 @@ final class MailerManagerTest extends CIUnitTestCase
 
         $this->expectException(PostalException::class);
         $manager->mailer();
+    }
+
+    public function testResolvesResendMailer(): void
+    {
+        $config          = new MailerConfig();
+        $config->mailers = ['resend' => ['transport' => 'resend', 'key' => 're_test']];
+
+        $transport = $this->getPrivateProperty((new MailerManager($config))->mailer('resend'), 'transport');
+
+        $this->assertInstanceOf(ResendTransport::class, $transport);
     }
 
     public function testWrapsRawLeafWithDkimWhenConfigured(): void
