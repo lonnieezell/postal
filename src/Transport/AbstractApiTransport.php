@@ -16,9 +16,9 @@ namespace Myth\Postal\Transport;
 use Myth\Postal\Address;
 use Myth\Postal\Email;
 use Myth\Postal\Exceptions\PostalException;
+use Myth\Postal\MessageRenderer;
 use Myth\Postal\SendResult;
 use Psr\Log\LoggerInterface;
-use ReflectionClass;
 
 /**
  * Shared plumbing for transports that deliver through a provider's HTTP JSON
@@ -33,12 +33,16 @@ abstract readonly class AbstractApiTransport implements TransportInterface
 
     public function __construct(?HttpClientInterface $http = null, ?LoggerInterface $logger = null)
     {
-        $this->http   = $http ?? new CurlHttpClient();
+        $this->http   = $http ?? service('postalHttpClient');
         $this->logger = $logger ?? service('logger');
     }
 
     public function send(Email $email): SendResult
     {
+        // Turn data: URIs and local image paths in the HTML into cid: inline
+        // attachments, as the MIME renderer does for the other transports.
+        $email = (new MessageRenderer())->embedInlineImages($email);
+
         try {
             $response = $this->http->request(
                 'POST',
@@ -129,7 +133,7 @@ abstract readonly class AbstractApiTransport implements TransportInterface
      */
     protected function dropUnsupported(string $feature, string $reason): void
     {
-        $this->logger->debug(sprintf('%s dropped %s: %s.', (new ReflectionClass($this))->getShortName(), $feature, $reason));
+        $this->logger->debug(sprintf('%s dropped %s: %s.', substr((string) strrchr(static::class, '\\'), 1), $feature, $reason));
     }
 
     /**

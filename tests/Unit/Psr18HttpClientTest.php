@@ -39,13 +39,12 @@ final class Psr18HttpClientTest extends CIUnitTestCase
 
     public function testSendsTheRequestAndReturnsTheResponse(): void
     {
-        $client = $this->client(new Response(422, ['X-Request-Id' => 'abc'], '{"message":"nope"}'));
+        $client = $this->client(new Response(422, [], '{"message":"nope"}'));
 
         $response = $client->request('POST', 'https://api.example.com/emails', ['Authorization' => 'Bearer key'], '{"a":1}');
 
         $this->assertSame(422, $response->status);
         $this->assertSame('{"message":"nope"}', $response->body);
-        $this->assertSame('abc', $response->headers['x-request-id']);
 
         $request = $this->history[0]['request'];
         $this->assertSame('POST', $request->getMethod());

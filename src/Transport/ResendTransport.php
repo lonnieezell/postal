@@ -17,7 +17,6 @@ use Myth\Postal\Address;
 use Myth\Postal\Attachment;
 use Myth\Postal\Email;
 use Myth\Postal\Exceptions\PostalException;
-use Myth\Postal\MessageRenderer;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -62,10 +61,6 @@ final readonly class ResendTransport extends AbstractApiTransport
 
     protected function payload(Email $email): array
     {
-        // Turn data: URIs and local image paths in the HTML into cid: inline
-        // attachments, as the MIME renderer does for the other transports.
-        $email = (new MessageRenderer())->embedInlineImages($email);
-
         $payload = [
             'from'    => $email->from instanceof Address ? $this->formatAddress($email->from) : '',
             'to'      => array_map($this->formatAddress(...), $email->to),

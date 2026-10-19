@@ -48,7 +48,8 @@
   dropped and logged at `debug`.
 - HTTP client seam for API transports: `HttpClientInterface` returning a
   minimal `HttpResponse`, with `CurlHttpClient` (the default) and
-  `Psr18HttpClient` (adapts any PSR-18 client plus PSR-17 factories).
+  `Psr18HttpClient` (adapts any PSR-18 client plus PSR-17 factories),
+  resolved through the overridable `postalHttpClient` service.
   `AbstractApiTransport` holds the shared request / JSON / error handling.
 
 - Markdown Mailables: author an email body as CommonMark markdown via the

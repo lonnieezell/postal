@@ -27,8 +27,6 @@ final class CurlHttpClient implements HttpClientInterface
 
     public function request(string $method, string $url, array $headers = [], string $body = ''): HttpResponse
     {
-        $responseHeaders = [];
-
         $lines = [];
 
         foreach ($headers as $name => $value) {
@@ -43,14 +41,6 @@ final class CurlHttpClient implements HttpClientInterface
             CURLOPT_POSTFIELDS     => $body,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT        => self::TIMEOUT,
-            CURLOPT_HEADERFUNCTION => static function ($handle, string $line) use (&$responseHeaders): int {
-                if (str_contains($line, ':')) {
-                    [$name, $value]                           = explode(':', $line, 2);
-                    $responseHeaders[strtolower(trim($name))] = trim($value);
-                }
-
-                return strlen($line);
-            },
         ]);
 
         $responseBody = curl_exec($handle);
@@ -59,6 +49,6 @@ final class CurlHttpClient implements HttpClientInterface
             throw new PostalException(sprintf('HTTP request to %s failed: %s', $url, curl_error($handle)));
         }
 
-        return new HttpResponse(curl_getinfo($handle, CURLINFO_RESPONSE_CODE), $responseBody, $responseHeaders);
+        return new HttpResponse(curl_getinfo($handle, CURLINFO_RESPONSE_CODE), $responseBody);
     }
 }

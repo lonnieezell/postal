@@ -47,12 +47,6 @@ final readonly class Psr18HttpClient implements HttpClientInterface
             throw new PostalException(sprintf('HTTP request to %s failed: %s', $url, $e->getMessage()), 0, $e);
         }
 
-        $responseHeaders = [];
-
-        foreach (array_keys($response->getHeaders()) as $name) {
-            $responseHeaders[strtolower((string) $name)] = $response->getHeaderLine((string) $name);
-        }
-
-        return new HttpResponse($response->getStatusCode(), (string) $response->getBody(), $responseHeaders);
+        return new HttpResponse($response->getStatusCode(), (string) $response->getBody());
     }
 }

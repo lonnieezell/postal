@@ -18,6 +18,8 @@ use Config\Email as LegacyEmailConfig;
 use Myth\Postal\LegacyEmailAdapter;
 use Myth\Postal\MailerManager;
 use Myth\Postal\Markdown\MarkdownRenderer;
+use Myth\Postal\Transport\CurlHttpClient;
+use Myth\Postal\Transport\HttpClientInterface;
 
 class Services extends BaseService
 {
@@ -76,5 +78,19 @@ class Services extends BaseService
         }
 
         return new MarkdownRenderer();
+    }
+
+    /**
+     * The HTTP client API transports (e.g. Resend) send their requests
+     * through. Override this service to return a Psr18HttpClient wrapping
+     * your application's own PSR-18 client.
+     */
+    public static function postalHttpClient(bool $getShared = true): HttpClientInterface
+    {
+        if ($getShared) {
+            return static::getSharedInstance('postalHttpClient');
+        }
+
+        return new CurlHttpClient();
     }
 }

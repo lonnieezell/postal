@@ -19,14 +19,12 @@ namespace Myth\Postal\Transport;
 final readonly class HttpResponse
 {
     /**
-     * @param int                   $status  the HTTP status code
-     * @param string                $body    the raw response body
-     * @param array<string, string> $headers response headers, keyed by lower-cased name
+     * @param int    $status the HTTP status code
+     * @param string $body   the raw response body
      */
     public function __construct(
         public int $status,
         public string $body = '',
-        public array $headers = [],
     ) {
     }
 }

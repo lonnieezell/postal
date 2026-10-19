@@ -94,28 +94,39 @@ Resend signs your mail with the DKIM keys of your verified domain. It receives J
 
 ## HTTP clients
 
-The transport sends its request through `Myth\Postal\Transport\HttpClientInterface`. By default it uses `CurlHttpClient`, which needs PHP's `curl` extension and gives up after 30 seconds.
+The transport sends its request through `Myth\Postal\Transport\HttpClientInterface`. It takes it from the `postalHttpClient` service, which by default returns `CurlHttpClient`: it needs PHP's `curl` extension and gives up after 30 seconds.
 
-To use an HTTP client your application already has, wrap any PSR-18 client (with PSR-17 factories) in `Psr18HttpClient` and pass it as the transport's second constructor argument:
+To use an HTTP client your application already has, override that service in `app/Config/Services.php` and wrap any PSR-18 client (with PSR-17 factories) in `Psr18HttpClient`. Every API mailer then sends through it:
 
 ```php
 <?php
 
+namespace Config;
+
+use CodeIgniter\Config\BaseService;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\HttpFactory;
+use Myth\Postal\Transport\HttpClientInterface;
 use Myth\Postal\Transport\Psr18HttpClient;
-use Myth\Postal\Transport\ResendTransport;
 
-$factory   = new HttpFactory();
-$transport = new ResendTransport(
-    ['key' => env('RESEND_KEY')],
-    new Psr18HttpClient(new Client(), $factory, $factory),
-);
+class Services extends BaseService
+{
+    public static function postalHttpClient(bool $getShared = true): HttpClientInterface
+    {
+        if ($getShared) {
+            return static::getSharedInstance('postalHttpClient');
+        }
+
+        $factory = new HttpFactory();
+
+        return new Psr18HttpClient(new Client(), $factory, $factory);
+    }
+}
 ```
 
 ## Testing without calling Resend
 
-The same constructor argument is the test seam: pass your own `HttpClientInterface` that records the request and returns a canned `HttpResponse`:
+The transport also accepts an `HttpClientInterface` as its second constructor argument (or you can `Services::injectMock('postalHttpClient', ...)`). Pass your own client that records the request and returns a canned `HttpResponse`:
 
 ```php
 <?php
