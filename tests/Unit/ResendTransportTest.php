@@ -213,6 +213,18 @@ final class ResendTransportTest extends CIUnitTestCase
         $this->assertStringNotContainsString('data:image', (string) $json['html']);
     }
 
+    public function testUnencodablePayloadBecomesFailWithoutThrowing(): void
+    {
+        $http = new FakeHttpClient();
+
+        // Invalid UTF-8 (e.g. Latin-1 bytes from a legacy source) cannot be JSON-encoded.
+        $result = $this->transport($http)->send($this->message()->subject("Caf\xE9"));
+
+        $this->assertFalse($result->success);
+        $this->assertStringContainsString('UTF-8', (string) $result->error);
+        $this->assertNull($http->body);
+    }
+
     public function testMissingApiKeyThrows(): void
     {
         $this->expectException(PostalException::class);

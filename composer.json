@@ -39,7 +39,8 @@
     "suggest": {
         "aws/aws-sdk-php": "^3.0 to use the Amazon SES (SesTransport) delivery transport",
         "ext-curl": "to use the API transports (e.g. ResendTransport) with the default CurlHttpClient",
-        "psr/http-client": "^1.0 to send API transport requests through your own PSR-18 client (Psr18HttpClient)"
+        "psr/http-client": "^1.0 to send API transport requests through your own PSR-18 client (Psr18HttpClient)",
+        "psr/http-factory": "^1.0 for the PSR-17 request and stream factories Psr18HttpClient needs"
     },
     "minimum-stability": "stable",
     "prefer-stable": true,

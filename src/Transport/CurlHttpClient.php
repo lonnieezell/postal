@@ -21,12 +21,21 @@ use Myth\Postal\Exceptions\PostalException;
 final class CurlHttpClient implements HttpClientInterface
 {
     /**
+     * Seconds to wait for the connection to open before giving up.
+     */
+    private const CONNECT_TIMEOUT = 10;
+
+    /**
      * Seconds to wait for the whole request before giving up.
      */
     private const TIMEOUT = 30;
 
     public function request(string $method, string $url, array $headers = [], string $body = ''): HttpResponse
     {
+        if (! function_exists('curl_init')) {
+            throw new PostalException('CurlHttpClient requires the PHP "curl" extension. Install it, or override service(\'postalHttpClient\') with a Psr18HttpClient.');
+        }
+
         $lines = [];
 
         foreach ($headers as $name => $value) {
@@ -40,6 +49,7 @@ final class CurlHttpClient implements HttpClientInterface
             CURLOPT_HTTPHEADER     => $lines,
             CURLOPT_POSTFIELDS     => $body,
             CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CONNECTTIMEOUT => self::CONNECT_TIMEOUT,
             CURLOPT_TIMEOUT        => self::TIMEOUT,
         ]);
 

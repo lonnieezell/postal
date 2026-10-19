@@ -25,6 +25,11 @@ use Psr\Http\Message\StreamFactoryInterface;
  */
 final readonly class Psr18HttpClient implements HttpClientInterface
 {
+    /**
+     * @param ClientInterface         $client         the PSR-18 client that sends the request
+     * @param RequestFactoryInterface $requestFactory builds the PSR-7 request
+     * @param StreamFactoryInterface  $streamFactory  builds the request body stream
+     */
     public function __construct(
         private ClientInterface $client,
         private RequestFactoryInterface $requestFactory,

@@ -94,7 +94,7 @@ Resend signs your mail with the DKIM keys of your verified domain. It receives J
 
 ## HTTP clients
 
-The transport sends its request through `Myth\Postal\Transport\HttpClientInterface`. It takes it from the `postalHttpClient` service, which by default returns `CurlHttpClient`: it needs PHP's `curl` extension and gives up after 30 seconds.
+The transport sends its request through `Myth\Postal\Transport\HttpClientInterface`. It takes it from the `postalHttpClient` service, which by default returns `CurlHttpClient`: it needs PHP's `curl` extension and gives up after 10 seconds connecting or 30 seconds in total.
 
 To use an HTTP client your application already has, override that service in `app/Config/Services.php` and wrap any PSR-18 client (with PSR-17 factories) in `Psr18HttpClient`. Every API mailer then sends through it:
 

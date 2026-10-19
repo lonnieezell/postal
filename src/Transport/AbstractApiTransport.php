@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Myth\Postal\Transport;
 
+use JsonException;
 use Myth\Postal\Address;
 use Myth\Postal\Email;
 use Myth\Postal\Exceptions\PostalException;
@@ -31,6 +32,10 @@ abstract readonly class AbstractApiTransport implements TransportInterface
     protected HttpClientInterface $http;
     protected LoggerInterface $logger;
 
+    /**
+     * @param HttpClientInterface|null $http   the client requests go through; defaults to service('postalHttpClient')
+     * @param LoggerInterface|null     $logger receives debug notices for dropped features; defaults to service('logger')
+     */
     public function __construct(?HttpClientInterface $http = null, ?LoggerInterface $logger = null)
     {
         $this->http   = $http ?? service('postalHttpClient');
@@ -39,17 +44,19 @@ abstract readonly class AbstractApiTransport implements TransportInterface
 
     public function send(Email $email): SendResult
     {
-        // Turn data: URIs and local image paths in the HTML into cid: inline
-        // attachments, as the MIME renderer does for the other transports.
-        $email = (new MessageRenderer())->embedInlineImages($email);
-
         try {
+            // Turn data: URIs and local image paths in the HTML into cid: inline
+            // attachments, as the MIME renderer does for the other transports.
+            $email = (new MessageRenderer())->embedInlineImages($email);
+
             $response = $this->http->request(
                 'POST',
                 $this->endpoint(),
                 $this->headers() + ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
                 json_encode($this->payload($email), JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
             );
+        } catch (JsonException $e) {
+            return SendResult::fail('Could not encode the message as JSON: ' . $e->getMessage(), $e);
         } catch (PostalException $e) {
             return SendResult::fail($e->getMessage(), $e);
         }
