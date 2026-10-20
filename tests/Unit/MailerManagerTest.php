@@ -22,9 +22,12 @@ use Myth\Postal\Exceptions\PostalException;
 use Myth\Postal\MailerManager;
 use Myth\Postal\Transport\DkimSigningTransport;
 use Myth\Postal\Transport\FailoverTransport;
+use Myth\Postal\Transport\HttpResponse;
+use Myth\Postal\Transport\ResendTransport;
 use Psr\Log\AbstractLogger;
 use Stringable;
 use Tests\Support\AlwaysFailsTransport;
+use Tests\Support\FakeHttpClient;
 
 /**
  * @internal
@@ -36,6 +39,7 @@ final class MailerManagerTest extends CIUnitTestCase
         parent::tearDown();
 
         Events::removeAllListeners('email.sending');
+        Services::resetSingle('postalHttpClient');
     }
 
     public function testConfigEnablesEventsByDefault(): void
@@ -180,6 +184,31 @@ final class MailerManagerTest extends CIUnitTestCase
 
         $this->expectException(PostalException::class);
         $manager->mailer();
+    }
+
+    public function testResolvesResendMailer(): void
+    {
+        $config          = new MailerConfig();
+        $config->mailers = ['resend' => ['transport' => 'resend', 'key' => 're_test']];
+
+        $transport = $this->getPrivateProperty((new MailerManager($config))->mailer('resend'), 'transport');
+
+        $this->assertInstanceOf(ResendTransport::class, $transport);
+    }
+
+    public function testConfiguredResendMailerSendsThroughTheHttpClientService(): void
+    {
+        $http = new FakeHttpClient(new HttpResponse(200, '{"id":"resend-id"}'));
+        Services::injectMock('postalHttpClient', $http);
+
+        $config          = new MailerConfig();
+        $config->mailers = ['resend' => ['transport' => 'resend', 'key' => 're_test']];
+
+        $result = (new MailerManager($config))->mailer('resend')
+            ->send((new Email())->from('me@example.com')->to('you@example.com')->subject('Hi')->text('Hi'));
+
+        $this->assertSame('resend-id', $result->messageId);
+        $this->assertSame('https://api.resend.com/emails', $http->url);
     }
 
     public function testWrapsRawLeafWithDkimWhenConfigured(): void

@@ -40,6 +40,18 @@
 
 ### Added
 
+- Resend transport (`resend` mailer): delivers through the Resend HTTP API
+  with the mailer's `key`, maps `metadata` onto Resend tags, carries
+  attachments and inline images (`content_id`), and returns the Resend message
+  id. Error responses become `SendResult::fail()` with Resend's message.
+  Return path, non-default priority, and tags outside `[A-Za-z0-9_-]` are
+  dropped and logged at `debug`.
+- HTTP client seam for API transports: `HttpClientInterface` returning a
+  minimal `HttpResponse`, with `CurlHttpClient` (the default) and
+  `Psr18HttpClient` (adapts any PSR-18 client plus PSR-17 factories),
+  resolved through the overridable `postalHttpClient` service.
+  `AbstractApiTransport` holds the shared request / JSON / error handling.
+
 - Markdown Mailables: author an email body as CommonMark markdown via the
   `markdown()` global helper or `Mailable::markdown($view, $data)`, which
   resolves a view to raw markdown, converts it (`service('markdown')`, a

@@ -197,9 +197,7 @@ class LegacyEmailAdapter
         }
 
         // CI4 parity: Reply-To defaults to From when none was set.
-        if ($this->email->replyTo === null) {
-            $this->email->replyTo = $this->email->from;
-        }
+        $this->email->replyTo ??= $this->email->from;
 
         $this->prepareEmail();
         $mailer = $this->buildMailer();

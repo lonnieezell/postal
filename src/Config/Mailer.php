@@ -19,6 +19,7 @@ use Myth\Postal\Transport\FailoverTransport;
 use Myth\Postal\Transport\LogTransport;
 use Myth\Postal\Transport\MailTransport;
 use Myth\Postal\Transport\NullTransport;
+use Myth\Postal\Transport\ResendTransport;
 use Myth\Postal\Transport\SendmailTransport;
 use Myth\Postal\Transport\SesTransport;
 use Myth\Postal\Transport\SmtpTransport;
@@ -86,6 +87,7 @@ class Mailer extends BaseConfig
         'sendmail' => SendmailTransport::class,
         'mail'     => MailTransport::class,
         'ses'      => SesTransport::class,
+        'resend'   => ResendTransport::class,
         'failover' => FailoverTransport::class,
     ];
 }

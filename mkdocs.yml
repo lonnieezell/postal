@@ -57,6 +57,7 @@ nav:
   - Transports:
     - SMTP: smtp-mailer.md
     - Amazon SES: ses-mailer.md
+    - Resend: resend-mailer.md
     - Log: log-mailer.md
     - Sendmail & Mail: sendmail-mail-mailers.md
     - Failover: failover-mailer.md

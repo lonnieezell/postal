@@ -76,7 +76,8 @@ final class FakeTransport implements TransportInterface
             $matched = array_values(array_filter($matched, $filter));
         }
 
-        Assert::assertNotEmpty(
+        Assert::assertNotSame(
+            [],
             $matched,
             is_string($callback)
                 ? "No [{$callback}] message matching the given expectations was sent."
@@ -90,7 +91,8 @@ final class FakeTransport implements TransportInterface
      */
     public function assertSentTo(string $email): void
     {
-        Assert::assertNotEmpty(
+        Assert::assertNotSame(
+            [],
             $this->sent(fn (Email $message): bool => $this->hasRecipient($message, $email)),
             "No message was sent to [{$email}].",
         );

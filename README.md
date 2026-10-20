@@ -159,11 +159,11 @@ $email->send();
 | Null                 | `null`      | ✅        |
 | Fake (testing)       | —           | ✅        |
 | Amazon SES           | `ses`       | ✅        |
+| Resend               | `resend`    | ✅        |
 | Failover             | `failover`  | ✅        |
 | DKIM signing (decorator) | —       | ✅        |
 | Mailgun              | `mailgun`   | Planned   |
 | Postmark             | `postmark`  | Planned   |
-| Resend               | `resend`    | Planned   |
 
 Register your own transport by adding it to the `$transports` map in `Config\Mailer`.
 
