@@ -614,6 +614,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../resend-mailer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resend
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../log-mailer/" class="md-nav__link">
         
   
@@ -1270,7 +1298,21 @@
 </ul>
 <h3 id="added">Added</h3>
 <ul>
-<li>Markdown Mailables: author an email body as CommonMark markdown via the
+<li>Resend transport (<code>resend</code> mailer): delivers through the Resend HTTP API
+  with the mailer's <code>key</code>, maps <code>metadata</code> onto Resend tags, carries
+  attachments and inline images (<code>content_id</code>), and returns the Resend message
+  id. Error responses become <code>SendResult::fail()</code> with Resend's message.
+  Return path, non-default priority, and tags outside <code>[A-Za-z0-9_-]</code> are
+  dropped and logged at <code>debug</code>.</li>
+<li>
+<p>HTTP client seam for API transports: <code>HttpClientInterface</code> returning a
+  minimal <code>HttpResponse</code>, with <code>CurlHttpClient</code> (the default) and
+  <code>Psr18HttpClient</code> (adapts any PSR-18 client plus PSR-17 factories),
+  resolved through the overridable <code>postalHttpClient</code> service.
+  <code>AbstractApiTransport</code> holds the shared request / JSON / error handling.</p>
+</li>
+<li>
+<p>Markdown Mailables: author an email body as CommonMark markdown via the
   <code>markdown()</code> global helper or <code>Mailable::markdown($view, $data)</code>, which
   resolves a view to raw markdown, converts it (<code>service('markdown')</code>, a
   <code>MarkdownRenderer</code> built from a <code>League\CommonMark</code> <code>Environment</code>), wraps
@@ -1292,7 +1334,8 @@
   CI4's usual <code>esc()</code>-it-yourself trust
   model; see <a href="../markdown-mailables/#security-raw-html-passthrough">Markdown Mailables</a>.
   <code>make:mailable</code> gains a <code>--markdown</code> flag that scaffolds a starter markdown
-  view alongside a <code>build()</code> calling <code>-&gt;markdown()</code> instead of <code>-&gt;html()</code>.</li>
+  view alongside a <code>build()</code> calling <code>-&gt;markdown()</code> instead of <code>-&gt;html()</code>.</p>
+</li>
 <li>
 <p><code>spark publish</code> writes <code>app/Config/Mailer.php</code>, a <code>Config\Mailer</code> extending
   the package's config, which Postal then resolves in preference to its own

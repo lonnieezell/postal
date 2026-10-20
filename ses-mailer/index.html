@@ -14,7 +14,7 @@
         <link rel="prev" href="../smtp-mailer/">
       
       
-        <link rel="next" href="../log-mailer/">
+        <link rel="next" href="../resend-mailer/">
       
       
         
@@ -792,6 +792,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../resend-mailer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resend
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../log-mailer/" class="md-nav__link">
         
   
@@ -1399,11 +1427,11 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">public</span> <span class="k">array</span> <span class="nv">$mailers</span> <span class="o">=</span> <span class="p">[</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="s1">&#39;ses&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>        <span class="s1">&#39;transport&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;ses&#39;</span><span class="p">,</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>        <span class="s1">&#39;region&#39;</span>    <span class="o">=&gt;</span> <span class="s1">&#39;us-east-1&#39;</span><span class="p">,</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>        <span class="s1">&#39;key&#39;</span>       <span class="o">=&gt;</span> <span class="nx">env</span><span class="p">(</span><span class="s1">&#39;SES_KEY&#39;</span><span class="p">),</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>        <span class="s1">&#39;secret&#39;</span>    <span class="o">=&gt;</span> <span class="nx">env</span><span class="p">(</span><span class="s1">&#39;SES_SECRET&#39;</span><span class="p">),</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="s1">'ses'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>        <span class="s1">'transport'</span> <span class="o">=&gt;</span> <span class="s1">'ses'</span><span class="p">,</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>        <span class="s1">'region'</span>    <span class="o">=&gt;</span> <span class="s1">'us-east-1'</span><span class="p">,</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>        <span class="s1">'key'</span>       <span class="o">=&gt;</span> <span class="nx">env</span><span class="p">(</span><span class="s1">'SES_KEY'</span><span class="p">),</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>        <span class="s1">'secret'</span>    <span class="o">=&gt;</span> <span class="nx">env</span><span class="p">(</span><span class="s1">'SES_SECRET'</span><span class="p">),</span>
 <a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="p">],</span>
 <a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p">];</span>
 </code></pre></div>
@@ -1413,12 +1441,12 @@
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">use</span> <span class="nx">Myth\Postal\Email</span><span class="p">;</span>
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
 <a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nv">$email</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nx">Email</span><span class="p">())</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="o">-&gt;</span><span class="na">from</span><span class="p">(</span><span class="s1">&#39;you@example.com&#39;</span><span class="p">,</span> <span class="s1">&#39;Your Name&#39;</span><span class="p">)</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="o">-&gt;</span><span class="na">to</span><span class="p">(</span><span class="s1">&#39;user@example.com&#39;</span><span class="p">)</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="o">-&gt;</span><span class="na">subject</span><span class="p">(</span><span class="s1">&#39;Welcome aboard&#39;</span><span class="p">)</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="o">-&gt;</span><span class="na">html</span><span class="p">(</span><span class="s1">&#39;&lt;p&gt;Glad to have you with us.&lt;/p&gt;&#39;</span><span class="p">);</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="o">-&gt;</span><span class="na">from</span><span class="p">(</span><span class="s1">'you@example.com'</span><span class="p">,</span> <span class="s1">'Your Name'</span><span class="p">)</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="o">-&gt;</span><span class="na">to</span><span class="p">(</span><span class="s1">'user@example.com'</span><span class="p">)</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="o">-&gt;</span><span class="na">subject</span><span class="p">(</span><span class="s1">'Welcome aboard'</span><span class="p">)</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="o">-&gt;</span><span class="na">html</span><span class="p">(</span><span class="s1">'&lt;p&gt;Glad to have you with us.&lt;/p&gt;'</span><span class="p">);</span>
 <a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="nv">$result</span> <span class="o">=</span> <span class="nx">service</span><span class="p">(</span><span class="s1">&#39;mailer&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">mailer</span><span class="p">(</span><span class="s1">&#39;ses&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">send</span><span class="p">(</span><span class="nv">$email</span><span class="p">);</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="nv">$result</span> <span class="o">=</span> <span class="nx">service</span><span class="p">(</span><span class="s1">'mailer'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">mailer</span><span class="p">(</span><span class="s1">'ses'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">send</span><span class="p">(</span><span class="nv">$email</span><span class="p">);</span>
 <a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>
 <a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="nv">$result</span><span class="o">-&gt;</span><span class="na">messageId</span><span class="p">;</span> <span class="c1">// the SES message id on success</span>
 </code></pre></div>
@@ -1468,9 +1496,9 @@
 <p>Set <code>key</code> and <code>secret</code> explicitly, or leave them unset to let the AWS SDK resolve credentials from its <a href="https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/guide_credentials.html">default provider chain</a> — environment variables, shared credentials files, or the IAM role attached to your EC2/ECS/Lambda runtime. On AWS infrastructure, <strong>omitting <code>key</code>/<code>secret</code> and using an IAM role is the recommended setup</strong>: there are no long-lived secrets to store or rotate.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="s1">&#39;ses&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="s1">&#39;transport&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;ses&#39;</span><span class="p">,</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="s1">&#39;region&#39;</span>    <span class="o">=&gt;</span> <span class="s1">&#39;us-east-1&#39;</span><span class="p">,</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="s1">'ses'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="s1">'transport'</span> <span class="o">=&gt;</span> <span class="s1">'ses'</span><span class="p">,</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="s1">'region'</span>    <span class="o">=&gt;</span> <span class="s1">'us-east-1'</span><span class="p">,</span>
 <a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="c1">// no key/secret — credentials come from the instance role</span>
 <a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="p">],</span>
 </code></pre></div>
@@ -1492,8 +1520,8 @@
 <p>Attach key/value metadata to a message with <code>Email::metadata()</code>. The SES transport maps each pair onto an SES <strong>EmailTag</strong>, which you can use for filtering CloudWatch metrics and event streams:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nv">$email</span><span class="o">-&gt;</span><span class="na">metadata</span><span class="p">(</span><span class="s1">&#39;campaign&#39;</span><span class="p">,</span> <span class="s1">&#39;spring_2026&#39;</span><span class="p">)</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>      <span class="o">-&gt;</span><span class="na">metadata</span><span class="p">(</span><span class="s1">&#39;tier&#39;</span><span class="p">,</span> <span class="s1">&#39;gold&#39;</span><span class="p">);</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nv">$email</span><span class="o">-&gt;</span><span class="na">metadata</span><span class="p">(</span><span class="s1">'campaign'</span><span class="p">,</span> <span class="s1">'spring_2026'</span><span class="p">)</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>      <span class="o">-&gt;</span><span class="na">metadata</span><span class="p">(</span><span class="s1">'tier'</span><span class="p">,</span> <span class="s1">'gold'</span><span class="p">);</span>
 </code></pre></div>
 <p>SES restricts tag names and values to ASCII letters, digits, underscores and dashes (<code>A-Z a-z 0-9 _ -</code>), 1–256 characters each. Any pair that breaks those rules is <strong>dropped and logged at <code>debug</code></strong> rather than failing the send — so a stray space or colon in a tag never bounces an otherwise-good message. Only the offending key is logged; tag values are never written to the log.</p>
 <p>Metadata is ignored by transports that have no tagging concept (SMTP, sendmail, mail, log).</p>
@@ -1501,10 +1529,10 @@
 <p>Point the mailer at an SES configuration set to apply it to every message — useful for event publishing (deliveries, bounces, complaints), dedicated IP pools, or custom tracking:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="s1">&#39;ses&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="s1">&#39;transport&#39;</span>        <span class="o">=&gt;</span> <span class="s1">&#39;ses&#39;</span><span class="p">,</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="s1">&#39;region&#39;</span>           <span class="o">=&gt;</span> <span class="s1">&#39;us-east-1&#39;</span><span class="p">,</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="s1">&#39;configurationSet&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;transactional&#39;</span><span class="p">,</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="s1">'ses'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="s1">'transport'</span>        <span class="o">=&gt;</span> <span class="s1">'ses'</span><span class="p">,</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="s1">'region'</span>           <span class="o">=&gt;</span> <span class="s1">'us-east-1'</span><span class="p">,</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="s1">'configurationSet'</span> <span class="o">=&gt;</span> <span class="s1">'transactional'</span><span class="p">,</span>
 <a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="p">],</span>
 </code></pre></div>
 <h2 id="testing-without-calling-aws">Testing without calling AWS</h2>
@@ -1517,13 +1545,13 @@
 <a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="k">use</span> <span class="nx">Myth\Postal\Transport\SesTransport</span><span class="p">;</span>
 <a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>
 <a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="nv">$mock</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MockHandler</span><span class="p">();</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="nv">$mock</span><span class="o">-&gt;</span><span class="na">append</span><span class="p">(</span><span class="k">new</span> <span class="nx">Result</span><span class="p">([</span><span class="s1">&#39;MessageId&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;test-message-id&#39;</span><span class="p">]));</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="nv">$mock</span><span class="o">-&gt;</span><span class="na">append</span><span class="p">(</span><span class="k">new</span> <span class="nx">Result</span><span class="p">([</span><span class="s1">'MessageId'</span> <span class="o">=&gt;</span> <span class="s1">'test-message-id'</span><span class="p">]));</span>
 <a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>
 <a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="nv">$client</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SesV2Client</span><span class="p">([</span>
-<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>    <span class="s1">&#39;region&#39;</span>      <span class="o">=&gt;</span> <span class="s1">&#39;us-east-1&#39;</span><span class="p">,</span>
-<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>    <span class="s1">&#39;version&#39;</span>     <span class="o">=&gt;</span> <span class="s1">&#39;latest&#39;</span><span class="p">,</span>
-<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>    <span class="s1">&#39;credentials&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;key&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="s1">&#39;secret&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;test&#39;</span><span class="p">],</span>
-<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>    <span class="s1">&#39;handler&#39;</span>     <span class="o">=&gt;</span> <span class="nv">$mock</span><span class="p">,</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>    <span class="s1">'region'</span>      <span class="o">=&gt;</span> <span class="s1">'us-east-1'</span><span class="p">,</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>    <span class="s1">'version'</span>     <span class="o">=&gt;</span> <span class="s1">'latest'</span><span class="p">,</span>
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>    <span class="s1">'credentials'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'key'</span> <span class="o">=&gt;</span> <span class="s1">'test'</span><span class="p">,</span> <span class="s1">'secret'</span> <span class="o">=&gt;</span> <span class="s1">'test'</span><span class="p">],</span>
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>    <span class="s1">'handler'</span>     <span class="o">=&gt;</span> <span class="nv">$mock</span><span class="p">,</span>
 <a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="p">]);</span>
 <a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>
 <a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="nv">$transport</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SesTransport</span><span class="p">([],</span> <span class="nv">$client</span><span class="p">);</span>
@@ -1534,10 +1562,10 @@
 <p>A rejected send never throws. An SES (or AWS) error is caught and returned as <code>SendResult::fail()</code>, carrying the AWS error message and the original exception as its raw payload:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nv">$result</span> <span class="o">=</span> <span class="nx">service</span><span class="p">(</span><span class="s1">&#39;mailer&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">mailer</span><span class="p">(</span><span class="s1">&#39;ses&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">send</span><span class="p">(</span><span class="nv">$email</span><span class="p">);</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nv">$result</span> <span class="o">=</span> <span class="nx">service</span><span class="p">(</span><span class="s1">'mailer'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">mailer</span><span class="p">(</span><span class="s1">'ses'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">send</span><span class="p">(</span><span class="nv">$email</span><span class="p">);</span>
 <a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
 <a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nv">$result</span><span class="o">-&gt;</span><span class="na">success</span><span class="p">)</span> <span class="p">{</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="nx">log_message</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="s1">&#39;SES rejected the message: &#39;</span> <span class="o">.</span> <span class="nv">$result</span><span class="o">-&gt;</span><span class="na">error</span><span class="p">);</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="nx">log_message</span><span class="p">(</span><span class="s1">'error'</span><span class="p">,</span> <span class="s1">'SES rejected the message: '</span> <span class="o">.</span> <span class="nv">$result</span><span class="o">-&gt;</span><span class="na">error</span><span class="p">);</span>
 <a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="p">}</span>
 </code></pre></div>
 <h2 id="security">Security</h2>
@@ -1607,13 +1635,13 @@
         
         
           
-          <a href="../log-mailer/" class="md-footer__link md-footer__link--next" aria-label="Next: Log">
+          <a href="../resend-mailer/" class="md-footer__link md-footer__link--next" aria-label="Next: Resend">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Log
+                Resend
               </div>
             </div>
             <div class="md-footer__button md-icon">

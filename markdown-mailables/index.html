@@ -770,6 +770,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../resend-mailer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resend
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../log-mailer/" class="md-nav__link">
         
   
@@ -1361,10 +1389,10 @@
 <a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
 <a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="k">protected</span> <span class="k">function</span> <span class="nf">build</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
 <a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="p">{</span>
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">from</span><span class="p">(</span><span class="s1">&#39;hello@example.com&#39;</span><span class="p">,</span> <span class="s1">&#39;Acme&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">from</span><span class="p">(</span><span class="s1">'hello@example.com'</span><span class="p">,</span> <span class="s1">'Acme'</span><span class="p">)</span>
 <a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>            <span class="o">-&gt;</span><span class="na">to</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">user</span><span class="o">-&gt;</span><span class="na">email</span><span class="p">,</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">user</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">)</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>            <span class="o">-&gt;</span><span class="na">subject</span><span class="p">(</span><span class="s1">&#39;Welcome aboard&#39;</span><span class="p">)</span>
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>            <span class="o">-&gt;</span><span class="na">markdown</span><span class="p">(</span><span class="s1">&#39;emails/welcome&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;user&#39;</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">user</span><span class="p">]);</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>            <span class="o">-&gt;</span><span class="na">subject</span><span class="p">(</span><span class="s1">'Welcome aboard'</span><span class="p">)</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>            <span class="o">-&gt;</span><span class="na">markdown</span><span class="p">(</span><span class="s1">'emails/welcome'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'user'</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">user</span><span class="p">]);</span>
 <a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="p">}</span>
 <a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="p">}</span>
 </code></pre></div>
@@ -1381,11 +1409,11 @@
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">protected</span> <span class="k">function</span> <span class="nf">build</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="p">{</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">from</span><span class="p">(</span><span class="s1">&#39;news@example.com&#39;</span><span class="p">)</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">from</span><span class="p">(</span><span class="s1">'news@example.com'</span><span class="p">)</span>
 <a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>        <span class="o">-&gt;</span><span class="na">to</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">user</span><span class="o">-&gt;</span><span class="na">email</span><span class="p">)</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>        <span class="o">-&gt;</span><span class="na">subject</span><span class="p">(</span><span class="s1">&#39;This month at Acme&#39;</span><span class="p">)</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>        <span class="o">-&gt;</span><span class="na">layout</span><span class="p">(</span><span class="s1">&#39;mail/layouts/marketing&#39;</span><span class="p">)</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>        <span class="o">-&gt;</span><span class="na">markdown</span><span class="p">(</span><span class="s1">&#39;emails/newsletter&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;user&#39;</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">user</span><span class="p">]);</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>        <span class="o">-&gt;</span><span class="na">subject</span><span class="p">(</span><span class="s1">'This month at Acme'</span><span class="p">)</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>        <span class="o">-&gt;</span><span class="na">layout</span><span class="p">(</span><span class="s1">'mail/layouts/marketing'</span><span class="p">)</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>        <span class="o">-&gt;</span><span class="na">markdown</span><span class="p">(</span><span class="s1">'emails/newsletter'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'user'</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">user</span><span class="p">]);</span>
 <a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p">}</span>
 </code></pre></div>
 <p><code>markdown()</code> resolves the layout the moment it runs, so <code>layout()</code> has to come first — call it afterward and Postal throws a <code>Myth\Postal\Exceptions\PostalException</code> instead of silently ignoring it.</p>
@@ -1395,23 +1423,23 @@
 </div>
 <h2 id="mail-components">Mail Components</h2>
 <p>Mail Components are reusable, pre-styled elements you drop straight into your markdown using <code>mail-</code>-prefixed tags. Postal ships two: a button and a panel.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>&lt;mail-button url=&quot;https://example.com/confirm&quot;&gt;Confirm Email&lt;/mail-button&gt;
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>&lt;mail-button url="https://example.com/confirm"&gt;Confirm Email&lt;/mail-button&gt;
 </code></pre></div>
 <p>They aren't a regex trick — Mail Component tags are parsed as real nodes in the markdown document, right alongside headings and lists. There's nothing to enable; they're always available inside any markdown view.</p>
 <p>A tag's attributes become the component view's data, and its inner content becomes a <code>$slot</code> variable, so the example above resolves to:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="x">view(&#39;mail/components/button&#39;, [&#39;url&#39; =&gt; &#39;https://example.com/confirm&#39;, &#39;slot&#39; =&gt; &#39;Confirm Email&#39;])</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="x">view('mail/components/button', ['url' =&gt; 'https://example.com/confirm', 'slot' =&gt; 'Confirm Email'])</span>
 </code></pre></div>
 <h3 id="single-line-vs-multi-line">Single-line vs. multi-line</h3>
 <p>Write a component two ways, depending on how much content it needs to wrap:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Single-line</label><label for="__tabbed_1_2">Multi-line</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>&lt;mail-button url=&quot;https://example.com/confirm&quot;&gt;Confirm Email&lt;/mail-button&gt;
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>&lt;mail-button url="https://example.com/confirm"&gt;Confirm Email&lt;/mail-button&gt;
 </code></pre></div>
 <p>Everything between the tags is inline content — <code>**bold**</code>, links, and code spans all work, but nested Mail Components don't.</p>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>&lt;mail-panel color=&quot;#fef3c7&quot;&gt;
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>&lt;mail-panel color="#fef3c7"&gt;
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>Heads up — your trial ends <span class="gs">**Friday**</span>.
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
 <a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>[<span class="nt">Upgrade now</span>](<span class="na">https://example.com/upgrade</span>) to keep your data.
@@ -1462,7 +1490,7 @@
 <a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="x">&lt;/style&gt;</span>
 <a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="x">&lt;/head&gt;</span>
 <a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="x">&lt;body&gt;</span>
-<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="x">  &lt;div class=&quot;container&quot;&gt;</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="x">  &lt;div class="container"&gt;</span>
 <a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="x">    </span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$content</span> <span class="cp">?&gt;</span>
 <a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="x">  &lt;/div&gt;</span>
 <a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="x">&lt;/body&gt;</span>
@@ -1482,7 +1510,7 @@
 <p>The <code>markdown()</code> helper resolves a view file to raw markdown and converts it in one call. It's a global helper, always available — no <code>helper()</code> call needed, same as CodeIgniter's own <code>view()</code>:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nv">$rendered</span> <span class="o">=</span> <span class="nx">markdown</span><span class="p">(</span><span class="s1">&#39;emails/welcome&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">]);</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nv">$rendered</span> <span class="o">=</span> <span class="nx">markdown</span><span class="p">(</span><span class="s1">'emails/welcome'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">]);</span>
 <a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
 <a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">echo</span> <span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="nv">$rendered</span><span class="p">;</span>   <span class="c1">// the converted HTML</span>
 <a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="k">echo</span> <span class="nv">$rendered</span><span class="o">-&gt;</span><span class="na">text</span><span class="p">();</span>    <span class="c1">// a plain-text fallback, derived from the same markdown source</span>
@@ -1490,8 +1518,8 @@
 <p>If you already have a markdown string rather than a view file, call the conversion service directly:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="nv">$html</span> <span class="o">=</span> <span class="nx">service</span><span class="p">(</span><span class="s1">&#39;markdown&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">toHtml</span><span class="p">(</span><span class="s1">&#39;# Hello **World**&#39;</span><span class="p">);</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="nv">$text</span> <span class="o">=</span> <span class="nx">service</span><span class="p">(</span><span class="s1">&#39;markdown&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">toText</span><span class="p">(</span><span class="s1">&#39;# Hello **World**&#39;</span><span class="p">);</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="nv">$html</span> <span class="o">=</span> <span class="nx">service</span><span class="p">(</span><span class="s1">'markdown'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">toHtml</span><span class="p">(</span><span class="s1">'# Hello **World**'</span><span class="p">);</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="nv">$text</span> <span class="o">=</span> <span class="nx">service</span><span class="p">(</span><span class="s1">'markdown'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">toText</span><span class="p">(</span><span class="s1">'# Hello **World**'</span><span class="p">);</span>
 </code></pre></div>
 <p><code>Config\Postal::$markdownExtensions</code> controls which CommonMark extensions load on top of the core parser. By default that's GitHub-Flavored Markdown (tables, strikethrough, autolinks):</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="cp">&lt;?php</span>
@@ -1510,7 +1538,7 @@
 <p>That uses <code>Config\Postal::$defaultLayout</code> too, unless you pass a second argument to use a different layout for just this call:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="nv">$html</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nx">LayoutRenderer</span><span class="p">())</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">((</span><span class="nx">string</span><span class="p">)</span> <span class="nv">$rendered</span><span class="p">,</span> <span class="s1">&#39;mail/layouts/marketing&#39;</span><span class="p">);</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="nv">$html</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nx">LayoutRenderer</span><span class="p">())</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">((</span><span class="nx">string</span><span class="p">)</span> <span class="nv">$rendered</span><span class="p">,</span> <span class="s1">'mail/layouts/marketing'</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="security-raw-html-passthrough">Security: raw HTML passthrough</h2>
 <p>CommonMark's raw-HTML passthrough is left at its default (<code>allow</code>): any HTML you write directly in a markdown view — including a value interpolated without <code>esc()</code> — reaches the rendered email unescaped, exactly as it would in a regular CI4 view.</p>
