@@ -1262,6 +1262,11 @@
 <h2 id="unreleased">[Unreleased]</h2>
 <h3 id="fixed">Fixed</h3>
 <ul>
+<li>Preview: every link on the preview index failed. The class went into the URL
+  as <code>App%5CMails%5CWelcomeEmail</code>, and CodeIgniter rejects the decoded
+  backslashes because they aren't in the default <code>App::$permittedURIChars</code>. The
+  links now write the class with dots (<code>App.Mails.WelcomeEmail</code>), which the
+  preview maps back to the class name (#48).</li>
 <li>Mail Components: <code>&lt;mail-button&gt;</code> emitted its <code>url</code> through the <code>attr</code> escaper
   context, which is meant for unquoted attribute values and encodes every
   non-alphanumeric character. The <code>href</code> came out as
