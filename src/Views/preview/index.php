@@ -39,7 +39,7 @@ helper('url');
             <?php foreach ($mailables as $mailable): ?>
                 <li>
                     <span>
-                        <a href="<?= esc(site_url($previewPath . '/' . rawurlencode($mailable['class'])), 'attr') ?>">
+                        <a href="<?= esc(site_url($previewPath . '/' . str_replace('\\', '.', $mailable['class'])), 'attr') ?>">
                             <?= esc(substr((string) strrchr('\\' . $mailable['class'], '\\'), 1)) ?>
                         </a>
                         <span class="class"><?= esc($mailable['class']) ?></span>

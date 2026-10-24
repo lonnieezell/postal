@@ -66,11 +66,13 @@ class PreviewController extends Controller
     /**
      * Renders a single Mailable's preview with HTML, plain-text, and raw-MIME
      * tabs. An unknown / non-previewable class is a 404; a Mailable that throws
-     * while building has its error shown inline in the preview chrome.
+     * while building has its error shown inline in the preview chrome. The
+     * index links write the class with dots for backslashes, because
+     * CodeIgniter's default permittedURIChars rejects a backslash.
      */
     public function show(string $class): string
     {
-        $class = rawurldecode($class);
+        $class = str_replace('.', '\\', rawurldecode($class));
 
         // Validate the FQCN shape before class_exists() so a malformed segment
         // (e.g. one containing ".." path components) never reaches the autoloader.

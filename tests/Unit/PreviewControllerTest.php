@@ -71,6 +71,35 @@ final class PreviewControllerTest extends CIUnitTestCase
         $this->assertStringContainsString('preview blew up', $html);
     }
 
+    public function testIndexLinksPassTheDefaultPermittedUriChars(): void
+    {
+        $html = $this->controller()->index();
+
+        preg_match_all('#href="[^"]*/preview/([^"]+)"#', html_entity_decode($html), $matches);
+
+        $this->assertContains('Tests.Support.Mailables.PreviewWelcome', $matches[1]);
+
+        // CodeIgniter rejects a decoded URI segment outside App::$permittedURIChars,
+        // so an encoded backslash would never reach the controller.
+        foreach ($matches[1] as $segment) {
+            $this->assertMatchesRegularExpression('/\A[a-z 0-9~%.:_\-]+\z/iu', rawurldecode($segment));
+        }
+    }
+
+    public function testShowAcceptsTheDottedClassNameFromTheIndexLink(): void
+    {
+        $html = $this->controller()->show('Tests.Support.Mailables.PreviewWelcome');
+
+        $this->assertStringContainsString('Hi Sample', $html);
+    }
+
+    public function testShowReturns404ForADottedPathTraversal(): void
+    {
+        $this->expectException(PageNotFoundException::class);
+
+        $this->controller()->show('App..etc.passwd');
+    }
+
     public function testShowRendersTheHtmlTabInsideASandboxedIframe(): void
     {
         $html = $this->controller()->show(rawurlencode(PreviewWelcome::class));
