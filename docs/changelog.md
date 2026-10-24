@@ -4,6 +4,11 @@
 
 ### Fixed
 
+- Preview: every link on the preview index failed. The class went into the URL
+  as `App%5CMails%5CWelcomeEmail`, and CodeIgniter rejects the decoded
+  backslashes because they aren't in the default `App::$permittedURIChars`. The
+  links now write the class with dots (`App.Mails.WelcomeEmail`), which the
+  preview maps back to the class name (#48).
 - Mail Components: `<mail-button>` emitted its `url` through the `attr` escaper
   context, which is meant for unquoted attribute values and encodes every
   non-alphanumeric character. The `href` came out as
