@@ -1262,6 +1262,11 @@
 <h2 id="unreleased">[Unreleased]</h2>
 <h3 id="fixed">Fixed</h3>
 <ul>
+<li>Markdown: the plain-text part broke URLs that held a pair of <code>_</code>, <code>*</code>, <code>**</code>,
+  <code>~~</code> or backticks, such as <code>https://example.com/_promo_/x</code>. The emphasis rules
+  stripped the pair, so the link went somewhere else. <code>MarkdownRenderer::toText()</code>
+  now leaves link targets, Mail Component <code>url</code> values and bare <code>http(s)</code> URLs
+  unchanged (#56).</li>
 <li>Legacy adapter: Shield's <code>emailer()</code> threw a <code>TypeError</code>. <code>LegacyEmailAdapter</code>
   now extends <code>CodeIgniter\Email\Email</code>, so Shield's emails send through Postal.
   Subclasses that override a method with typed parameters must drop the types.
