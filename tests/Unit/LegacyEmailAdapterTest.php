@@ -610,4 +610,24 @@ final class LegacyEmailAdapterTest extends CIUnitTestCase
 
         $this->assertTrue($result);
     }
+
+    public function testSettersCoerceScalarsLikeTheFrameworkSignatures(): void
+    {
+        $transport = new RecordingTransport();
+
+        // CI4 callers without strict_types pass loose scalars.
+        $this->adapter($transport)
+            ->setFrom('me@example.com')
+            ->setTo('you@example.com')
+            ->setSubject(404) // @phpstan-ignore argument.type
+            ->setPriority('2') // @phpstan-ignore argument.type
+            ->setWordWrap(1) // @phpstan-ignore argument.type
+            ->setMessage('Hi')
+            ->send();
+
+        $email = $transport->sent[0];
+        $this->assertSame('404', $email->subject);
+        $this->assertSame(2, $email->priority);
+        $this->assertTrue($email->wordWrap);
+    }
 }

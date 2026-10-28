@@ -4,6 +4,11 @@
 
 ### Fixed
 
+- Legacy adapter: Shield's `emailer()` threw a `TypeError`. `LegacyEmailAdapter`
+  now extends `CodeIgniter\Email\Email`, so Shield's emails send through Postal.
+  Subclasses that override a method with typed parameters must drop the types.
+  `initialize()` now clears the message first, as the framework's does. See
+  ADR 0002 (#52).
 - Preview: every link on the preview index failed. The class went into the URL
   as `App%5CMails%5CWelcomeEmail`, and CodeIgniter rejects the decoded
   backslashes because they aren't in the default `App::$permittedURIChars`. The

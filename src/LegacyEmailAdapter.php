@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Myth\Postal;
 
+use CodeIgniter\Email\Email as FrameworkEmail;
 use Config\Email as LegacyConfig;
 use Myth\Postal\Transport\MailTransport;
 use Myth\Postal\Transport\SendmailTransport;
@@ -24,8 +25,10 @@ use Myth\Postal\Transport\TransportInterface;
  * fluent API on top of the new Email builder and Mailer. Existing application
  * code keeps working unchanged; legacy flat Config\Email keys are honoured so no
  * configuration changes are required.
+ *
+ * Extends the framework class only for its type; see docs/adr/0002.
  */
-class LegacyEmailAdapter
+class LegacyEmailAdapter extends FrameworkEmail
 {
     use LegacyEmailCompat;
 
@@ -37,43 +40,11 @@ class LegacyEmailAdapter
     private Email $email;
 
     /**
-     * Raw body, routed to the HTML or text part by $mailType at send time.
-     */
-    private string $body = '';
-
-    /**
-     * The plain-text alternative for an HTML message.
-     */
-    private string $altMessage = '';
-
-    /**
-     * 'text' or 'html'.
-     */
-    private string $mailType;
-
-    /**
-     * 'mail', 'sendmail' or 'smtp'.
-     */
-    private string $protocol;
-
-    private bool $wordWrap;
-    private int $wrapChars;
-    private bool $BCCBatchMode;
-    private int $BCCBatchSize;
-
-    /**
      * Recorded attachments, translated to native Attachments at send time.
      *
      * @var list<array{name: array{0: string, 1: string|null}, disposition: string, mime: string, cid: string|null}>
      */
-    private array $attachments = [];
-
-    /**
-     * Debugger lines (errors and notices) for printDebugger().
-     *
-     * @var list<string>
-     */
-    private array $debugMessage = [];
+    private array $attachmentRecords = [];
 
     /**
      * Set when an address failed validation; forces send() to return false.
@@ -105,13 +76,21 @@ class LegacyEmailAdapter
     }
 
     /**
-     * Merges per-call configuration, mirroring the legacy initialize(). Only the
-     * keys an application is likely to pass are mapped.
+     * Clears the message and merges per-call configuration, mirroring the
+     * legacy initialize(). Only the keys an application is likely to pass are
+     * mapped.
      *
-     * @param array<string, mixed> $config
+     * @param array<string, mixed>|LegacyConfig|null $config
      */
-    public function initialize(array $config): static
+    public function initialize($config): static
     {
+        if ($config instanceof LegacyConfig) {
+            $config = get_object_vars($config);
+        }
+        $config ??= [];
+
+        $this->clear();
+
         if (isset($config['protocol'])) {
             $this->setProtocol((string) $config['protocol']);
         }
@@ -148,8 +127,10 @@ class LegacyEmailAdapter
     /**
      * Resets the message content. Configuration (protocol, mail type, wrap, BCC
      * batch settings) is preserved, matching the legacy clear().
+     *
+     * @param bool $clearAttachments
      */
-    public function clear(bool $clearAttachments = false): static
+    public function clear($clearAttachments = false): static
     {
         $this->email            = $this->freshEmail();
         $this->body             = '';
@@ -158,7 +139,7 @@ class LegacyEmailAdapter
         $this->validationFailed = false;
 
         if ($clearAttachments) {
-            $this->attachments = [];
+            $this->attachmentRecords = [];
         }
 
         return $this;
@@ -169,8 +150,10 @@ class LegacyEmailAdapter
      * Invalid addresses, a missing From, missing recipients, or an unreadable
      * attachment cause a false return surfaced via printDebugger() — never an
      * exception.
+     *
+     * @param bool $autoClear
      */
-    public function send(bool $autoClear = true): bool
+    public function send($autoClear = true): bool
     {
         if ($this->email->from === null && $this->config->fromEmail !== '') {
             $this->setFrom($this->config->fromEmail, $this->config->fromName);
@@ -231,7 +214,7 @@ class LegacyEmailAdapter
      *
      * @param list<string>|string $include
      */
-    public function printDebugger(array|string $include = ['headers', 'subject', 'body']): string
+    public function printDebugger($include = ['headers', 'subject', 'body']): string
     {
         $this->prepareEmail();
 
@@ -324,7 +307,7 @@ class LegacyEmailAdapter
     {
         $this->email->attachments = [];
 
-        foreach ($this->attachments as $attachment) {
+        foreach ($this->attachmentRecords as $attachment) {
             $path    = (string) $attachment['name'][0];
             $newname = $attachment['name'][1];
             $name    = ($newname === null || $newname === '') ? null : (string) $newname;

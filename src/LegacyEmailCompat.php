@@ -23,13 +23,13 @@ namespace Myth\Postal;
 trait LegacyEmailCompat
 {
     /**
-     * @param string $from       a bare address or "Name <address>"
-     * @param string $name       display name
-     * @param string $returnPath envelope sender; defaults to $from when omitted
+     * @param string      $from       a bare address or "Name <address>"
+     * @param string      $name       display name
+     * @param string|null $returnPath envelope sender; defaults to $from when omitted
      */
-    public function setFrom(string $from, string $name = '', ?string $returnPath = null): static
+    public function setFrom($from, $name = '', $returnPath = null): static
     {
-        $from = $this->extractAddress($from);
+        $from = $this->extractAddress((string) $from);
 
         if (! $this->isValidEmail($from)) {
             $this->fail('Invalid From address: ' . $from);
@@ -38,19 +38,23 @@ trait LegacyEmailCompat
             return $this;
         }
 
-        $this->email->from = new Address($from, $name);
+        $this->email->from = new Address($from, (string) $name);
 
         // CI4 parity: the envelope sender defaults to the From address.
         $this->email->returnPath = ($returnPath !== null && $returnPath !== '')
-            ? $this->extractAddress($returnPath)
+            ? $this->extractAddress((string) $returnPath)
             : $from;
 
         return $this;
     }
 
-    public function setReplyTo(string $replyto, string $name = ''): static
+    /**
+     * @param string $replyto
+     * @param string $name
+     */
+    public function setReplyTo($replyto, $name = ''): static
     {
-        $replyto = $this->extractAddress($replyto);
+        $replyto = $this->extractAddress((string) $replyto);
 
         if (! $this->isValidEmail($replyto)) {
             $this->fail('Invalid Reply-To address: ' . $replyto);
@@ -59,7 +63,7 @@ trait LegacyEmailCompat
             return $this;
         }
 
-        $this->email->replyTo = new Address($replyto, $name);
+        $this->email->replyTo = new Address($replyto, (string) $name);
 
         return $this;
     }
@@ -67,7 +71,7 @@ trait LegacyEmailCompat
     /**
      * @param list<string>|string $to
      */
-    public function setTo(array|string $to): static
+    public function setTo($to): static
     {
         $this->addAddresses('to', $to);
 
@@ -77,7 +81,7 @@ trait LegacyEmailCompat
     /**
      * @param list<string>|string $cc
      */
-    public function setCC(array|string $cc): static
+    public function setCC($cc): static
     {
         $this->addAddresses('cc', $cc);
 
@@ -88,7 +92,7 @@ trait LegacyEmailCompat
      * @param list<string>|string $bcc
      * @param int|string          $limit batch size; a numeric value turns on BCC batch mode
      */
-    public function setBCC(array|string $bcc, int|string $limit = ''): static
+    public function setBCC($bcc, $limit = ''): static
     {
         if ($limit !== '' && is_numeric($limit)) {
             $this->BCCBatchMode = true;
@@ -100,9 +104,12 @@ trait LegacyEmailCompat
         return $this;
     }
 
-    public function setSubject(string $subject): static
+    /**
+     * @param string $subject
+     */
+    public function setSubject($subject): static
     {
-        $this->email->subject = $subject;
+        $this->email->subject = (string) $subject;
 
         return $this;
     }
@@ -110,50 +117,72 @@ trait LegacyEmailCompat
     /**
      * Stores the body. Whether it becomes the HTML or text part is decided by
      * the mail type at send/render time, so call order does not matter.
+     *
+     * @param string $body
      */
-    public function setMessage(string $body): static
+    public function setMessage($body): static
     {
-        $this->body = rtrim(str_replace("\r", '', $body));
+        $this->body = rtrim(str_replace("\r", '', (string) $body));
 
         return $this;
     }
 
-    public function setAltMessage(string $str): static
+    /**
+     * @param string $str
+     */
+    public function setAltMessage($str): static
     {
-        $this->altMessage = $str;
+        $this->altMessage = (string) $str;
 
         return $this;
     }
 
-    public function setMailType(string $type = 'text'): static
+    /**
+     * @param string $type
+     */
+    public function setMailType($type = 'text'): static
     {
         $this->mailType = $type === 'html' ? 'html' : 'text';
 
         return $this;
     }
 
-    public function setHeader(string $header, string $value): static
+    /**
+     * @param string $header
+     * @param string $value
+     */
+    public function setHeader($header, $value): static
     {
-        $this->email->header($header, str_replace(["\r", "\n"], '', $value));
+        $this->email->header((string) $header, str_replace(["\r", "\n"], '', (string) $value));
 
         return $this;
     }
 
-    public function setPriority(int $n = 3): static
+    /**
+     * @param int $n
+     */
+    public function setPriority($n = 3): static
     {
+        $n                     = (int) $n;
         $this->email->priority = ($n >= 1 && $n <= 5) ? $n : 3;
 
         return $this;
     }
 
-    public function setWordWrap(bool $wordWrap = true): static
+    /**
+     * @param bool $wordWrap
+     */
+    public function setWordWrap($wordWrap = true): static
     {
-        $this->wordWrap = $wordWrap;
+        $this->wordWrap = (bool) $wordWrap;
 
         return $this;
     }
 
-    public function setProtocol(string $protocol = 'mail'): static
+    /**
+     * @param string $protocol
+     */
+    public function setProtocol($protocol = 'mail'): static
     {
         $this->protocol = in_array($protocol, ['mail', 'sendmail', 'smtp'], true)
             ? strtolower($protocol)
@@ -165,8 +194,10 @@ trait LegacyEmailCompat
     /**
      * Accepted for source compatibility. Line endings are owned by the renderer,
      * so this is a safe no-op.
+     *
+     * @param string $newline
      */
-    public function setNewline(string $newline = "\n"): static
+    public function setNewline($newline = "\n"): static
     {
         return $this;
     }
@@ -174,8 +205,10 @@ trait LegacyEmailCompat
     /**
      * Accepted for source compatibility. Line endings are owned by the renderer,
      * so this is a safe no-op.
+     *
+     * @param string $CRLF
      */
-    public function setCRLF(string $CRLF = "\n"): static
+    public function setCRLF($CRLF = "\n"): static
     {
         return $this;
     }
@@ -192,7 +225,7 @@ trait LegacyEmailCompat
      */
     public function attach($file, $disposition = '', $newname = null, $mime = ''): static
     {
-        $this->attachments[] = [
+        $this->attachmentRecords[] = [
             'name'        => [$file, $newname],
             'disposition' => $disposition === '' ? 'attachment' : $disposition,
             'mime'        => $mime,
@@ -206,15 +239,17 @@ trait LegacyEmailCompat
      * Generates and stores a Content-ID for a previously attached file, matched
      * by its path or buffer name. Returns the CID, or false when no match.
      *
+     * @param string $filename
+     *
      * @return false|string
      */
-    public function setAttachmentCID(string $filename)
+    public function setAttachmentCID($filename)
     {
-        foreach ($this->attachments as $i => $attachment) {
+        foreach ($this->attachmentRecords as $i => $attachment) {
             if ($attachment['name'][0] === $filename || $attachment['name'][1] === $filename) {
-                $base                         = basename((string) ($attachment['name'][1] ?? $attachment['name'][0]));
-                $cid                          = uniqid($base . '@', true);
-                $this->attachments[$i]['cid'] = $cid;
+                $base                               = basename((string) ($attachment['name'][1] ?? $attachment['name'][0]));
+                $cid                                = uniqid($base . '@', true);
+                $this->attachmentRecords[$i]['cid'] = $cid;
 
                 return $cid;
             }
@@ -226,7 +261,7 @@ trait LegacyEmailCompat
     /**
      * @param array<int, string>|string $email
      */
-    public function validateEmail(array|string $email): bool
+    public function validateEmail($email): bool
     {
         if (! is_array($email)) {
             $this->fail('validateEmail() expects an array of addresses.');
@@ -245,9 +280,12 @@ trait LegacyEmailCompat
         return true;
     }
 
-    public function isValidEmail(string $email): bool
+    /**
+     * @param string $email
+     */
+    public function isValidEmail($email): bool
     {
-        return Address::isValid($email);
+        return Address::isValid((string) $email);
     }
 
     /**
@@ -258,7 +296,7 @@ trait LegacyEmailCompat
      *
      * @return ($email is array ? list<string> : string)
      */
-    public function cleanEmail(array|string $email): array|string
+    public function cleanEmail($email): array|string
     {
         if (! is_array($email)) {
             return $this->extractAddress($email);
@@ -295,29 +333,6 @@ trait LegacyEmailCompat
                 $this->email->bcc[] = $address;
             }
         }
-    }
-
-    /**
-     * Splits a comma/whitespace-separated address string into a list, mirroring
-     * CodeIgniter's behaviour. Arrays pass through unchanged.
-     *
-     * @param array<int, string>|string $email
-     *
-     * @return array<int, string>
-     */
-    private function stringToArray(array|string $email): array
-    {
-        if (is_array($email)) {
-            return $email;
-        }
-
-        if (str_contains($email, ',')) {
-            $parts = preg_split('/[\s,]/', $email, -1, PREG_SPLIT_NO_EMPTY);
-
-            return $parts === false ? [] : $parts;
-        }
-
-        return [trim($email)];
     }
 
     /**
