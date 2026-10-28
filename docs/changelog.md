@@ -9,6 +9,11 @@
   Subclasses that override a method with typed parameters must drop the types.
   `initialize()` now clears the message first, as the framework's does. See
   ADR 0002 (#52).
+- Markdown: the plain-text part of a `markdown()` Mailable kept Mail Component
+  tags, so text-only readers saw raw `<mail-button url="...">` markup and the
+  button's URL was hidden in an attribute. `MarkdownRenderer::toText()` now
+  replaces each component with its slot text, followed by its `url` in
+  parentheses when it has one, like a markdown link (#50).
 - Preview: every link on the preview index failed. The class went into the URL
   as `App%5CMails%5CWelcomeEmail`, and CodeIgniter rejects the decoded
   backslashes because they aren't in the default `App::$permittedURIChars`. The
@@ -38,6 +43,12 @@
 
 ### Changed
 
+- `Mailable::render()` now sets `Email::$mailableClass` (before, only `send()`
+  did), and the Events docs describe it. It holds the class name of the
+  Mailable that built the message, so `email.composing`, `email.sending`,
+  `email.sent` and `email.failed` listeners can tell which Mailable produced a
+  send. Messages built with `new Email()` or through the legacy adapter carry
+  `null`. The value is never written into the MIME message (#51).
 - **BREAKING:** the mailer configuration class is now `Myth\Postal\Config\Mailer`
   (was `Myth\Postal\Config\Email`), and `MailerManager` resolves it by its short
   name. The old name collided with the framework's legacy `Config\Email`, which

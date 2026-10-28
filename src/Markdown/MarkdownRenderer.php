@@ -17,6 +17,7 @@ use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\MarkdownConverter;
 use Myth\Postal\Config\Postal as PostalConfig;
+use Myth\Postal\Markdown\Parser\MailComponentStartParser;
 
 /**
  * Converts raw CommonMark markdown into HTML (for the message body) and into
@@ -63,6 +64,13 @@ class MarkdownRenderer
         '/\n{3,}/'                                   => "\n\n",
     ];
 
+    /**
+     * A `<mail-{tag} ...>slot</mail-{tag}>` component whose slot holds no
+     * other component tag. The slot is matched possessively so a large slot
+     * can't exhaust the PCRE JIT stack.
+     */
+    private const COMPONENT = '/' . MailComponentStartParser::OPEN_TAG_PATTERN . '((?:[^<]++|<(?!\/?mail-))*+)<\/mail-\1>/i';
+
     private readonly MarkdownConverter $converter;
 
     public function __construct(?PostalConfig $config = null)
@@ -98,7 +106,8 @@ class MarkdownRenderer
      */
     public function toText(string $markdown): string
     {
-        $lines = [];
+        $markdown = $this->stripComponentTags($markdown);
+        $lines    = [];
 
         foreach (explode("\n", $markdown) as $line) {
             // GFM table separator row, e.g. "| --- | --- |": drop entirely.
@@ -131,5 +140,34 @@ class MarkdownRenderer
         }
 
         return trim($text);
+    }
+
+    /**
+     * Replaces each Mail Component with its slot text, plus its `url` in
+     * parentheses like a markdown link. Nested components are unwrapped
+     * innermost-first, one pass at a time.
+     */
+    private function stripComponentTags(string $markdown): string
+    {
+        do {
+            $markdown = preg_replace_callback(
+                self::COMPONENT,
+                static function (array $match): string {
+                    $slot = trim($match[3]);
+                    $url  = MailComponentStartParser::parseAttributes($match[2])['url'] ?? '';
+
+                    if ($url === '') {
+                        return $slot;
+                    }
+
+                    return $slot === '' ? $url : $slot . ' (' . $url . ')';
+                },
+                $markdown,
+                -1,
+                $count,
+            ) ?? $markdown;
+        } while ($count > 0);
+
+        return $markdown;
     }
 }
