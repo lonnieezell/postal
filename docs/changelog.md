@@ -4,6 +4,11 @@
 
 ### Fixed
 
+- Markdown: the plain-text part of a `markdown()` Mailable kept Mail Component
+  tags, so text-only readers saw raw `<mail-button url="...">` markup and the
+  button's URL was hidden in an attribute. `MarkdownRenderer::toText()` now
+  replaces each component with its slot text, followed by its `url` in
+  parentheses when it has one, like a markdown link (#50).
 - Preview: every link on the preview index failed. The class went into the URL
   as `App%5CMails%5CWelcomeEmail`, and CodeIgniter rejects the decoded
   backslashes because they aren't in the default `App::$permittedURIChars`. The

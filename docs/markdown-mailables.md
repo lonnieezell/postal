@@ -109,6 +109,16 @@ Write a component two ways, depending on how much content it needs to wrap:
 
 Both are styled with inline `style=""` attributes directly on their own markup, rather than relying solely on the layout's CSS inlining — so they still look right even in clients that strip `<style>` blocks entirely.
 
+### Components in the plain-text part
+
+The plain-text fallback can't show a button or a panel, so each component turns into plain text there. Postal drops the tags and keeps the slot content, with its lines, list items and paragraphs. If a component has a `url` attribute, the URL follows the slot in parentheses, the same way a markdown link does:
+
+```text
+Confirm Email (https://example.com/confirm)
+```
+
+A component with an empty slot leaves just its `url`, or nothing if it has none. The text comes from the markdown source, not from the component's view. So anything the view adds on its own, such as fixed wording or a URL it builds from other attributes, won't be in the text. When that matters, call `->text()` after `->markdown()` with your own text. An explicit `text()` always replaces the generated one.
+
 Want to restyle them, or add your own? `Config\Postal::$componentViewPath` (default `'mail/components'`) controls where `<mail-{tag}>` looks for its view — `<mail-button>` resolves to `{componentViewPath}/button`. See the tip below for copying the shipped views into your own app.
 
 ## Customizing the Layout

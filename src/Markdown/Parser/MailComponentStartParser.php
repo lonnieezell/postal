@@ -33,7 +33,15 @@ use Myth\Postal\Markdown\Node\MailComponentNode;
  */
 final class MailComponentStartParser implements BlockStartParserInterface
 {
-    private const OPEN_TAG  = '/^<mail-([a-z][a-z0-9-]*)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*"[^"]*")?)*)\s*>/i';
+    /**
+     * Unanchored, undelimited `<mail-{tag} attr="...">` pattern, capturing
+     * the tag name and the raw attribute string. Shared with
+     * MarkdownRenderer::toText() so both use the same tag and attribute
+     * grammar.
+     */
+    public const OPEN_TAG_PATTERN = '<mail-([a-z][a-z0-9-]*)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*"[^"]*")?)*)\s*>';
+
+    private const OPEN_TAG  = '/^' . self::OPEN_TAG_PATTERN . '/i';
     private const ATTRIBUTE = '/([a-zA-Z_:][-a-zA-Z0-9_:.]*)\s*=\s*"([^"]*)"/';
 
     private ?MarkdownConverter $inlineConverter = null;
@@ -60,7 +68,7 @@ final class MailComponentStartParser implements BlockStartParserInterface
         }
 
         $tag        = strtolower($match[1]);
-        $attributes = $this->parseAttributes($match[2]);
+        $attributes = self::parseAttributes($match[2]);
         $afterOpen  = substr($remainder, strlen($match[0]));
         $closeTag   = '</mail-' . $tag . '>';
         $closePos   = stripos($afterOpen, $closeTag);
@@ -92,9 +100,12 @@ final class MailComponentStartParser implements BlockStartParserInterface
     }
 
     /**
+     * Parses an open tag's raw attribute string into decoded name => value
+     * pairs.
+     *
      * @return array<string, string>
      */
-    private function parseAttributes(string $raw): array
+    public static function parseAttributes(string $raw): array
     {
         preg_match_all(self::ATTRIBUTE, $raw, $matches, PREG_SET_ORDER);
 
