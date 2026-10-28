@@ -15,6 +15,7 @@ namespace Tests\Unit;
 
 use CodeIgniter\Test\CIUnitTestCase;
 use Myth\Postal\Markdown\MarkdownRenderer;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @internal
@@ -183,5 +184,67 @@ final class MarkdownRendererTest extends CIUnitTestCase
         $text = (new MarkdownRenderer())->toText("<mail-panel>\n{$slot}</mail-panel>");
 
         $this->assertStringNotContainsString('<mail-', $text);
+    }
+
+    public function testToTextStillStripsEmphasisAroundAUrl(): void
+    {
+        $text = (new MarkdownRenderer())->toText('Visit **https://example.com/a_b**, _https://example.com/c_ or `https://example.com/d`.');
+
+        $this->assertSame('Visit https://example.com/a_b, https://example.com/c or https://example.com/d.', $text);
+    }
+
+    public function testToTextRewritesALinkWhoseTextIsAUrl(): void
+    {
+        $text = (new MarkdownRenderer())->toText('[https://example.com/_a_](https://example.com/_a_)');
+
+        $this->assertSame('https://example.com/_a_ (https://example.com/_a_)', $text);
+    }
+
+    public function testToTextKeepsATrailingDelimiterInALinkUrlOutOfLaterEmphasis(): void
+    {
+        $text = (new MarkdownRenderer())->toText('[x](https://example.com/a_) and _italic_');
+
+        $this->assertSame('x (https://example.com/a_) and italic', $text);
+    }
+
+    public function testToTextKeepsEmphasisMarkersInsideRelativeUrls(): void
+    {
+        $text = (new MarkdownRenderer())->toText("[promo](/_promo_/x)\n\n<mail-button url=\"mailto:a@example.com?subject=_hi_\">Go</mail-button>");
+
+        $this->assertSame("promo (/_promo_/x)\n\nGo (mailto:a@example.com?subject=_hi_)", $text);
+    }
+
+    public function testToTextKeepsTheUrlOfAnEmptySlotComponentNestedInAnother(): void
+    {
+        $text = (new MarkdownRenderer())->toText('<mail-panel><mail-qr url="https://example.com/qr"></mail-qr></mail-panel>');
+
+        $this->assertSame('https://example.com/qr', $text);
+    }
+
+    #[DataProvider('provideToTextKeepsEmphasisMarkersInsideUrls')]
+    public function testToTextKeepsEmphasisMarkersInsideUrls(string $markdown, string $expected): void
+    {
+        $this->assertSame($expected, (new MarkdownRenderer())->toText($markdown));
+    }
+
+    public static function provideToTextKeepsEmphasisMarkersInsideUrls(): iterable
+    {
+        $paths = [
+            'underscore'    => '/_promo_/x',
+            'asterisk'      => '/*promo*/x',
+            'double star'   => '/**promo**/x',
+            'strikethrough' => '/~~promo~~/x',
+            'backtick'      => '/`promo`/x',
+        ];
+
+        foreach ($paths as $name => $path) {
+            $url = 'https://example.com' . $path;
+
+            yield "link, {$name}" => ["See [the promo]({$url}) now.", "See the promo ({$url}) now."];
+
+            yield "bare URL, {$name}" => ["See {$url} now.", "See {$url} now."];
+
+            yield "mail-button, {$name}" => ["<mail-button url=\"{$url}\">Go</mail-button>", "Go ({$url})"];
+        }
     }
 }
