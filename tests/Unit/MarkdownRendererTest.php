@@ -127,4 +127,61 @@ final class MarkdownRendererTest extends CIUnitTestCase
 
         $this->assertSame('nested quote', $text);
     }
+
+    public function testToTextRewritesAButtonAsItsLabelWithTheUrlInParens(): void
+    {
+        $text = (new MarkdownRenderer())->toText('<mail-button url="https://example.com/rsvp/abc/yes">Yes</mail-button>');
+
+        $this->assertSame('Yes (https://example.com/rsvp/abc/yes)', $text);
+    }
+
+    public function testToTextUnwrapsMultiLineAndNestedComponentsKeepingTheirLines(): void
+    {
+        $markdown = <<<'MD'
+            Are you coming?
+
+            <mail-panel color="#fef3c7">
+            **Who's coming**
+
+            - Alice
+            - Bob
+
+            <mail-button url="https://example.com/rsvp">RSVP</mail-button>
+            </mail-panel>
+
+            <mail-small>Sent by Hearthcall.</mail-small>
+            MD;
+
+        $text = (new MarkdownRenderer())->toText($markdown);
+
+        $this->assertSame(
+            "Are you coming?\n\nWho's coming\n\n- Alice\n- Bob\n\nRSVP (https://example.com/rsvp)\n\nSent by Hearthcall.",
+            $text,
+        );
+    }
+
+    public function testToTextKeepsTheUrlOfAnEmptySlotComponentAndDropsOneWithout(): void
+    {
+        $text = (new MarkdownRenderer())->toText(
+            "<mail-qr url=\"https://example.com/?a=1&amp;b=2\"></mail-qr>\n\n<mail-divider></mail-divider>\n\nBye",
+        );
+
+        $this->assertSame("https://example.com/?a=1&b=2\n\nBye", $text);
+    }
+
+    public function testToTextIgnoresAnEmptyUrlAttribute(): void
+    {
+        $text = (new MarkdownRenderer())->toText('<mail-button url="">Go</mail-button>');
+
+        $this->assertSame('Go', $text);
+    }
+
+    public function testToTextUnwrapsAComponentWithALargeSlot(): void
+    {
+        $slot = str_repeat("A line of <b>legal</b> footer text.\n", 2000);
+
+        $text = (new MarkdownRenderer())->toText("<mail-panel>\n{$slot}</mail-panel>");
+
+        $this->assertStringNotContainsString('<mail-', $text);
+    }
 }
