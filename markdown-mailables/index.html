@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -29,10 +29,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -550,6 +550,17 @@
     <span class="md-ellipsis">
       
         The shipped components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#components-in-the-plain-text-part" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Components in the plain-text part
       
     </span>
   </a>
@@ -1285,6 +1296,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#components-in-the-plain-text-part" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Components in the plain-text part
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1476,25 +1498,30 @@
 </tbody>
 </table>
 <p>Both are styled with inline <code>style=""</code> attributes directly on their own markup, rather than relying solely on the layout's CSS inlining — so they still look right even in clients that strip <code>&lt;style&gt;</code> blocks entirely.</p>
+<h3 id="components-in-the-plain-text-part">Components in the plain-text part</h3>
+<p>The plain-text fallback can't show a button or a panel, so each component turns into plain text there. Postal drops the tags and keeps the slot content, with its lines, list items and paragraphs. If a component has a <code>url</code> attribute, the URL follows the slot in parentheses, the same way a markdown link does:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Confirm Email (https://example.com/confirm)
+</code></pre></div>
+<p>A component with an empty slot leaves just its <code>url</code>, or nothing if it has none. The text comes from the markdown source, not from the component's view. So anything the view adds on its own, such as fixed wording or a URL it builds from other attributes, won't be in the text. When that matters, call <code>-&gt;text()</code> after <code>-&gt;markdown()</code> with your own text. An explicit <code>text()</code> always replaces the generated one.</p>
 <p>Want to restyle them, or add your own? <code>Config\Postal::$componentViewPath</code> (default <code>'mail/components'</code>) controls where <code>&lt;mail-{tag}&gt;</code> looks for its view — <code>&lt;mail-button&gt;</code> resolves to <code>{componentViewPath}/button</code>. See the tip below for copying the shipped views into your own app.</p>
 <h2 id="customizing-the-layout">Customizing the Layout</h2>
 <p>A Layout is the shared page template your markdown gets wrapped in — a single slot, filled in with the HTML your markdown converted to. It's applied <em>after</em> conversion, which is a deliberate difference from CodeIgniter's own <code>extend()</code>/<code>section()</code>: those compose at the raw view level, before anything's been converted, and don't give Postal a clean point to run CSS inlining or resolve Mail Components against the final HTML.</p>
 <p>The default layout ships at <code>mail/layouts/default</code>, and receives the converted content as <code>$content</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="x">&lt;!-- app/Views/mail/layouts/default.php --&gt;</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="x">&lt;!doctype html&gt;</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="x">&lt;html&gt;</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="x">&lt;head&gt;</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="x">&lt;style&gt;</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="x">  body { font-family: sans-serif; background: #f4f4f5; }</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="x">  .container { max-width: 600px; margin: 0 auto; padding: 24px; }</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="x">&lt;/style&gt;</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="x">&lt;/head&gt;</span>
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="x">&lt;body&gt;</span>
-<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="x">  &lt;div class="container"&gt;</span>
-<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="x">    </span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$content</span> <span class="cp">?&gt;</span>
-<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="x">  &lt;/div&gt;</span>
-<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="x">&lt;/body&gt;</span>
-<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="x">&lt;/html&gt;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="x">&lt;!-- app/Views/mail/layouts/default.php --&gt;</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="x">&lt;!doctype html&gt;</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="x">&lt;html&gt;</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="x">&lt;head&gt;</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="x">&lt;style&gt;</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="x">  body { font-family: sans-serif; background: #f4f4f5; }</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="x">  .container { max-width: 600px; margin: 0 auto; padding: 24px; }</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="x">&lt;/style&gt;</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="x">&lt;/head&gt;</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="x">&lt;body&gt;</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="x">  &lt;div class="container"&gt;</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="x">    </span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$content</span> <span class="cp">?&gt;</span>
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="x">  &lt;/div&gt;</span>
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="x">&lt;/body&gt;</span>
+<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="x">&lt;/html&gt;</span>
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Make it yours</p>
@@ -1508,49 +1535,49 @@
 <h2 id="advanced-converting-markdown-directly">Advanced: converting markdown directly</h2>
 <p><code>Mailable::markdown()</code> covers the common case, but its two building blocks — the <code>markdown()</code> helper and <code>LayoutRenderer</code> — are useful on their own too, if you want converted HTML without the full pipeline.</p>
 <p>The <code>markdown()</code> helper resolves a view file to raw markdown and converts it in one call. It's a global helper, always available — no <code>helper()</code> call needed, same as CodeIgniter's own <code>view()</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nv">$rendered</span> <span class="o">=</span> <span class="nx">markdown</span><span class="p">(</span><span class="s1">'emails/welcome'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">]);</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">echo</span> <span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="nv">$rendered</span><span class="p">;</span>   <span class="c1">// the converted HTML</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="k">echo</span> <span class="nv">$rendered</span><span class="o">-&gt;</span><span class="na">text</span><span class="p">();</span>    <span class="c1">// a plain-text fallback, derived from the same markdown source</span>
-</code></pre></div>
-<p>If you already have a markdown string rather than a view file, call the conversion service directly:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="nv">$html</span> <span class="o">=</span> <span class="nx">service</span><span class="p">(</span><span class="s1">'markdown'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">toHtml</span><span class="p">(</span><span class="s1">'# Hello **World**'</span><span class="p">);</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="nv">$text</span> <span class="o">=</span> <span class="nx">service</span><span class="p">(</span><span class="s1">'markdown'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">toText</span><span class="p">(</span><span class="s1">'# Hello **World**'</span><span class="p">);</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="nv">$rendered</span> <span class="o">=</span> <span class="nx">markdown</span><span class="p">(</span><span class="s1">'emails/welcome'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">]);</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="k">echo</span> <span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="nv">$rendered</span><span class="p">;</span>   <span class="c1">// the converted HTML</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="k">echo</span> <span class="nv">$rendered</span><span class="o">-&gt;</span><span class="na">text</span><span class="p">();</span>    <span class="c1">// a plain-text fallback, derived from the same markdown source</span>
 </code></pre></div>
-<p><code>Config\Postal::$markdownExtensions</code> controls which CommonMark extensions load on top of the core parser. By default that's GitHub-Flavored Markdown (tables, strikethrough, autolinks):</p>
+<p>If you already have a markdown string rather than a view file, call the conversion service directly:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="k">public</span> <span class="k">array</span> <span class="nv">$markdownExtensions</span> <span class="o">=</span> <span class="p">[</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="nx">League\CommonMark\Extension\GithubFlavoredMarkdownExtension</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="p">];</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="nv">$html</span> <span class="o">=</span> <span class="nx">service</span><span class="p">(</span><span class="s1">'markdown'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">toHtml</span><span class="p">(</span><span class="s1">'# Hello **World**'</span><span class="p">);</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="nv">$text</span> <span class="o">=</span> <span class="nx">service</span><span class="p">(</span><span class="s1">'markdown'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">toText</span><span class="p">(</span><span class="s1">'# Hello **World**'</span><span class="p">);</span>
 </code></pre></div>
-<p>To apply a Layout yourself — without going through a Mailable — use <code>LayoutRenderer</code>, which wraps content in a Layout and inlines its CSS:</p>
+<p><code>Config\Postal::$markdownExtensions</code> controls which CommonMark extensions load on top of the core parser. By default that's GitHub-Flavored Markdown (tables, strikethrough, autolinks):</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">use</span> <span class="nx">Myth\Postal\Markdown\LayoutRenderer</span><span class="p">;</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="nv">$html</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nx">LayoutRenderer</span><span class="p">())</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">((</span><span class="nx">string</span><span class="p">)</span> <span class="nv">$rendered</span><span class="p">);</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">public</span> <span class="k">array</span> <span class="nv">$markdownExtensions</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="nx">League\CommonMark\Extension\GithubFlavoredMarkdownExtension</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="p">];</span>
 </code></pre></div>
-<p>That uses <code>Config\Postal::$defaultLayout</code> too, unless you pass a second argument to use a different layout for just this call:</p>
+<p>To apply a Layout yourself — without going through a Mailable — use <code>LayoutRenderer</code>, which wraps content in a Layout and inlines its CSS:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="nv">$html</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nx">LayoutRenderer</span><span class="p">())</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">((</span><span class="nx">string</span><span class="p">)</span> <span class="nv">$rendered</span><span class="p">,</span> <span class="s1">'mail/layouts/marketing'</span><span class="p">);</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="k">use</span> <span class="nx">Myth\Postal\Markdown\LayoutRenderer</span><span class="p">;</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="nv">$html</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nx">LayoutRenderer</span><span class="p">())</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">((</span><span class="nx">string</span><span class="p">)</span> <span class="nv">$rendered</span><span class="p">);</span>
+</code></pre></div>
+<p>That uses <code>Config\Postal::$defaultLayout</code> too, unless you pass a second argument to use a different layout for just this call:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="nv">$html</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nx">LayoutRenderer</span><span class="p">())</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">((</span><span class="nx">string</span><span class="p">)</span> <span class="nv">$rendered</span><span class="p">,</span> <span class="s1">'mail/layouts/marketing'</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="security-raw-html-passthrough">Security: raw HTML passthrough</h2>
 <p>CommonMark's raw-HTML passthrough is left at its default (<code>allow</code>): any HTML you write directly in a markdown view — including a value interpolated without <code>esc()</code> — reaches the rendered email unescaped, exactly as it would in a regular CI4 view.</p>
 <div class="admonition warning">
 <p class="admonition-title">Escape untrusted data yourself</p>
 <p>Markdown mailables carry the same trust model as any other CodeIgniter view: nothing here sanitizes interpolated values automatically. If a markdown view interpolates data a user controls — a name, a comment, a URL — wrap it in <code>esc()</code> yourself, exactly as you would in a regular <code>.php</code> view:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="c1">// app/Views/emails/comment-notification.php</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="cp">?&gt;</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="x">New comment from **</span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nx">esc</span><span class="p">(</span><span class="nv">$comment</span><span class="o">-&gt;</span><span class="na">authorName</span><span class="p">)</span> <span class="cp">?&gt;</span><span class="x">**:</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="x">&gt; </span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nx">esc</span><span class="p">(</span><span class="nv">$comment</span><span class="o">-&gt;</span><span class="na">body</span><span class="p">)</span> <span class="cp">?&gt;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="c1">// app/Views/emails/comment-notification.php</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="cp">?&gt;</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="x">New comment from **</span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nx">esc</span><span class="p">(</span><span class="nv">$comment</span><span class="o">-&gt;</span><span class="na">authorName</span><span class="p">)</span> <span class="cp">?&gt;</span><span class="x">**:</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="x">&gt; </span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nx">esc</span><span class="p">(</span><span class="nv">$comment</span><span class="o">-&gt;</span><span class="na">body</span><span class="p">)</span> <span class="cp">?&gt;</span>
 </code></pre></div>
 <p>Skipping this is no more or less risky than skipping <code>esc()</code> in an HTML view — but it's easy to assume markdown is "just text" and let your guard down. It isn't: it compiles to HTML, and unescaped interpolation compiles right along with it.</p>
 </div>
@@ -1685,10 +1712,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "content.code.copy", "navigation.footer", "content.action.edit", "navigation.top", "search.suggest", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "content.code.copy", "navigation.footer", "content.action.edit", "navigation.top", "search.suggest", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
       
     
   </body>
