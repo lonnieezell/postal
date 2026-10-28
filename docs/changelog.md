@@ -4,6 +4,11 @@
 
 ### Fixed
 
+- Markdown: the plain-text part broke URLs that held a pair of `_`, `*`, `**`,
+  `~~` or backticks, such as `https://example.com/_promo_/x`. The emphasis rules
+  stripped the pair, so the link went somewhere else. `MarkdownRenderer::toText()`
+  now leaves link targets, Mail Component `url` values and bare `http(s)` URLs
+  unchanged (#56).
 - Legacy adapter: Shield's `emailer()` threw a `TypeError`. `LegacyEmailAdapter`
   now extends `CodeIgniter\Email\Email`, so Shield's emails send through Postal.
   Subclasses that override a method with typed parameters must drop the types.
