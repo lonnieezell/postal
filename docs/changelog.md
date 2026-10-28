@@ -51,6 +51,16 @@
 
 ### Added
 
+- `Myth\Postal\Preview\MailablePreviewer`: the discovery and rendering behind
+  the browser preview, as a public class, so a host application can build its
+  own preview screens. It takes a namespace => directory map, finds the
+  previewable Mailables in it (`discover()`), checks an untrusted class name
+  (`isPreviewable()`), returns just a class's subject for list screens
+  (`subject()`), and renders one class to a `MailablePreview` holding the
+  subject, HTML, text (and whether it was derived from the HTML), raw MIME and
+  attachment names — or the exception it threw. `PreviewController` now uses
+  it. A failure while rendering the MIME message is now reported on the
+  preview detail page like a build failure, instead of an error response (#53).
 - Resend transport (`resend` mailer): delivers through the Resend HTTP API
   with the mailer's `key`, maps `metadata` onto Resend tags, carries
   attachments and inline images (`content_id`), and returns the Resend message

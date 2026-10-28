@@ -15,10 +15,10 @@ namespace Myth\Postal\Controllers;
 
 use CodeIgniter\Controller;
 use CodeIgniter\Exceptions\PageNotFoundException;
-use Myth\Postal\Attachment;
 use Myth\Postal\Config\Postal;
+use Myth\Postal\Exceptions\PostalException;
 use Myth\Postal\Mailable;
-use Myth\Postal\MessageRenderer;
+use Myth\Postal\Preview\MailablePreviewer;
 use Myth\Postal\Previewable;
 use Throwable;
 
@@ -29,10 +29,12 @@ use Throwable;
 class PreviewController extends Controller
 {
     private readonly Postal $config;
+    private readonly MailablePreviewer $previewer;
 
     public function __construct(?Postal $config = null)
     {
-        $this->config = $config ?? config('Postal');
+        $this->config    = $config ?? config('Postal');
+        $this->previewer = new MailablePreviewer($this->config->mailableNamespaces);
     }
 
     /**
@@ -49,7 +51,7 @@ class PreviewController extends Controller
             $entry = ['class' => $class, 'subject' => null, 'error' => null];
 
             try {
-                $entry['subject'] = $class::previewInstance()->render()->subject;
+                $entry['subject'] = $this->previewer->subject($class);
             } catch (Throwable $e) {
                 $entry['error'] = $e->getMessage();
             }
@@ -74,79 +76,41 @@ class PreviewController extends Controller
     {
         $class = str_replace('.', '\\', rawurldecode($class));
 
-        // Validate the FQCN shape before class_exists() so a malformed segment
-        // (e.g. one containing ".." path components) never reaches the autoloader.
-        $identifier = '[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*';
-
-        if (
-            preg_match('/^' . $identifier . '(\\\\' . $identifier . ')*$/', $class) !== 1
-            || ! class_exists($class)
-            || ! is_subclass_of($class, Mailable::class)
-            || ! is_a($class, Previewable::class, true)
-        ) {
-            throw PageNotFoundException::forPageNotFound('Unknown previewable Mailable: ' . $class);
+        try {
+            $preview = $this->previewer->render($class);
+        } catch (PostalException $e) {
+            throw PageNotFoundException::forPageNotFound($e->getMessage());
         }
 
-        try {
-            $email = $class::previewInstance()->render();
-        } catch (Throwable $e) {
+        if ($preview->error !== null) {
             return view('Myth\Postal\Views\preview\show', [
                 'class'       => $class,
                 'previewPath' => $this->config->previewPath,
-                'error'       => $e->getMessage() . "\n\n" . $e->getTraceAsString(),
+                'error'       => $preview->error->getMessage() . "\n\n" . $preview->error->getTraceAsString(),
             ]);
         }
-
-        $renderer = new MessageRenderer();
-        $textAuto = $email->textBody === null && $email->htmlBody !== null;
-        $text     = $email->textBody ?? ($email->htmlBody !== null ? $renderer->htmlToText($email->htmlBody) : '');
 
         return view('Myth\Postal\Views\preview\show', [
             'class'       => $class,
             'previewPath' => $this->config->previewPath,
             'error'       => null,
-            'subject'     => $email->subject,
-            'htmlBody'    => $email->htmlBody,
-            'text'        => $text,
-            'textAuto'    => $textAuto,
-            'rawMime'     => $renderer->render($email),
-            'attachments' => array_map(static fn (Attachment $a): string => $a->name, $email->attachments),
+            'subject'     => $preview->subject,
+            'htmlBody'    => $preview->htmlBody,
+            'text'        => $preview->text,
+            'textAuto'    => $preview->textAuto,
+            'rawMime'     => $preview->rawMime,
+            'attachments' => $preview->attachments,
         ]);
     }
 
     /**
-     * Scans the configured namespace/path pairs and returns the fully-qualified
-     * names of every Mailable that implements Previewable.
+     * Returns the fully-qualified names of every previewable Mailable in the
+     * configured namespace/path pairs.
      *
      * @return list<class-string<Mailable&Previewable>>
      */
     public function discover(): array
     {
-        $found = [];
-
-        foreach ($this->config->mailableNamespaces as $namespace => $path) {
-            $namespace = rtrim($namespace, '\\');
-            $files     = glob(rtrim($path, '/\\') . DIRECTORY_SEPARATOR . '*.php');
-
-            if ($files === false) {
-                continue;
-            }
-
-            foreach ($files as $file) {
-                $class = $namespace . '\\' . basename($file, '.php');
-
-                if (! class_exists($class)) {
-                    continue;
-                }
-
-                if (is_subclass_of($class, Mailable::class) && is_a($class, Previewable::class, true)) {
-                    $found[] = $class;
-                }
-            }
-        }
-
-        sort($found);
-
-        return $found;
+        return $this->previewer->discover();
     }
 }
