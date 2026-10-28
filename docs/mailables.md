@@ -234,6 +234,46 @@ echo $email->htmlBody;
 
 `render()` runs `build()` and hands back the composed [`Email`](index.md) — it never sends. It's the build-without-send counterpart to `send()`.
 
+### Building your own preview screen
+
+The preview pages are a thin layer over `Myth\Postal\Preview\MailablePreviewer`. Use it directly to show previews inside your own admin area. Pass it the namespace → directory pairs to scan; it doesn't read `Config\Postal` itself:
+
+```php
+<?php
+
+use CodeIgniter\Exceptions\PageNotFoundException;
+use Myth\Postal\Exceptions\PostalException;
+use Myth\Postal\Preview\MailablePreviewer;
+
+$previewer = new MailablePreviewer([
+    'App\Mails'          => APPPATH . 'Mails',
+    'Modules\Blog\Mails' => ROOTPATH . 'modules/Blog/Mails',
+]);
+
+$classes = $previewer->discover(); // sorted Mailable & Previewable class names
+
+try {
+    $preview = $previewer->render($class);
+} catch (PostalException $e) {
+    throw PageNotFoundException::forPageNotFound($e->getMessage());
+}
+
+if ($preview->error !== null) {
+    echo $preview->error->getMessage();
+} else {
+    echo $preview->subject;
+    echo $preview->htmlBody;    // null when there's no HTML body
+    echo $preview->text;        // derived from the HTML when $preview->textAuto is true
+    echo $preview->rawMime;
+    print_r($preview->attachments); // file names
+}
+```
+
+- `discover()` returns every class in those directories that extends `Mailable` and implements `Previewable`.
+- `isPreviewable()` is safe to call with untrusted input, such as a URL segment. It checks the class name's shape before the autoloader ever sees it. `render()` and `subject()` run the same check themselves.
+- `subject($class)` builds the Mailable and returns only its subject. It skips the text and MIME rendering, so it's the cheap call for a list screen. Unlike `render()`, it lets a build error throw, so wrap it in `try`/`catch`.
+- `render()` and `subject()` throw a `PostalException` for a class that isn't previewable. Anything thrown while building or rendering the Mailable comes back in `$preview->error` instead, so one broken Mailable can't take down your page.
+
 ## Next steps
 
 - [Testing Mail](testing.md) — assert that a Mailable was sent, by class, without touching a real transport

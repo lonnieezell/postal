@@ -62,6 +62,14 @@ class PostalException extends RuntimeException
         return new self("<mail-{$tag}> requires a \"{$attribute}\" attribute.");
     }
 
+    /**
+     * Thrown by MailablePreviewer when a class name is not a previewable Mailable.
+     */
+    public static function forUnknownPreviewable(string $class): self
+    {
+        return new self("Unknown previewable Mailable: {$class}");
+    }
+
     public static function forLayoutAfterMarkdown(): self
     {
         return new self('layout() must be called before markdown() in build() - markdown() resolves the layout as soon as it runs.');

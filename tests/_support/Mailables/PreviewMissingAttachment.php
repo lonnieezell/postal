@@ -1,0 +1,36 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * This file is part of Myth/Postal.
+ *
+ * (c) Lonnie Ezell <lonnieje@gmail.com>
+ *
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ */
+
+namespace Tests\Support\Mailables;
+
+use Myth\Postal\Mailable;
+use Myth\Postal\Previewable;
+
+final class PreviewMissingAttachment extends Mailable implements Previewable
+{
+    public static function previewInstance(): static
+    {
+        return new self();
+    }
+
+    protected function build(): void
+    {
+        $this->from('me@example.com')
+            ->to('you@example.com')
+            ->subject('Builds fine, fails at MIME time')
+            ->text('See attached');
+
+        // Attachments are read lazily, so this only fails while rendering MIME.
+        $this->email->attach('/no/such/file.pdf');
+    }
+}
