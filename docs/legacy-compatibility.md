@@ -23,6 +23,16 @@ if (! $email->send()) {
 }
 ```
 
+## Type compatibility and Shield
+
+`LegacyEmailAdapter` extends `CodeIgniter\Email\Email`. Code that type-hints the framework class accepts it, so [CodeIgniter Shield](https://github.com/codeigniter4/shield)'s `emailer()` helper works with no changes. Activation, two-factor, and magic-link emails all send through Postal's transports and fire Postal's events.
+
+The framework class is used only for its type. The adapter never runs the parent constructor, and it overrides every method that builds or sends a message. The framework's own sender is never used. See [ADR 0002](adr/0002-legacy-adapter-extends-framework-email.md).
+
+Set options through the setters or `initialize()`. The adapter inherits the framework's public properties (`$mailType`, `$SMTPHost`, …), but writing them directly is not supported.
+
+If you subclass the adapter, your overrides must match the framework's untyped parameters. For example, write `setFrom($from, $name = '', $returnPath = null)`, not `setFrom(string $from, ...)`.
+
 ## Supported methods
 
 The full legacy surface is available:

@@ -4,6 +4,11 @@
 
 ### Fixed
 
+- Legacy adapter: Shield's `emailer()` threw a `TypeError`. `LegacyEmailAdapter`
+  now extends `CodeIgniter\Email\Email`, so Shield's emails send through Postal.
+  Subclasses that override a method with typed parameters must drop the types.
+  `initialize()` now clears the message first, as the framework's does. See
+  ADR 0002 (#52).
 - Markdown: the plain-text part of a `markdown()` Mailable kept Mail Component
   tags, so text-only readers saw raw `<mail-button url="...">` markup and the
   button's URL was hidden in an attribute. `MarkdownRenderer::toText()` now
