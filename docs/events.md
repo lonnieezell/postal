@@ -44,6 +44,21 @@ Events::on('email.failed', static function (Email $message, SendResult $result):
 });
 ```
 
+## Knowing which Mailable sent it
+
+When a [Mailable](mailables.md) sends the message, `$message->mailableClass` holds the Mailable's fully-qualified class name. Messages you build with `new Email()`, or send through the legacy adapter, carry `null`. Postal never writes this value into the email's headers, so it stays on your side of the wire:
+
+```php
+<?php
+
+Events::on('email.sent', static function (Email $message, SendResult $result): void {
+    log_message('info', '{mailable} sent, id {id}', [
+        'mailable' => $message->mailableClass ?? 'ad-hoc email',
+        'id'       => $result->messageId,
+    ]);
+});
+```
+
 ## Modifying the message
 
 `composing` and `sending` listeners receive the live message object, so anything you change there goes out with the email. It's the clean place to enforce app-wide rules — add a compliance BCC, stamp a header, or set a default `from`:

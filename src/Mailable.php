@@ -54,12 +54,15 @@ abstract class Mailable
     abstract protected function build(): void;
 
     /**
-     * Runs build() and returns the composed Email without sending it. The
-     * build-without-send seam used by the preview tooling.
+     * Runs build() and returns the composed Email, tagged with this
+     * mailable's class, without sending it. The build-without-send seam used
+     * by the preview tooling.
      */
     public function render(): Email
     {
         $this->build();
+
+        $this->email->mailableClass = static::class;
 
         return $this->email;
     }
@@ -70,11 +73,9 @@ abstract class Mailable
      */
     public function send(): SendResult
     {
-        $this->build();
+        $email = $this->render();
 
-        $this->email->mailableClass = static::class;
-
-        return service('mailer')->mailer($this->mailerName)->send($this->email);
+        return service('mailer')->mailer($this->mailerName)->send($email);
     }
 
     protected function from(string $address, string $name = ''): static

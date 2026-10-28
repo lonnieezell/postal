@@ -76,8 +76,10 @@ class Email
     public bool $autoEmbedImages = true;
 
     /**
-     * The Mailable class that composed this message, set by Mailable::send().
-     * Lets the fake transport filter recorded messages by mailable type.
+     * The Mailable class that composed this message, set by Mailable::render()
+     * (and so send()). Null for messages built directly or through the legacy
+     * adapter. Lets event listeners and the fake transport tell which Mailable
+     * produced a send. Never rendered into the MIME message.
      */
     public ?string $mailableClass = null;
 

@@ -65,6 +65,15 @@ final class LegacyEmailAdapterTest extends CIUnitTestCase
         $this->assertNull($email->htmlBody);
     }
 
+    public function testSendCarriesNoMailableClass(): void
+    {
+        $transport = new RecordingTransport();
+
+        $this->adapter($transport)->setFrom('me@example.com')->setTo('you@example.com')->setMessage('Hi')->send();
+
+        $this->assertNull($transport->sent[0]->mailableClass);
+    }
+
     public function testSetFromExtractsAddrSpecFromNamedAddress(): void
     {
         $transport = new RecordingTransport();

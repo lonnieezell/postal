@@ -44,6 +44,16 @@ final class MessageRendererTest extends CIUnitTestCase
         $this->assertStringContainsString('Hello there', $body);
     }
 
+    public function testMailableClassIsNotRendered(): void
+    {
+        $email                = (new Email())->from('me@example.com')->to('you@example.com')->text('Hi');
+        $email->mailableClass = 'App\\Mails\\WelcomeEmail';
+
+        $mime = (new MessageRenderer())->render($email);
+
+        $this->assertStringNotContainsString('WelcomeEmail', $mime);
+    }
+
     public function testRendersCcAndReplyToWhenSet(): void
     {
         $email = (new Email())
