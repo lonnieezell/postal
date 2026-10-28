@@ -36,6 +36,9 @@
         "phpstan/phpstan-strict-rules": "^2.0",
         "roave/security-advisories": "dev-latest"
     },
+    "conflict": {
+        "phpstan/phpstan": "2.3.4"
+    },
     "suggest": {
         "aws/aws-sdk-php": "^3.0 to use the Amazon SES (SesTransport) delivery transport",
         "ext-curl": "to use the API transports (e.g. ResendTransport) with the default CurlHttpClient",
