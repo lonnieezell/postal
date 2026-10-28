@@ -1314,6 +1314,16 @@
 </ul>
 <h3 id="added">Added</h3>
 <ul>
+<li><code>Myth\Postal\Preview\MailablePreviewer</code>: the discovery and rendering behind
+  the browser preview, as a public class, so a host application can build its
+  own preview screens. It takes a namespace =&gt; directory map, finds the
+  previewable Mailables in it (<code>discover()</code>), checks an untrusted class name
+  (<code>isPreviewable()</code>), returns just a class's subject for list screens
+  (<code>subject()</code>), and renders one class to a <code>MailablePreview</code> holding the
+  subject, HTML, text (and whether it was derived from the HTML), raw MIME and
+  attachment names — or the exception it threw. <code>PreviewController</code> now uses
+  it. A failure while rendering the MIME message is now reported on the
+  preview detail page like a build failure, instead of an error response (#53).</li>
 <li>Resend transport (<code>resend</code> mailer): delivers through the Resend HTTP API
   with the mailer's <code>key</code>, maps <code>metadata</code> onto Resend tags, carries
   attachments and inline images (<code>content_id</code>), and returns the Resend message

@@ -583,6 +583,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#building-your-own-preview-screen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building your own preview screen
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1351,6 +1362,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#building-your-own-preview-screen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building your own preview screen
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1625,6 +1647,43 @@
 <a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="k">echo</span> <span class="nv">$email</span><span class="o">-&gt;</span><span class="na">htmlBody</span><span class="p">;</span>
 </code></pre></div>
 <p><code>render()</code> runs <code>build()</code> and hands back the composed <a href="../"><code>Email</code></a> — it never sends. It's the build-without-send counterpart to <code>send()</code>.</p>
+<h3 id="building-your-own-preview-screen">Building your own preview screen</h3>
+<p>The preview pages are a thin layer over <code>Myth\Postal\Preview\MailablePreviewer</code>. Use it directly to show previews inside your own admin area. Pass it the namespace → directory pairs to scan; it doesn't read <code>Config\Postal</code> itself:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="k">use</span> <span class="nx">CodeIgniter\Exceptions\PageNotFoundException</span><span class="p">;</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="k">use</span> <span class="nx">Myth\Postal\Exceptions\PostalException</span><span class="p">;</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="k">use</span> <span class="nx">Myth\Postal\Preview\MailablePreviewer</span><span class="p">;</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="nv">$previewer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MailablePreviewer</span><span class="p">([</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>    <span class="s1">'App\Mails'</span>          <span class="o">=&gt;</span> <span class="nx">APPPATH</span> <span class="o">.</span> <span class="s1">'Mails'</span><span class="p">,</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>    <span class="s1">'Modules\Blog\Mails'</span> <span class="o">=&gt;</span> <span class="nx">ROOTPATH</span> <span class="o">.</span> <span class="s1">'modules/Blog/Mails'</span><span class="p">,</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="p">]);</span>
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="nv">$classes</span> <span class="o">=</span> <span class="nv">$previewer</span><span class="o">-&gt;</span><span class="na">discover</span><span class="p">();</span> <span class="c1">// sorted Mailable &amp; Previewable class names</span>
+<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>
+<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="k">try</span> <span class="p">{</span>
+<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>    <span class="nv">$preview</span> <span class="o">=</span> <span class="nv">$previewer</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">(</span><span class="nv">$class</span><span class="p">);</span>
+<a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a><span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">PostalException</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a>    <span class="k">throw</span> <span class="nx">PageNotFoundException</span><span class="o">::</span><span class="na">forPageNotFound</span><span class="p">(</span><span class="nv">$e</span><span class="o">-&gt;</span><span class="na">getMessage</span><span class="p">());</span>
+<a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="p">}</span>
+<a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a>
+<a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a><span class="k">if</span> <span class="p">(</span><span class="nv">$preview</span><span class="o">-&gt;</span><span class="na">error</span> <span class="o">!==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a>    <span class="k">echo</span> <span class="nv">$preview</span><span class="o">-&gt;</span><span class="na">error</span><span class="o">-&gt;</span><span class="na">getMessage</span><span class="p">();</span>
+<a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+<a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a>    <span class="k">echo</span> <span class="nv">$preview</span><span class="o">-&gt;</span><span class="na">subject</span><span class="p">;</span>
+<a id="__codelineno-12-24" name="__codelineno-12-24" href="#__codelineno-12-24"></a>    <span class="k">echo</span> <span class="nv">$preview</span><span class="o">-&gt;</span><span class="na">htmlBody</span><span class="p">;</span>    <span class="c1">// null when there's no HTML body</span>
+<a id="__codelineno-12-25" name="__codelineno-12-25" href="#__codelineno-12-25"></a>    <span class="k">echo</span> <span class="nv">$preview</span><span class="o">-&gt;</span><span class="na">text</span><span class="p">;</span>        <span class="c1">// derived from the HTML when $preview-&gt;textAuto is true</span>
+<a id="__codelineno-12-26" name="__codelineno-12-26" href="#__codelineno-12-26"></a>    <span class="k">echo</span> <span class="nv">$preview</span><span class="o">-&gt;</span><span class="na">rawMime</span><span class="p">;</span>
+<a id="__codelineno-12-27" name="__codelineno-12-27" href="#__codelineno-12-27"></a>    <span class="nb">print_r</span><span class="p">(</span><span class="nv">$preview</span><span class="o">-&gt;</span><span class="na">attachments</span><span class="p">);</span> <span class="c1">// file names</span>
+<a id="__codelineno-12-28" name="__codelineno-12-28" href="#__codelineno-12-28"></a><span class="p">}</span>
+</code></pre></div>
+<ul>
+<li><code>discover()</code> returns every class in those directories that extends <code>Mailable</code> and implements <code>Previewable</code>.</li>
+<li><code>isPreviewable()</code> is safe to call with untrusted input, such as a URL segment. It checks the class name's shape before the autoloader ever sees it. <code>render()</code> and <code>subject()</code> run the same check themselves.</li>
+<li><code>subject($class)</code> builds the Mailable and returns only its subject. It skips the text and MIME rendering, so it's the cheap call for a list screen. Unlike <code>render()</code>, it lets a build error throw, so wrap it in <code>try</code>/<code>catch</code>.</li>
+<li><code>render()</code> and <code>subject()</code> throw a <code>PostalException</code> for a class that isn't previewable. Anything thrown while building or rendering the Mailable comes back in <code>$preview-&gt;error</code> instead, so one broken Mailable can't take down your page.</li>
+</ul>
 <h2 id="next-steps">Next steps</h2>
 <ul>
 <li><a href="../testing/">Testing Mail</a> — assert that a Mailable was sent, by class, without touching a real transport</li>
