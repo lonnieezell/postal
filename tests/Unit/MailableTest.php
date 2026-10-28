@@ -14,12 +14,14 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use CodeIgniter\Config\Services;
+use CodeIgniter\Events\Events;
 use CodeIgniter\Test\CIUnitTestCase;
 use Myth\Postal\Email;
 use Myth\Postal\Mailable;
 use Myth\Postal\Mailer;
 use Myth\Postal\MailerManager;
 use Myth\Postal\Transport\FakeTransport;
+use Tests\Support\AlwaysFailsTransport;
 use Tests\Support\Mailables\WelcomeEmail;
 
 /**
@@ -32,6 +34,10 @@ final class MailableTest extends CIUnitTestCase
         parent::tearDown();
 
         Services::reset();
+
+        foreach (['email.sent', 'email.failed'] as $event) {
+            Events::removeAllListeners($event);
+        }
     }
 
     public function testSendComposesTheEmailFromBuild(): void
@@ -54,6 +60,42 @@ final class MailableTest extends CIUnitTestCase
         (new WelcomeEmail())->send();
 
         $fake->assertSent(static fn (Email $email): bool => $email->mailableClass === WelcomeEmail::class);
+    }
+
+    public function testSentListenersSeeTheMailableClass(): void
+    {
+        Mailer::fake();
+        $seen = 'not-fired';
+
+        Events::on('email.sent', static function (Email $message) use (&$seen): void {
+            $seen = $message->mailableClass;
+        });
+
+        (new WelcomeEmail())->send();
+
+        $this->assertSame(WelcomeEmail::class, $seen);
+    }
+
+    public function testFailedListenersSeeTheMailableClass(): void
+    {
+        $seen = 'not-fired';
+
+        Events::on('email.failed', static function (Email $message) use (&$seen): void {
+            $seen = $message->mailableClass;
+        });
+
+        (new Mailer(new AlwaysFailsTransport()))->send((new WelcomeEmail())->render());
+
+        $this->assertSame(WelcomeEmail::class, $seen);
+    }
+
+    public function testPlainEmailSendCarriesNoMailableClass(): void
+    {
+        $fake = Mailer::fake();
+
+        service('mailer')->mailer()->send((new Email())->from('me@example.com')->to('you@example.com'));
+
+        $fake->assertSent(static fn (Email $email): bool => $email->mailableClass === null);
     }
 
     public function testSendReturnsTheTransportResult(): void
@@ -86,6 +128,13 @@ final class MailableTest extends CIUnitTestCase
         $this->assertSame('Welcome, Ada', $email->subject);
         $this->assertSame('<p>Hello Ada</p>', $email->htmlBody);
         $fake->assertNothingSent();
+    }
+
+    public function testRenderTagsTheMailableClass(): void
+    {
+        $email = (new WelcomeEmail())->render();
+
+        $this->assertSame(WelcomeEmail::class, $email->mailableClass);
     }
 
     public function testTransportSelectsTheNamedMailer(): void
