@@ -1306,6 +1306,14 @@
 </ul>
 <h3 id="changed">Changed</h3>
 <ul>
+<li>Legacy adapter (<strong>behaviour change</strong>): once an app publishes its own <code>Config\Mailer</code>, the
+  legacy adapter sends through the default mailer (<code>service('mailer')-&gt;mailer()</code>)
+  instead of building a transport from <code>Config\Email</code>. The flat transport keys
+  (<code>protocol</code>, <code>mailPath</code>, <code>SMTP*</code>, <code>DSN</code>) are ignored, including those passed to
+  <code>initialize()</code> or <code>setProtocol()</code>, so Shield's <code>emailer()</code> and other
+  <code>service('email')</code> code now use the configured mailer. Message keys
+  (<code>mailType</code>, <code>wordWrap</code>, <code>priority</code>, <code>BCCBatch*</code>, …) work as before. Apps
+  without a published <code>Config\Mailer</code> are unaffected (#61).</li>
 <li>Legacy adapter: <code>protocol</code> is now case-insensitive. CodeIgniter's own
   <code>setProtocol()</code> checks the value before lowercasing it, so <code>'SMTP'</code> silently
   sent through <code>mail()</code>. The adapter and <code>LegacyConfigMapper</code> now send <code>'SMTP'</code>

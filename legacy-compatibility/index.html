@@ -1021,6 +1021,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#which-mailer-sends" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Which mailer sends
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#type-compatibility-and-shield" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1224,6 +1235,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#which-mailer-sends" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Which mailer sends
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#type-compatibility-and-shield" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1316,7 +1338,7 @@
 
 <h1 id="legacy-compatibility">Legacy Compatibility</h1>
 <p>Postal ships a drop-in replacement for CodeIgniter 4's built-in email service. Existing application code that calls <code>service('email')</code> keeps working unchanged — the same fluent <code>setX</code> API, the same <code>send()</code> returning a boolean — but every message now flows through Postal's <code>Email</code> builder, <code>Mailer</code>, and transports.</p>
-<p>No configuration changes are required: the adapter reads the flat <code>Config\Email</code> keys your app already has.</p>
+<p>No configuration changes are required: the adapter reads the flat <code>Config\Email</code> keys your app already has. Once you publish <code>app/Config/Mailer.php</code>, the adapter sends through your default mailer instead (see <a href="#which-mailer-sends">Which mailer sends</a>).</p>
 <h2 id="how-it-works">How it works</h2>
 <p><code>service('email')</code> returns a <code>Myth\Postal\LegacyEmailAdapter</code>. The adapter composes a new <code>Email</code> value object from the legacy setters and sends it through a <code>Mailer</code> built from your configured protocol. The new <code>Email</code> itself carries none of the legacy API — the compatibility layer lives entirely in the adapter.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">&lt;?php</span>
@@ -1332,8 +1354,19 @@
 <a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="nx">log_message</span><span class="p">(</span><span class="s1">'error'</span><span class="p">,</span> <span class="nv">$email</span><span class="o">-&gt;</span><span class="na">printDebugger</span><span class="p">([</span><span class="s1">'headers'</span><span class="p">]));</span>
 <a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="p">}</span>
 </code></pre></div>
+<h2 id="which-mailer-sends">Which mailer sends</h2>
+<p>The adapter picks its transport by asking one question: has the app configured Postal?</p>
+<ul>
+<li><strong>No <code>app/Config/Mailer.php</code>.</strong> The adapter builds a transport from the flat <code>Config\Email</code> keys, as described in <a href="#legacy-configuration-keys">Legacy configuration keys</a>.</li>
+<li><strong>An app <code>Config\Mailer</code> exists</strong> (any subclass of <code>Myth\Postal\Config\Mailer</code>, such as the one <code>php spark publish</code> writes). The adapter sends through the default mailer, <code>service('mailer')-&gt;mailer()</code>. The flat transport keys (<code>protocol</code>, <code>mailPath</code>, <code>SMTP*</code>, <code>DSN</code>) are ignored, including keys passed to <code>initialize()</code> or <code>setProtocol()</code>. Shield's <code>emailer()</code> always passes them, and its mail still goes through your default mailer.</li>
+</ul>
+<p>Message keys (<code>mailType</code>, <code>wordWrap</code>/<code>wrapChars</code>, <code>priority</code>, <code>BCCBatchMode</code>/<code>BCCBatchSize</code>, <code>fromEmail</code>/<code>fromName</code>) apply either way. When the default mailer handles the send, its <code>fireEvents</code>, suppression list and unsubscribe settings apply too.</p>
+<div class="admonition warning">
+<p class="admonition-title">Behaviour change</p>
+<p>Before, publishing <code>Config\Mailer</code> had no effect on <code>service('email')</code>, which kept sending through <code>Config\Email</code> (usually PHP's <code>mail()</code>). If you publish <code>Config\Mailer</code>, make sure its default mailer is the one your legacy mail should use. <a href="#reusing-the-legacy-mapping"><code>LegacyConfigMapper</code></a> can turn your <code>Config\Email</code> settings into a mailer definition.</p>
+</div>
 <h2 id="type-compatibility-and-shield">Type compatibility and Shield</h2>
-<p><code>LegacyEmailAdapter</code> extends <code>CodeIgniter\Email\Email</code>. Code that type-hints the framework class accepts it, so <a href="https://github.com/codeigniter4/shield">CodeIgniter Shield</a>'s <code>emailer()</code> helper works with no changes. Activation, two-factor, and magic-link emails all send through Postal's transports and fire Postal's events.</p>
+<p><code>LegacyEmailAdapter</code> extends <code>CodeIgniter\Email\Email</code>. Code that type-hints the framework class accepts it, so <a href="https://github.com/codeigniter4/shield">CodeIgniter Shield</a>'s <code>emailer()</code> helper works with no changes. Activation, two-factor, and magic-link emails all send through Postal's transports and fire Postal's events (unless your <code>Config\Mailer</code> turns <code>fireEvents</code> off).</p>
 <p>The framework class is used only for its type. The adapter never runs the parent constructor, and it overrides every method that builds or sends a message. The framework's own sender is never used. See <a href="../adr/0002-legacy-adapter-extends-framework-email/">ADR 0002</a>.</p>
 <p>Set options through the setters or <code>initialize()</code>. The adapter inherits the framework's public properties (<code>$mailType</code>, <code>$SMTPHost</code>, …), but writing them directly is not supported.</p>
 <p>If you subclass the adapter, your overrides must match the framework's untyped parameters. For example, write <code>setFrom($from, $name = '', $returnPath = null)</code>, not <code>setFrom(string $from, ...)</code>.</p>
@@ -1371,7 +1404,7 @@
 </table>
 <p><code>setMessage</code> order-independence is preserved: whether you call <code>setMailType('html')</code> before or after <code>setMessage</code>, the body lands in the right part because the choice is resolved at send time.</p>
 <h2 id="legacy-configuration-keys">Legacy configuration keys</h2>
-<p>The adapter maps your existing <code>app/Config/Email.php</code> onto the new mailer:</p>
+<p>When the app has not published <code>Config\Mailer</code>, the adapter maps your existing <code>app/Config/Email.php</code> onto the new mailer:</p>
 <ul>
 <li><code>protocol</code> selects the transport (<code>mail</code>, <code>sendmail</code>, or <code>smtp</code>) for the send. It is case-insensitive, and an unknown value falls back to <code>mail</code>.</li>
 <li><code>SMTPHost</code>, <code>SMTPUser</code>, <code>SMTPPass</code>, <code>SMTPPort</code>, <code>SMTPTimeout</code>, <code>SMTPCrypto</code>, <code>SMTPKeepAlive</code>, and <code>SMTPAuthMethod</code> configure the SMTP transport. Auth is enabled automatically when a username and password are both set.</li>
@@ -1473,7 +1506,7 @@
 <ul>
 <li><strong>Invalid addresses are swallowed.</strong> Regardless of the <code>validate</code> setting, a malformed address is never thrown — it is recorded in the debugger and skipped, and <code>send()</code> returns <code>false</code>.</li>
 <li><strong>Header defaults match CI4.</strong> The envelope sender (<code>Return-Path</code>) defaults to the <code>From</code> address when you don't pass a return path to <code>setFrom()</code>, and <code>Reply-To</code> defaults to <code>From</code> when you don't set one.</li>
-<li><strong>Events fire.</strong> Adapter sends flow through Postal's <a href="../events/">event pipeline</a>: a listener on <code>email.sending</code> can cancel the send (which then returns <code>false</code>).</li>
+<li><strong>Events fire.</strong> Adapter sends flow through Postal's <a href="../events/">event pipeline</a>: a listener on <code>email.sending</code> can cancel the send (which then returns <code>false</code>). When your app publishes <code>Config\Mailer</code>, its <code>fireEvents</code> setting decides whether they fire.</li>
 <li><strong>BCC batch mode</strong> loops the blind recipients in <code>BCCBatchSize</code> chunks; the result is the logical AND of every batch.</li>
 <li><strong><code>printDebugger()</code></strong> renders the current message (headers, subject, body) through <code>MessageRenderer</code> and prepends any recorded errors. The output is compatible with the legacy debugger, though not byte-identical, and user-supplied values are HTML-escaped.</li>
 <li><strong>Word wrap</strong> maps to the renderer's hard wrap (see <a href="../mime-rendering/">MIME Rendering</a>).</li>
