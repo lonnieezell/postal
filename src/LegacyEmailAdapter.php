@@ -63,9 +63,7 @@ class LegacyEmailAdapter extends FrameworkEmail
         // Clone so initialize()'s flat-key merge never mutates the shared config.
         $this->config = clone ($config ?? config(LegacyConfig::class));
 
-        $this->protocol = in_array($this->config->protocol, ['mail', 'sendmail', 'smtp'], true)
-            ? $this->config->protocol
-            : 'mail';
+        $this->setProtocol($this->config->protocol);
         $this->mailType     = $this->config->mailType === 'html' ? 'html' : 'text';
         $this->wordWrap     = $this->config->wordWrap;
         $this->wrapChars    = $this->config->wrapChars;
@@ -277,10 +275,13 @@ class LegacyEmailAdapter extends FrameworkEmail
             return $this->transportOverride;
         }
 
-        return match ($this->protocol) {
-            'smtp'     => new SmtpTransport($this->smtpSettings()),
-            'sendmail' => new SendmailTransport(['path' => $this->config->mailPath]),
-            default    => new MailTransport(),
+        // setProtocol() doesn't update the config object, so pass the protocol explicitly.
+        $mailer = LegacyConfigMapper::toMailer(['protocol' => $this->protocol] + get_object_vars($this->config));
+
+        return match ($mailer['transport']) {
+            'smtp'     => new SmtpTransport($mailer),
+            'sendmail' => new SendmailTransport($mailer),
+            default    => new MailTransport($mailer),
         };
     }
 
@@ -381,34 +382,6 @@ class LegacyEmailAdapter extends FrameworkEmail
         $this->email->bcc = $all;
 
         return $ok;
-    }
-
-    /**
-     * The SMTP transport settings mapped from the legacy flat config keys.
-     *
-     * @return array<string, mixed>
-     */
-    private function smtpSettings(): array
-    {
-        $settings = [
-            'host'       => $this->config->SMTPHost,
-            'port'       => $this->config->SMTPPort,
-            'timeout'    => $this->config->SMTPTimeout,
-            'encryption' => $this->config->SMTPCrypto,
-            'username'   => $this->config->SMTPUser,
-            'password'   => $this->config->SMTPPass,
-            'keepAlive'  => $this->config->SMTPKeepAlive,
-        ];
-
-        if ($this->config->SMTPUser !== '' && $this->config->SMTPPass !== '') {
-            $settings['authType'] = $this->config->SMTPAuthMethod;
-        }
-
-        if ($this->config->DSN) {
-            $settings['dsn'] = ['notify' => 'SUCCESS,FAILURE,DELAY', 'ret' => 'FULL'];
-        }
-
-        return $settings;
     }
 
     /**

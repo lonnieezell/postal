@@ -184,9 +184,8 @@ trait LegacyEmailCompat
      */
     public function setProtocol($protocol = 'mail'): static
     {
-        $this->protocol = in_array($protocol, ['mail', 'sendmail', 'smtp'], true)
-            ? strtolower($protocol)
-            : 'mail';
+        $protocol       = strtolower((string) $protocol);
+        $this->protocol = in_array($protocol, ['mail', 'sendmail', 'smtp'], true) ? $protocol : 'mail';
 
         return $this;
     }
