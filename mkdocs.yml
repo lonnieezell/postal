@@ -49,6 +49,9 @@ extra:
     - icon: material/forum
       link: https://github.com/lonnieezell/postal/discussions
       name: Discussions
+    - icon: material/heart
+      link: https://github.com/sponsors/lonnieezell
+      name: Sponsor Postal
 
 repo_url: https://github.com/lonnieezell/postal
 edit_uri: edit/main/docs/
