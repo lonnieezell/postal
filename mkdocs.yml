@@ -87,7 +87,7 @@ nav:
     - Home: index.md
     - Installation: installation.md
     - Quick Start: quick-start.md
-    - Legacy Compatibility: legacy-compatibility.md
+    - Migrating from CI4's Email: migrating-from-ci4.md
   - Guides:
     - Mailables: mailables.md
     - Markdown Mailables: markdown-mailables.md
@@ -97,6 +97,7 @@ nav:
     - Testing: testing.md
     - DKIM Signing: dkim-signing.md
     - Failover: failover-mailer.md
+    - Custom Transports: custom-transports.md
   - Transports:
     - SMTP: smtp-mailer.md
     - Sendmail & Mail: sendmail-mail-mailers.md
@@ -108,7 +109,9 @@ nav:
     - SendResult: reference/send-result.md
     - Config\Mailer: reference/config-mailer.md
     - Config\Postal: reference/config-postal.md
+    - Legacy Compatibility: legacy-compatibility.md
     - CLI Commands: cli-commands.md
     - Changelog: changelog.md
   - Explanation:
+    - How Postal Works: how-postal-works.md
     - MIME Rendering: mime-rendering.md

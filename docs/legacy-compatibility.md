@@ -4,6 +4,8 @@ Postal ships a drop-in replacement for CodeIgniter 4's built-in email service. E
 
 No configuration changes are required: the adapter reads the flat `Config\Email` keys your app already has. Once you publish `app/Config/Mailer.php`, the adapter sends through your default mailer instead (see [Which mailer sends](#which-mailer-sends)).
 
+This page describes everything the adapter does. For a step-by-step move from CodeIgniter's `Email` onto Postal, see [Migrating from CI4's Email](migrating-from-ci4.md).
+
 ## How it works
 
 `service('email')` returns a `Myth\Postal\LegacyEmailAdapter`. The adapter composes a new `Email` value object from the legacy setters and sends it through a `Mailer` built from your configured protocol. The new `Email` itself carries none of the legacy API — the compatibility layer lives entirely in the adapter.
