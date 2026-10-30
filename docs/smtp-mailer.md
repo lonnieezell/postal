@@ -62,7 +62,7 @@ Every key in the mailer array beyond `transport` is an SMTP setting. Anything yo
 | `port` | `25` | The server port. Use `587` for STARTTLS, `465` for implicit SSL. |
 | `username` | *(none)* | The auth username. |
 | `password` | *(none)* | The auth password, or the OAuth2 access token for `xoauth2`. |
-| `authType` | *(none)* | `login`, `plain`, or `xoauth2`. Leave unset for no authentication. |
+| `authType` | `login` when `username` and `password` are both set, otherwise *(none)* | `login`, `plain`, or `xoauth2`. |
 | `encryption` | *(none)* | `tls` for a STARTTLS upgrade, `ssl` for an implicit TLS connection. |
 | `timeout` | `30` | Connection timeout in seconds. |
 | `keepAlive` | `false` | Reuse one connection across multiple sends. See below. |
@@ -85,7 +85,7 @@ Pick the method your provider expects with `authType`:
 'password' => $oauthAccessToken,
 ```
 
-Leave `authType` unset for servers that don't require authentication (a local relay, for instance).
+When `username` and `password` are both set and `authType` is omitted, `login` is used. Leave out the credentials for servers that don't require authentication (a local relay, for instance).
 
 ### Encryption
 

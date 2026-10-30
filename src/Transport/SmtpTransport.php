@@ -75,8 +75,10 @@ final class SmtpTransport implements RawMimeTransport
         $this->encryption = strtolower((string) ($settings['encryption'] ?? ''));
         $this->username   = isset($settings['username']) ? (string) $settings['username'] : null;
         $this->password   = isset($settings['password']) ? (string) $settings['password'] : null;
-        $this->authType   = isset($settings['authType']) ? strtolower((string) $settings['authType']) : null;
-        $this->keepAlive  = (bool) ($settings['keepAlive'] ?? false);
+        $this->authType   = isset($settings['authType'])
+            ? strtolower((string) $settings['authType'])
+            : ($this->username !== null && $this->password !== null ? 'login' : null);
+        $this->keepAlive = (bool) ($settings['keepAlive'] ?? false);
 
         /** @var array<string, string> $dsn */
         $dsn          = is_array($settings['dsn'] ?? null) ? $settings['dsn'] : [];
