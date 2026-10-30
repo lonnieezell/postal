@@ -51,13 +51,53 @@ The full legacy surface is available:
 
 The adapter maps your existing `app/Config/Email.php` onto the new mailer:
 
-- `protocol` selects the transport (`mail`, `sendmail`, or `smtp`) for the send.
+- `protocol` selects the transport (`mail`, `sendmail`, or `smtp`) for the send. It is case-insensitive, and an unknown value falls back to `mail`.
 - `SMTPHost`, `SMTPUser`, `SMTPPass`, `SMTPPort`, `SMTPTimeout`, `SMTPCrypto`, `SMTPKeepAlive`, and `SMTPAuthMethod` configure the SMTP transport. Auth is enabled automatically when a username and password are both set.
 - `mailPath` is the sendmail binary path.
 - `mailType`, `priority`, `wordWrap`/`wrapChars`, and `BCCBatchMode`/`BCCBatchSize` seed the matching defaults.
 - `DSN` requests delivery-status notifications over SMTP.
 
 `initialize()` merges per-call overrides on top of these without touching the shared config.
+
+## Reusing the legacy mapping
+
+`Myth\Postal\LegacyConfigMapper::toMailer(array $flat): array` exposes the mapping the adapter uses. Pass it the flat `Config\Email` keys, for example from a settings table, and it returns a mailer definition you can put in `Config\Mailer::$mailers`. Mail sent through that mailer goes out the same way as it would through the adapter.
+
+```php
+use Myth\Postal\LegacyConfigMapper;
+
+$mailer = LegacyConfigMapper::toMailer([
+    'protocol' => 'smtp',
+    'SMTPHost' => 'smtp.example.com',
+    'SMTPPort' => '587',
+    'SMTPUser' => 'user',
+    'SMTPPass' => 'secret',
+]);
+// ['transport' => 'smtp', 'host' => 'smtp.example.com', 'port' => 587,
+//  'timeout' => 5, 'encryption' => 'tls', 'keepAlive' => false,
+//  'username' => 'user', 'password' => 'secret', 'authType' => 'login']
+```
+
+| Input key | Output key | Default |
+| --- | --- | --- |
+| `protocol` | `transport` | `mail` |
+| `mailPath` | `path` (sendmail) | `/usr/sbin/sendmail` |
+| `SMTPHost` | `host` | `''` |
+| `SMTPPort` | `port` | `25` |
+| `SMTPTimeout` | `timeout` | `5` |
+| `SMTPCrypto` | `encryption` | `tls` |
+| `SMTPKeepAlive` | `keepAlive` | `false` |
+| `SMTPUser` | `username` | `''` |
+| `SMTPPass` | `password` | `''` |
+| `SMTPAuthMethod` | `authType` | `login` |
+| `DSN` | `dsn` | `false` |
+
+- **Defaults.** Missing or `null` keys take `Config\Email`'s defaults shown above. Other keys are ignored.
+- **Casting.** Values are cast with CodeIgniter's `DataCaster`, the engine behind Model and Entity `$casts`, so database-style strings work: `'587'` becomes `587`, and `'0'`, `'false'`, `''` and `'f'` become `false`. Other keys are cast to strings.
+- **Protocol.** The protocol is lowercased. Anything other than `smtp`, `sendmail` or `mail` falls back to `mail`.
+- **Per transport.** `sendmail` returns only `transport` and `path`, and `mail` returns only `transport`. The SMTP keys appear only for `smtp`.
+- **Credentials.** `username`, `password` and `authType` are included only when `SMTPUser` and `SMTPPass` are both non-empty, so no empty credentials are passed.
+- **DSN.** When `DSN` is true, `dsn` is `['notify' => 'SUCCESS,FAILURE,DELAY', 'ret' => 'FULL']`. Otherwise it is left out.
 
 ## Behavioural notes
 

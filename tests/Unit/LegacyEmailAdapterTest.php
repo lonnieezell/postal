@@ -481,6 +481,25 @@ final class LegacyEmailAdapterTest extends CIUnitTestCase
         );
     }
 
+    public function testProtocolIsCaseInsensitive(): void
+    {
+        $config           = new LegacyConfig();
+        $config->protocol = 'SMTP';
+
+        $this->assertInstanceOf(
+            SmtpTransport::class,
+            $this->getPrivateMethodInvoker(new LegacyEmailAdapter($config), 'resolveTransport')(),
+        );
+
+        $adapter = new LegacyEmailAdapter();
+        $adapter->setProtocol('Sendmail');
+
+        $this->assertInstanceOf(
+            SendmailTransport::class,
+            $this->getPrivateMethodInvoker($adapter, 'resolveTransport')(),
+        );
+    }
+
     public function testPrintDebuggerEscapesUserInputInErrorLines(): void
     {
         $transport = new RecordingTransport();

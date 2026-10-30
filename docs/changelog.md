@@ -48,6 +48,11 @@
 
 ### Changed
 
+- Legacy adapter: `protocol` is now case-insensitive. CodeIgniter's own
+  `setProtocol()` checks the value before lowercasing it, so `'SMTP'` silently
+  sent through `mail()`. The adapter and `LegacyConfigMapper` now send `'SMTP'`
+  through SMTP. If an app's `protocol` is mixed-case, check its SMTP settings
+  before upgrading (#60).
 - `Mailable::render()` now sets `Email::$mailableClass` (before, only `send()`
   did), and the Events docs describe it. It holds the class name of the
   Mailable that built the message, so `email.composing`, `email.sending`,
@@ -66,6 +71,11 @@
 
 ### Added
 
+- `Myth\Postal\LegacyConfigMapper::toMailer()`: turns CodeIgniter's flat
+  `Config\Email` keys into a Postal mailer definition, using the same rules as
+  `LegacyEmailAdapter`. Other packages can move legacy settings into
+  `Config\Mailer` without changing how mail is sent. The adapter now builds its
+  transport through it (#60).
 - `Myth\Postal\Preview\MailablePreviewer`: the discovery and rendering behind
   the browser preview, as a public class, so a host application can build its
   own preview screens. It takes a namespace => directory map, finds the
