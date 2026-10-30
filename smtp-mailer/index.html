@@ -1751,8 +1751,8 @@
 </tr>
 <tr>
 <td><code>authType</code></td>
-<td><em>(none)</em></td>
-<td><code>login</code>, <code>plain</code>, or <code>xoauth2</code>. Leave unset for no authentication.</td>
+<td><code>login</code> when <code>username</code> and <code>password</code> are both set, otherwise <em>(none)</em></td>
+<td><code>login</code>, <code>plain</code>, or <code>xoauth2</code>.</td>
 </tr>
 <tr>
 <td><code>encryption</code></td>
@@ -1794,7 +1794,7 @@
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="s1">'username'</span> <span class="o">=&gt;</span> <span class="s1">'you@gmail.com'</span><span class="p">,</span>
 <a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="s1">'password'</span> <span class="o">=&gt;</span> <span class="nv">$oauthAccessToken</span><span class="p">,</span>
 </code></pre></div>
-<p>Leave <code>authType</code> unset for servers that don't require authentication (a local relay, for instance).</p>
+<p>When <code>username</code> and <code>password</code> are both set and <code>authType</code> is omitted, <code>login</code> is used. Leave out the credentials for servers that don't require authentication (a local relay, for instance).</p>
 <h3 id="encryption">Encryption</h3>
 <p>Two encryption modes, matching the two common ports:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">STARTTLS (port 587)</label><label for="__tabbed_1_2">Implicit SSL (port 465)</label></div>
