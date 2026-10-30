@@ -277,6 +277,8 @@
       
         
       
+        
+      
     
     
     
@@ -324,6 +326,34 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -1112,6 +1142,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1159,6 +1195,118 @@
   
   
     <li class="md-nav__item">
+      <a href="../reference/email/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Email
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/send-result/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SendResult
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/config-mailer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Config\Mailer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/config-postal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Config\Postal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../legacy-compatibility/" class="md-nav__link">
         
   
@@ -1195,34 +1343,6 @@
     
   
     CLI Commands
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../installation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Installation
   
 
     
@@ -1492,7 +1612,7 @@
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nv">$result</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nx">WelcomeEmail</span><span class="p">(</span><span class="nv">$user</span><span class="p">))</span><span class="o">-&gt;</span><span class="na">send</span><span class="p">();</span>
 </code></pre></div>
-<p><code>send()</code> returns the same <code>SendResult</code> you get from the mailer directly, so you can check <code>$result-&gt;success</code> if you need to.</p>
+<p><code>send()</code> returns the same <a href="../reference/send-result/"><code>SendResult</code></a> you get from the mailer directly, so you can check <code>$result-&gt;success</code> if you need to.</p>
 <div class="admonition warning">
 <p class="admonition-title">Call the parent constructor</p>
 <p>If your Mailable defines its own <code>__construct()</code>, call <code>parent::__construct()</code>. That's what sets up the underlying <code>Email</code> the helpers compose into.</p>
@@ -1503,7 +1623,7 @@
 <p class="admonition-title">Build each instance once</p>
 <p>Every <code>send()</code> or <code>render()</code> call runs <code>build()</code> again on the same message, so calling <code>render()</code> and then <code>send()</code> on one instance adds the recipients twice. Use a fresh instance for each.</p>
 </div>
-<p>Inside <code>build()</code> you have protected helpers that mirror part of the <code>Email</code> builder:</p>
+<p>Inside <code>build()</code> you have protected helpers that mirror part of the <a href="../reference/email/"><code>Email</code></a> builder:</p>
 <table>
 <thead>
 <tr>
@@ -1615,33 +1735,7 @@
 <p class="admonition-title">Never enable this in production</p>
 <p>Even with the flag on, Postal refuses to register the preview routes when <code>ENVIRONMENT</code> is <code>production</code>. Leave the flag in your development config and you've got nothing to worry about.</p>
 </div>
-<p>A few more knobs on <code>Config\Postal</code>:</p>
-<table>
-<thead>
-<tr>
-<th>Property</th>
-<th>Default</th>
-<th>What it does</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>$enablePreview</code></td>
-<td><code>false</code></td>
-<td>The opt-in switch described above</td>
-</tr>
-<tr>
-<td><code>$previewPath</code></td>
-<td><code>'postal/preview'</code></td>
-<td>The URI prefix the preview is mounted under</td>
-</tr>
-<tr>
-<td><code>$mailableNamespaces</code></td>
-<td><code>['App\Mails' =&gt; APPPATH . 'Mails']</code></td>
-<td>Namespace → directory pairs scanned for previewable Mailables</td>
-</tr>
-</tbody>
-</table>
+<p><code>Config\Postal</code> also sets the preview's URI prefix and where it looks for Mailables — see the <a href="../reference/config-postal/#preview">Config\Postal reference</a>.</p>
 <p>Add a pair to <code>$mailableNamespaces</code> for every place your Mailables live:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="o">&lt;?</span><span class="nx">php</span>
 <a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
@@ -1700,7 +1794,7 @@
 <a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="k">echo</span> <span class="nv">$email</span><span class="o">-&gt;</span><span class="na">subject</span><span class="p">;</span>
 <a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="k">echo</span> <span class="nv">$email</span><span class="o">-&gt;</span><span class="na">htmlBody</span><span class="p">;</span>
 </code></pre></div>
-<p><code>render()</code> runs <code>build()</code> and hands back the composed <code>Email</code> — it never sends. It's the build-without-send counterpart to <code>send()</code>.</p>
+<p><code>render()</code> runs <code>build()</code> and hands back the composed <a href="../reference/email/"><code>Email</code></a> — it never sends. It's the build-without-send counterpart to <code>send()</code>.</p>
 <h3 id="building-your-own-preview-screen">Building your own preview screen</h3>
 <p>The preview pages are a thin layer over <code>Myth\Postal\Preview\MailablePreviewer</code>. Use it directly to show previews inside your own admin area. Pass it the namespace → directory pairs to scan; it doesn't read <code>Config\Postal</code> itself:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="o">&lt;?</span><span class="nx">php</span>

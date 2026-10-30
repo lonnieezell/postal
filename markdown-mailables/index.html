@@ -277,6 +277,8 @@
       
         
       
+        
+      
     
     
     
@@ -324,6 +326,34 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -1101,6 +1131,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1148,6 +1184,118 @@
   
   
     <li class="md-nav__item">
+      <a href="../reference/email/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Email
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/send-result/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SendResult
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/config-mailer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Config\Mailer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/config-postal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Config\Postal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../legacy-compatibility/" class="md-nav__link">
         
   
@@ -1184,34 +1332,6 @@
     
   
     CLI Commands
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../installation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Installation
   
 
     
@@ -1623,32 +1743,7 @@
 <p>Skipping this is no more or less risky than skipping <code>esc()</code> in an HTML view — but it's easy to assume markdown is "just text" and let your guard down. It isn't: it compiles to HTML, and unescaped interpolation compiles right along with it.</p>
 </div>
 <h2 id="config-reference">Config reference</h2>
-<table>
-<thead>
-<tr>
-<th>Property</th>
-<th>Default</th>
-<th>What it does</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>$markdownExtensions</code></td>
-<td><code>[GithubFlavoredMarkdownExtension::class]</code></td>
-<td>CommonMark extensions loaded by <code>service('markdown')</code></td>
-</tr>
-<tr>
-<td><code>$componentViewPath</code></td>
-<td><code>'mail/components'</code></td>
-<td>Base path Mail Component tags resolve views against</td>
-</tr>
-<tr>
-<td><code>$defaultLayout</code></td>
-<td><code>'mail/layouts/default'</code></td>
-<td>The Layout view used when no per-call override is given</td>
-</tr>
-</tbody>
-</table>
+<p>The markdown settings — <code>$markdownExtensions</code>, <code>$componentViewPath</code> and <code>$defaultLayout</code> — are listed in the <a href="../reference/config-postal/#markdown">Config\Postal reference</a>.</p>
 <h2 id="next-steps">Next steps</h2>
 <ul>
 <li><a href="../mailables/">Mailables</a> — the class-based email <code>Mailable::markdown()</code> plugs into</li>
