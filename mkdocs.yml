@@ -1,6 +1,9 @@
 site_name: Postal
 site_description: A modern, driver-based email library for CodeIgniter 4.
 
+exclude_docs: |
+  adr/
+
 theme:
   name: material
   icon:
@@ -8,18 +11,22 @@ theme:
   palette:
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
-      scheme: default
+      scheme: codeigniter
+      primary: custom
+      accent: custom
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
+
     # Palette toggle for dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
+      primary: custom
+      accent: custom
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
   features:
-    - navigation.instant
     - content.code.copy
     - navigation.footer
     - content.action.edit
@@ -27,24 +34,53 @@ theme:
     - search.suggest
     - search.highlight
     - search.share
+    - navigation.path
+    - navigation.indexes
+    - toc.follow
+
+extra:
+  homepage: https://codeigniter.com
+  generator: false
+
+  social:
+    - icon: material/github
+      link: https://github.com/lonnieezell/postal
+      name: GitHub
+    - icon: material/forum
+      link: https://github.com/lonnieezell/postal/discussions
+      name: Discussions
 
 repo_url: https://github.com/lonnieezell/postal
 edit_uri: edit/main/docs/
 copyright: Copyright &copy; 2026 Lonnie Ezell.
 
 markdown_extensions:
-  - pymdownx.highlight:
-      anchor_linenums: true
-  - pymdownx.inlinehilite
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.snippets:
+      base_path: ["docs"]
+      check_paths: false
   - pymdownx.superfences
+  - pymdownx.inlinehilite
   - pymdownx.tabbed:
       alternate_style: true
-  - admonition
   - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      # Snippets rarely open with <?php, which Pygments needs to highlight PHP.
+      extend_pygments_lang:
+        - name: php
+          lang: php
+          options:
+            startinline: true
+  - toc:
+      toc_depth: 3
   - tables
 
-plugins:
-  - search
+extra_css:
+  - assets/css/codeigniter.css
+  - assets/css/codeigniter_dark_mode.css
 
 nav:
   - Getting Started:

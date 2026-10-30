@@ -16,8 +16,7 @@ public array $mailers = [
         'transport'  => 'smtp',
         'host'       => 'smtp.example.com',
         'port'       => 587,
-        'username'   => env('SMTP_USER'),
-        'password'   => env('SMTP_PASS'),
+        // plus credentials — see the SMTP mailer
         'dkim'       => [
             'domain'     => 'example.com',
             'selector'   => 'postal',
@@ -27,12 +26,17 @@ public array $mailers = [
 ];
 ```
 
-`privateKey` accepts either a path to a readable PEM file (as above) or the PEM text itself — handy when the key comes from an environment variable or a secrets manager:
+`privateKey` accepts either a path to a readable PEM file (as above) or the PEM text itself — handy when the key comes from an environment variable or a secrets manager. PHP doesn't allow function calls in property defaults, so set it in the config's constructor:
 
 ```php
 <?php
 
-'privateKey' => env('DKIM_PRIVATE_KEY'),
+public function __construct()
+{
+    parent::__construct();
+
+    $this->mailers['primary']['dkim']['privateKey'] = env('DKIM_PRIVATE_KEY');
+}
 ```
 
 !!! warning "Protect the private key"
@@ -60,7 +64,7 @@ That last point is the important one. The signature covers the precise bytes of 
 
 DKIM signing is available on the transports that deliver raw MIME and can carry the signed bytes untouched: **`smtp`** and **`sendmail`**.
 
-It is **not** available on `ses`, `mail`, `null`, or `log`. Adding a `dkim` block to one of those raises a `PostalException` when the mailer is resolved:
+It is **not** available on `ses`, `resend`, `mail`, `null`, or `log`. Adding a `dkim` block to one of those raises a `PostalException` when the mailer is resolved:
 
 ```php
 <?php
@@ -73,7 +77,7 @@ It is **not** available on `ses`, `mail`, `null`, or `log`. Adding a `dkim` bloc
 // raw MIME (such providers sign server-side). Remove the "dkim" config…
 ```
 
-This isn't a missing feature — it's the right boundary. Amazon SES and similar API providers sign outbound mail on their own infrastructure once you've set up the DKIM records in their console. Signing the message a second time in Postal would be redundant at best and conflicting at worst. Let the provider own signing for those transports, and use Postal's signing for the ones that hand raw MIME to an MTA.
+This isn't a missing feature — it's the right boundary. Amazon SES, Resend and similar API providers sign outbound mail on their own infrastructure once you've set up the DKIM records in their console. Signing the message a second time in Postal would be redundant at best and conflicting at worst. Let the provider own signing for those transports, and use Postal's signing for the ones that hand raw MIME to an MTA.
 
 ## With the failover mailer
 

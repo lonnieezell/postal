@@ -20,8 +20,7 @@ public array $mailers = [
         'transport' => 'smtp',
         'host'      => 'smtp.example.com',
         'port'      => 587,
-        'username'  => env('SMTP_USER'),
-        'password'  => env('SMTP_PASS'),
+        // plus credentials — see the SMTP mailer
     ],
     'primary' => [
         'transport' => 'failover',

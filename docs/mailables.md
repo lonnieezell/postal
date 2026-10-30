@@ -47,16 +47,19 @@ Send it from anywhere:
 $result = (new WelcomeEmail($user))->send();
 ```
 
-`send()` returns the same [`SendResult`](smtp-mailer.md) you get from the mailer directly, so you can check `$result->success` if you need to.
+`send()` returns the same `SendResult` you get from the mailer directly, so you can check `$result->success` if you need to.
 
 !!! warning "Call the parent constructor"
     If your Mailable defines its own `__construct()`, call `parent::__construct()`. That's what sets up the underlying `Email` the helpers compose into.
 
 ## Composing in `build()`
 
-`build()` is where you describe the message. It runs **lazily**, once, when you call `send()` — never in the constructor. So passing data into the constructor and reading it in `build()` (like `$this->user` above) always works.
+`build()` is where you describe the message. It runs **lazily**, when you call `send()` or `render()` — never in the constructor. So passing data into the constructor and reading it in `build()` (like `$this->user` above) always works.
 
-Inside `build()` you have protected helpers that mirror the [`Email`](index.md) builder:
+!!! warning "Build each instance once"
+    Every `send()` or `render()` call runs `build()` again on the same message, so calling `render()` and then `send()` on one instance adds the recipients twice. Use a fresh instance for each.
+
+Inside `build()` you have protected helpers that mirror part of the `Email` builder:
 
 | Helper | What it sets |
 |--------|--------------|
@@ -67,8 +70,17 @@ Inside `build()` you have protected helpers that mirror the [`Email`](index.md) 
 | `text(string $text)` | The plain-text body |
 | `markdown(string $view, array $data = [])` | Both bodies at once, from a markdown view — see [Markdown Mailables](markdown-mailables.md) |
 | `layout(string $view)` | Overrides the Layout `markdown()` wraps its HTML in, for this Mailable only — call it *before* `markdown()` |
+| `transport(string $name)` | The named mailer to send through — see [Choosing a mailer](#choosing-a-mailer) |
 
 Each returns `$this`, so they chain.
+
+For anything else, such as `cc()`, `bcc()`, `replyTo()`, attachments or `metadata()`, call the `Email` builder directly through the protected `$this->email` property:
+
+```php
+<?php
+
+$this->email->cc('team@example.com');
+```
 
 !!! tip "Prefer `markdown()` over hand-rolled `html()`/`text()`"
     If your body is prose rather than bespoke markup, `->markdown('emails/welcome', [...])` gets you converted HTML, a matching plain-text fallback, and a shared page layout in one call. See [Markdown Mailables](markdown-mailables.md).
@@ -86,7 +98,7 @@ protected function build(): void
         ->from('news@example.com')
         ->to($this->user->email)
         ->subject('This month at Acme')
-        ->html($this->render());
+        ->html(view('emails/newsletter', ['user' => $this->user]));
 }
 ```
 
@@ -232,7 +244,7 @@ echo $email->subject;
 echo $email->htmlBody;
 ```
 
-`render()` runs `build()` and hands back the composed [`Email`](index.md) — it never sends. It's the build-without-send counterpart to `send()`.
+`render()` runs `build()` and hands back the composed `Email` — it never sends. It's the build-without-send counterpart to `send()`.
 
 ### Building your own preview screen
 

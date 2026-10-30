@@ -4,14 +4,14 @@ A modern, driver-based email library for CodeIgniter 4.
 
 Postal replaces CodeIgniter 4's monolithic `Email` class with a clean transport-driver
 architecture: compose a message once and send it through SMTP, Sendmail, PHP `mail()`,
-Amazon SES, or a failover chain — without changing your application code. It keeps the
+Amazon SES, Resend, or a failover chain — without changing your application code. It keeps the
 familiar CI4 email API working for a painless migration, and it's fully testable without ever
 sending a real message.
 
 ## Highlights
 
 - **Driver-based transports** — change how mail is delivered through configuration, not code.
-- **Amazon SES** — deliver through SesV2 with SigV4 signing; no SMTP relay required.
+- **Amazon SES and Resend** — deliver through the provider's HTTP API; no SMTP relay required.
 - **DKIM signing** — sign outbound messages at the library level with a one-line config
   addition.
 - **Failover chain** — wrap mailers in a priority-ordered fallback so a provider outage
@@ -21,10 +21,13 @@ sending a real message.
 - **Inline image embedding** — local paths and `data:` URIs in HTML are automatically
   rewritten to `cid:` attachments.
 - **Mailable classes** — reusable, class-based emails with browser preview in development.
+- **Markdown emails** — write the body in markdown and get HTML, a plain-text part, and a shared
+  layout from one view.
 - **Drop-in friendly** — existing `service('email')` calls keep working via a compatibility
   adapter.
-- **Zero required dependencies** — PHP standard extensions only; no database, queue, or view
-  renderer needed to send mail.
+- **Light on dependencies** — two small Composer packages (`league/commonmark` and
+  `tijsverkoyen/css-to-inline-styles`) for markdown emails; no database or queue needed to send
+  mail.
 - **Built for testing** — a fake transport and expressive assertions verify mail in PHPUnit
   with no network access.
 

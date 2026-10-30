@@ -13,7 +13,7 @@ Every send walks through these in order:
 | `email.sent` | After a successful delivery | `Email $message`, `SendResult $result` |
 | `email.failed` | After the transport reports a failure | `Email $message`, `SendResult $result` |
 
-A send fires `composing`, then `sending`, then exactly one of `sent` or `failed`. The `$message` passed to your listeners is Postal's working copy — a clone made at the start of the send — so changes you make to the original after calling `send()` never sneak in.
+A send fires `composing`, then `sending`, then exactly one of `sent` or `failed`. If you've set up a [suppression list](suppression-unsubscribe.md), Postal also fires `email.suppressed` for each recipient it removes, between `composing` and `sending`. The `$message` passed to your listeners is Postal's working copy — a clone made at the start of the send — so changes you make to the original after calling `send()` never sneak in.
 
 ## Listening for an event
 
@@ -107,7 +107,7 @@ if ($result->cancelled) {
 
 ## Turning events off
 
-Events fire on every send by default. To silence all four, set `$fireEvents` to `false` in your `Config\Mailer`:
+Events fire on every send by default. To silence all of them, including `email.suppressed`, set `$fireEvents` to `false` in your `Config\Mailer`:
 
 ```php
 <?php

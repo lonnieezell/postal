@@ -27,17 +27,14 @@ error if it failed).
 
 ## Configuration
 
-Transports are defined as named **mailers** in `Config\Mailer`, with a `$default` chosen per
-environment:
+Transports are defined as named **mailers** in `Config\Mailer`. `$default` names the mailer used
+when you don't pick one. Out of the box it is `null`, which discards every message, so nothing is
+sent until you choose a transport:
 
 ```php
 <?php
 
-public string $default = match (ENVIRONMENT) {
-    'production' => 'ses',
-    'testing'    => 'null',
-    default      => 'log',
-};
+public string $default = 'log';
 
 public array $mailers = [
     'smtp' => [
@@ -45,12 +42,17 @@ public array $mailers = [
         'host'       => 'localhost',
         'port'       => 587,
         'encryption' => 'tls',
-        'username'   => '',
-        'password'   => '',
     ],
     'log'  => ['transport' => 'log'],
     'null' => ['transport' => 'null'],
 ];
+```
+
+To use a different mailer in each environment, override `$default` from that environment's
+`.env` file:
+
+```ini
+mailer.default = smtp
 ```
 
 To override the defaults in your application, publish the config file:
@@ -73,4 +75,5 @@ can restyle them to match your brand. As with the config file, publishing never 
 you've already customized. See [Markdown Mailables](markdown-mailables.md) for what those files
 do.
 
-The full configuration reference is covered in later sections of the documentation.
+Each transport's settings are listed on its own page, starting with the
+[SMTP Mailer](smtp-mailer.md).

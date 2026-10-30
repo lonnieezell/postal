@@ -25,10 +25,17 @@ public array $mailers = [
     'ses' => [
         'transport' => 'ses',
         'region'    => 'us-east-1',
-        'key'       => env('SES_KEY'),
-        'secret'    => env('SES_SECRET'),
     ],
 ];
+
+public function __construct()
+{
+    parent::__construct();
+
+    // PHP doesn't allow function calls in property defaults, so read secrets here.
+    $this->mailers['ses']['key']    = env('SES_KEY');
+    $this->mailers['ses']['secret'] = env('SES_SECRET');
+}
 ```
 
 Send through it by name, exactly like any other mailer:
