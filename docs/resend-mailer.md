@@ -1,4 +1,4 @@
-# The Resend Mailer
+# Resend
 
 [Resend](https://resend.com) is an email API: you POST a JSON message over HTTPS and it handles delivery. Postal's `resend` transport talks to that API directly, so all you need is an API key — no SMTP relay, no extra SDK.
 
@@ -169,6 +169,6 @@ Return a non-2xx response such as `new HttpResponse(422, '{"message":"Invalid `t
 
 ## Next steps
 
-- [The SES Mailer](ses-mailer.md) — Amazon's API, with IAM credentials
-- [The Failover Mailer](failover-mailer.md) — fall back when a provider is down
-- [Testing Mail](testing.md) — assert on sent mail without hitting a provider
+- [Amazon SES](ses-mailer.md) — Amazon's API, with IAM credentials
+- [Failover](failover-mailer.md) — fall back when a provider is down
+- [Testing](testing.md) — assert on sent mail without hitting a provider

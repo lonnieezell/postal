@@ -117,6 +117,6 @@ public array $mailers = [
 
 ## Next steps
 
-- [The SMTP Mailer](smtp-mailer.md) — the most common home for a `dkim` block
-- [The Sendmail & Mail Mailers](sendmail-mail-mailers.md) — sign through a local `sendmail` binary
-- [The Failover Mailer](failover-mailer.md) — sign each leaf of a resilient chain
+- [SMTP](smtp-mailer.md) — the most common home for a `dkim` block
+- [Sendmail & Mail](sendmail-mail-mailers.md) — sign through a local `sendmail` binary
+- [Failover](failover-mailer.md) — sign each leaf of a resilient chain

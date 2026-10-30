@@ -1,4 +1,4 @@
-# The Log Mailer
+# Log
 
 Sometimes you don't want to send real email — you just want to *see* what would have gone out. The built-in `log` mailer renders each message to its full MIME form and writes it to your application log instead of delivering it. It's perfect for local development and testing.
 

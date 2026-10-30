@@ -49,6 +49,9 @@ extra:
     - icon: material/forum
       link: https://github.com/lonnieezell/postal/discussions
       name: Discussions
+    - icon: material/heart
+      link: https://github.com/sponsors/lonnieezell
+      name: Sponsor Postal
 
 repo_url: https://github.com/lonnieezell/postal
 edit_uri: edit/main/docs/
@@ -87,22 +90,23 @@ nav:
     - Home: index.md
     - Installation: installation.md
     - Quick Start: quick-start.md
-  - Sending Mail:
+    - Migrating from CI4's Email: migrating-from-ci4.md
+  - Guides:
     - Mailables: mailables.md
     - Markdown Mailables: markdown-mailables.md
+    - Previewing Mailables: previewing.md
+    - Events: events.md
+    - Suppression & Unsubscribe: suppression-unsubscribe.md
     - Testing: testing.md
+    - DKIM Signing: dkim-signing.md
+    - Failover: failover-mailer.md
+    - Writing a Custom Transport: custom-transports.md
   - Transports:
     - SMTP: smtp-mailer.md
+    - Sendmail & Mail: sendmail-mail-mailers.md
     - Amazon SES: ses-mailer.md
     - Resend: resend-mailer.md
     - Log: log-mailer.md
-    - Sendmail & Mail: sendmail-mail-mailers.md
-    - Failover: failover-mailer.md
-  - Advanced:
-    - DKIM Signing: dkim-signing.md
-    - Suppression & Unsubscribe: suppression-unsubscribe.md
-    - Events: events.md
-    - MIME Rendering: mime-rendering.md
   - Reference:
     - Email: reference/email.md
     - SendResult: reference/send-result.md
@@ -111,3 +115,6 @@ nav:
     - Legacy Compatibility: legacy-compatibility.md
     - CLI Commands: cli-commands.md
     - Changelog: changelog.md
+  - Explanation:
+    - How Postal Works: how-postal-works.md
+    - MIME Rendering: mime-rendering.md

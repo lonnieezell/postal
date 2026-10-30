@@ -14,17 +14,6 @@ composer require myth/postal
 
 CodeIgniter auto-discovers the package through Composer — no manual registration is required.
 
-## Verify the install
-
-Send a test message through the default transport:
-
-```bash
-php spark email:test you@example.com
-```
-
-The command runs the full send pipeline and prints the result (provider message ID, or the
-error if it failed).
-
 ## Configuration
 
 Transports are defined as named **mailers** in `Config\Mailer`. `$default` names the mailer used
@@ -77,3 +66,15 @@ do.
 
 Every property and transport setting is listed in the
 [Config\Mailer reference](reference/config-mailer.md).
+
+## Verify the install
+
+Once `$default` names a real mailer, send a test message through it:
+
+```bash
+php spark email:test you@example.com
+```
+
+The command runs the full send pipeline and prints the result (provider message ID, or the
+error if it failed). With the package default, `null`, it reports success without sending
+anything, so set `$default` first.

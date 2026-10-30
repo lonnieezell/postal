@@ -119,5 +119,5 @@ With events off, no listeners run — including any `sending` listener that woul
 
 ## Next steps
 
-- [The Log Mailer](log-mailer.md) — see a full message without sending it
+- [Log](log-mailer.md) — see a full message without sending it
 - [MIME Rendering](mime-rendering.md) — what the message looks like on the wire

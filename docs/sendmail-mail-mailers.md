@@ -1,4 +1,4 @@
-# The Sendmail & Mail Mailers
+# Sendmail & Mail
 
 Not every app talks SMTP directly. When your server already runs a mail transfer agent — Postfix, Exim, or a `sendmail` shim — the quickest path to the outbox is to hand the message to it and let it do the delivery. Postal offers two transports for exactly that: `sendmail` pipes the rendered message to a sendmail binary, and `mail` passes it through PHP's native `mail()` function.
 
@@ -123,6 +123,6 @@ Postal's own suite uses doubles for exactly this. They live in the package's `te
 
 ## Next steps
 
-- [The SMTP Mailer](smtp-mailer.md) — authenticate to a remote server with encryption and keep-alive
-- [The Log Mailer](log-mailer.md) — inspect messages in development without sending them
+- [SMTP](smtp-mailer.md) — authenticate to a remote server with encryption and keep-alive
+- [Log](log-mailer.md) — inspect messages in development without sending them
 - [MIME Rendering](mime-rendering.md) — what the message body looks like on the wire

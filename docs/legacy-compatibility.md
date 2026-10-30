@@ -4,6 +4,8 @@ Postal ships a drop-in replacement for CodeIgniter 4's built-in email service. E
 
 No configuration changes are required: the adapter reads the flat `Config\Email` keys your app already has. Once you publish `app/Config/Mailer.php`, the adapter sends through your default mailer instead (see [Which mailer sends](#which-mailer-sends)).
 
+This page describes everything the adapter does. For a step-by-step move from CodeIgniter's `Email` onto Postal, see [Migrating from CI4's Email](migrating-from-ci4.md).
+
 ## How it works
 
 `service('email')` returns a `Myth\Postal\LegacyEmailAdapter`. The adapter composes a new `Email` value object from the legacy setters and sends it through a `Mailer` built from your configured protocol. The new `Email` itself carries none of the legacy API — the compatibility layer lives entirely in the adapter.
@@ -55,6 +57,7 @@ The full legacy surface is available:
 | Body type | `setMailType('text'\|'html')` governs whether `setMessage` fills the HTML or text part; `setAltMessage` sets the plain-text alternative for an HTML message |
 | Behaviour | `setProtocol('mail'\|'sendmail'\|'smtp')`, `setWordWrap`, `setNewline`/`setCRLF` (accepted, no-op), `initialize(array $config)`, `clear($clearAttachments)` |
 | Send / debug | `send($autoClear)` returns `bool`, `batchBCCSend()`, `printDebugger($include)` |
+| Postal additions | `lastResult()` returns the [`SendResult`](reference/send-result.md) of the most recent send, and `lastEmail()` the `Email` that was sent. Both are `null` before the first send. With BCC batch mode they hold the last batch. |
 | Validation | `validateEmail`, `isValidEmail`, `cleanEmail` |
 
 `setMessage` order-independence is preserved: whether you call `setMailType('html')` before or after `setMessage`, the body lands in the right part because the choice is resolved at send time.

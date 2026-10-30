@@ -1,4 +1,4 @@
-# Testing Mail
+# Testing
 
 Postal ships an in-memory test double so you can assert on what your application _would have_ sent without ever touching a real transport or the network. Call `Mailer::fake()` at the top of a test; it swaps the bound `service('mailer')` for a recorder and hands that recorder back to you.
 
@@ -146,4 +146,4 @@ $fake->assertSentCount(3);
 ## Next steps
 
 - [Events](events.md) — the lifecycle events that still fire through the faked mailer
-- [The Log Mailer](log-mailer.md) — render messages to a log channel instead of delivering them
+- [Log](log-mailer.md) — render messages to a log channel instead of delivering them
