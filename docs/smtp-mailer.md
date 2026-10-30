@@ -1,4 +1,4 @@
-# The SMTP Mailer
+# SMTP
 
 When it's time to send real email, the `smtp` transport speaks SMTP directly to your mail server. It handles the full conversation — EHLO, authentication, the envelope, and the message body — and supports STARTTLS, implicit SSL/TLS, LOGIN, PLAIN and XOAUTH2 authentication, and connection reuse across a batch.
 
@@ -151,6 +151,18 @@ SMTP can ask the server to report back on delivery with [DSN](https://www.rfc-ed
 
 DSN parameters are only sent when the server advertises `DSN` support in its EHLO reply. If it doesn't, they're silently skipped — your mail still goes out.
 
+## When a send fails
+
+Connection and protocol errors don't throw. The transport catches them, drops the connection so the next send starts clean, and returns a failed [`SendResult`](reference/send-result.md) with the reason in `error`:
+
+```
+Could not connect to SMTP server smtp.example.com:587: Connection refused
+Lost connection to SMTP server: read timed out
+Unexpected reply to "RCPT TO:<bob@example.com>": 550 5.1.1 User unknown
+```
+
+Internally these are `Myth\Postal\Exceptions\SmtpException`, a subclass of `PostalException`, but none of them reach your code. `ping()` reports the same problems by returning `false`.
+
 ## Testing without a real server
 
 The transport talks through a small seam, `Myth\Postal\Transport\SmtpSocket`, rather than touching the network directly. The shipped `StreamSocket` is the real implementation that opens a TCP/TLS stream to your server.
@@ -177,5 +189,5 @@ Postal's own suite uses a scripted double for exactly this. That double ships in
 
 ## Next steps
 
-- [The Log Mailer](log-mailer.md) — inspect messages in development without sending them
+- [Log](log-mailer.md) — inspect messages in development without sending them
 - [MIME Rendering](mime-rendering.md) — what the message body looks like on the wire

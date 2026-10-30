@@ -62,6 +62,6 @@ Send failed: Connection refused (smtp.example.com:587)
 
 ## Next steps
 
-- [Testing Mail](testing.md) — assert on what your app *would* send, without delivering
-- [The SMTP Mailer](smtp-mailer.md) — configure the named mailer you're testing
+- [Testing](testing.md) — assert on what your app *would* send, without delivering
+- [SMTP](smtp-mailer.md) — configure the named mailer you're testing
 - [Events](events.md) — the lifecycle hooks `email:test` fires on its way through the pipeline

@@ -154,4 +154,4 @@ Quoted-printable soft wrapping is invisible to the reader — it decodes away on
 
 ## Next steps
 
-- [The Log Mailer](log-mailer.md) — see a rendered message in your logs
+- [Log](log-mailer.md) — see a rendered message in your logs

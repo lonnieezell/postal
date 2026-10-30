@@ -97,7 +97,7 @@ nav:
     - Testing: testing.md
     - DKIM Signing: dkim-signing.md
     - Failover: failover-mailer.md
-    - Custom Transports: custom-transports.md
+    - Writing a Custom Transport: custom-transports.md
   - Transports:
     - SMTP: smtp-mailer.md
     - Sendmail & Mail: sendmail-mail-mailers.md

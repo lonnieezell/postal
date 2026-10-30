@@ -57,6 +57,7 @@ The full legacy surface is available:
 | Body type | `setMailType('text'\|'html')` governs whether `setMessage` fills the HTML or text part; `setAltMessage` sets the plain-text alternative for an HTML message |
 | Behaviour | `setProtocol('mail'\|'sendmail'\|'smtp')`, `setWordWrap`, `setNewline`/`setCRLF` (accepted, no-op), `initialize(array $config)`, `clear($clearAttachments)` |
 | Send / debug | `send($autoClear)` returns `bool`, `batchBCCSend()`, `printDebugger($include)` |
+| Postal additions | `lastResult()` returns the [`SendResult`](reference/send-result.md) of the most recent send, and `lastEmail()` the `Email` that was sent. Both are `null` before the first send. With BCC batch mode they hold the last batch. |
 | Validation | `validateEmail`, `isValidEmail`, `cleanEmail` |
 
 `setMessage` order-independence is preserved: whether you call `setMailType('html')` before or after `setMessage`, the body lands in the right part because the choice is resolved at send time.

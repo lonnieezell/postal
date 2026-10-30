@@ -126,6 +126,14 @@ php spark make:mailable Welcome --markdown
 
 `--force` applies to both files, independently — each is only overwritten if it already exists and `--force` was passed.
 
+Pass `--namespace` to generate into another registered namespace, such as a module. The class lands in that namespace's `Mails` directory:
+
+```bash
+php spark make:mailable Welcome --namespace Acme\\Blog
+```
+
+Remember to add the namespace to `$mailableNamespaces` if you want the Mailable in the [preview](previewing.md).
+
 ## Previewing Mailables
 
 Postal can render any Mailable to your browser — HTML, plain text and raw MIME — without sending it. See [Previewing Mailables](previewing.md).
@@ -147,5 +155,5 @@ echo $email->htmlBody;
 
 ## Next steps
 
-- [Testing Mail](testing.md) — assert that a Mailable was sent, by class, without touching a real transport
+- [Testing](testing.md) — assert that a Mailable was sent, by class, without touching a real transport
 - [MIME Rendering](mime-rendering.md) — how your HTML and text bodies become a wire-ready message

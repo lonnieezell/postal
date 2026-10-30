@@ -44,7 +44,7 @@ No settings. Discards every message and reports success.
 |-----|---------|-------------|
 | `level` | `'debug'` | The PSR-3 log level the message is written at. |
 
-See [The Log Mailer](../log-mailer.md).
+See [Log](../log-mailer.md).
 
 ### `smtp`
 
@@ -61,7 +61,7 @@ See [The Log Mailer](../log-mailer.md).
 | `helo` | `gethostname()` | The hostname sent in `EHLO`. |
 | `dsn` | none | `['notify' => …, 'ret' => …, 'envid' => …]` delivery status notification options. |
 
-See [The SMTP Mailer](../smtp-mailer.md).
+See [SMTP](../smtp-mailer.md).
 
 ### `sendmail`
 
@@ -71,7 +71,7 @@ See [The SMTP Mailer](../smtp-mailer.md).
 
 ### `mail`
 
-No settings. Delivers through PHP's `mail()`. See [The Sendmail & Mail Mailers](../sendmail-mail-mailers.md).
+No settings. Delivers through PHP's `mail()`. See [Sendmail & Mail](../sendmail-mail-mailers.md).
 
 ### `ses`
 
@@ -86,7 +86,7 @@ Requires `composer require aws/aws-sdk-php`.
 | `configurationSet` | none | SES configuration set applied to every send. |
 | `forceRaw` | `false` | Always send raw MIME. |
 
-See [The SES Mailer](../ses-mailer.md).
+See [Amazon SES](../ses-mailer.md).
 
 ### `resend`
 
@@ -94,7 +94,7 @@ See [The SES Mailer](../ses-mailer.md).
 |-----|---------|-------------|
 | `key` | **required** | Resend API key. Missing or empty throws a `PostalException`. |
 
-See [The Resend Mailer](../resend-mailer.md).
+See [Resend](../resend-mailer.md).
 
 ### `failover`
 
@@ -102,7 +102,7 @@ See [The Resend Mailer](../resend-mailer.md).
 |-----|---------|-------------|
 | `chain` | **required** | Mailer names to try, in order. Missing or empty throws a `PostalException`. |
 
-See [The Failover Mailer](../failover-mailer.md).
+See [Failover](../failover-mailer.md).
 
 ### `dkim`
 

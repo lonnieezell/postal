@@ -1,4 +1,4 @@
-# The SES Mailer
+# Amazon SES
 
 When you send through Amazon Simple Email Service, you're talking to an HTTP API rather than an SMTP server. Postal's `ses` transport delivers through the official [`aws/aws-sdk-php`](https://github.com/aws/aws-sdk-php) SesV2 client, which signs every request with AWS SigV4 and owns the HTTP connection — so there are no credentials to put on the wire and no signing for you to get right.
 
@@ -177,6 +177,6 @@ if (! $result->success) {
 
 ## Next steps
 
-- [The SMTP Mailer](smtp-mailer.md) — authenticate to a remote server with encryption and keep-alive
+- [SMTP](smtp-mailer.md) — authenticate to a remote server with encryption and keep-alive
 - [MIME Rendering](mime-rendering.md) — what the raw message looks like on the wire
-- [Testing Mail](testing.md) — assert on sent mail without hitting a provider
+- [Testing](testing.md) — assert on sent mail without hitting a provider

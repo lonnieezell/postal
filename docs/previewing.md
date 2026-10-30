@@ -28,10 +28,11 @@ class Postal extends BasePostal
 }
 ```
 
-=== ".env"
-    ```ini
-    postal.enablePreview = true
-    ```
+Or in `.env`:
+
+```ini
+postal.enablePreview = true
+```
 
 !!! danger "Never enable this in production"
     Even with the flag on, Postal refuses to register the preview routes when `ENVIRONMENT` is `production`. Leave the flag in your development config and you've got nothing to worry about.

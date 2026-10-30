@@ -1,4 +1,4 @@
-# The Failover Mailer
+# Failover
 
 A single provider is a single point of failure. When your primary mail service has a bad five minutes — an API outage, a throttle, a connection that won't open — the messages queued behind it don't care whose fault it is; they just don't go out. The `failover` transport is the answer: it wraps an ordered list of other mailers and tries them one after another, handing the message to the next as soon as one fails. The first success wins, and only an across-the-board failure is reported as a failure.
 
@@ -100,6 +100,6 @@ The constructor takes only the ordered children; the failover renders and delive
 
 ## Next steps
 
-- [The SES Mailer](ses-mailer.md) — a natural primary for the chain
-- [The SMTP Mailer](smtp-mailer.md) — a natural backup relay
-- [Testing Mail](testing.md) — assert on sent messages without a live provider
+- [Amazon SES](ses-mailer.md) — a natural primary for the chain
+- [SMTP](smtp-mailer.md) — a natural backup relay
+- [Testing](testing.md) — assert on sent messages without a live provider
