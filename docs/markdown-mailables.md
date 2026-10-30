@@ -225,11 +225,7 @@ CommonMark's raw-HTML passthrough is left at its default (`allow`): any HTML you
 
 ## Config reference
 
-| Property | Default | What it does |
-|----------|---------|---------------|
-| `$markdownExtensions` | `[GithubFlavoredMarkdownExtension::class]` | CommonMark extensions loaded by `service('markdown')` |
-| `$componentViewPath` | `'mail/components'` | Base path Mail Component tags resolve views against |
-| `$defaultLayout` | `'mail/layouts/default'` | The Layout view used when no per-call override is given |
+The markdown settings — `$markdownExtensions`, `$componentViewPath` and `$defaultLayout` — are listed in the [Config\Postal reference](reference/config-postal.md#markdown).
 
 ## Next steps
 

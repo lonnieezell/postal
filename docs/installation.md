@@ -75,5 +75,5 @@ can restyle them to match your brand. As with the config file, publishing never 
 you've already customized. See [Markdown Mailables](markdown-mailables.md) for what those files
 do.
 
-Each transport's settings are listed on its own page, starting with the
-[SMTP Mailer](smtp-mailer.md).
+Every property and transport setting is listed in the
+[Config\Mailer reference](reference/config-mailer.md).

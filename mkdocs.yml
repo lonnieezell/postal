@@ -85,6 +85,7 @@ extra_css:
 nav:
   - Getting Started:
     - Home: index.md
+    - Installation: installation.md
     - Quick Start: quick-start.md
   - Sending Mail:
     - Mailables: mailables.md
@@ -103,7 +104,10 @@ nav:
     - Events: events.md
     - MIME Rendering: mime-rendering.md
   - Reference:
+    - Email: reference/email.md
+    - SendResult: reference/send-result.md
+    - Config\Mailer: reference/config-mailer.md
+    - Config\Postal: reference/config-postal.md
     - Legacy Compatibility: legacy-compatibility.md
     - CLI Commands: cli-commands.md
-    - Installation: installation.md
     - Changelog: changelog.md
