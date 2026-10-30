@@ -107,6 +107,56 @@ final class SmtpTransportTest extends CIUnitTestCase
         $this->assertStringContainsString(base64_encode('pass') . "\r\n", $transcript);
     }
 
+    public function testDefaultsToLoginAuthWhenCredentialsAreSetWithoutAuthType(): void
+    {
+        $socket = new FakeSocket([
+            "220 mail.example.com ESMTP\r\n",
+            "250 mail.example.com\r\n",
+            "334 VXNlcm5hbWU6\r\n",
+            "334 UGFzc3dvcmQ6\r\n",
+            "235 2.7.0 Authentication successful\r\n",
+            "250 OK\r\n", // MAIL
+            "250 OK\r\n", // RCPT
+            "354 go\r\n",
+            "250 queued\r\n",
+            "221 Bye\r\n",
+        ]);
+
+        $result = $this->transport($socket, [
+            'username' => 'user',
+            'password' => 'pass',
+        ])->send($this->message());
+
+        $this->assertTrue($result->success, $result->error ?? '');
+        $transcript = $socket->transcript();
+        $this->assertStringContainsString("AUTH LOGIN\r\n", $transcript);
+        $this->assertStringContainsString(base64_encode('user') . "\r\n", $transcript);
+        $this->assertStringContainsString(base64_encode('pass') . "\r\n", $transcript);
+    }
+
+    public function testSkipsAuthWhenOnlyOneCredentialIsSetWithoutAuthType(): void
+    {
+        $socket = $this->okSocket();
+
+        $result = $this->transport($socket, ['username' => 'user'])->send($this->message());
+
+        $this->assertTrue($result->success, $result->error ?? '');
+        $this->assertStringNotContainsString('AUTH', $socket->transcript());
+    }
+
+    public function testExplicitAuthTypeIsNotOverriddenByTheLoginDefault(): void
+    {
+        $socket = $this->authSocket();
+
+        $this->transport($socket, [
+            'authType' => 'plain',
+            'username' => 'user',
+            'password' => 'pass',
+        ])->send($this->message());
+
+        $this->assertStringNotContainsString("AUTH LOGIN\r\n", $socket->transcript());
+    }
+
     public function testAuthsWithPlain(): void
     {
         $socket = $this->authSocket();
