@@ -15,6 +15,7 @@ namespace Myth\Postal;
 
 use CodeIgniter\Email\Email as FrameworkEmail;
 use Config\Email as LegacyConfig;
+use Myth\Postal\Config\Mailer as MailerConfig;
 use Myth\Postal\Transport\MailTransport;
 use Myth\Postal\Transport\SendmailTransport;
 use Myth\Postal\Transport\SmtpTransport;
@@ -344,6 +345,12 @@ class LegacyEmailAdapter extends FrameworkEmail
 
     private function buildMailer(): Mailer
     {
+        // An app that published its own Config\Mailer has configured Postal, so
+        // send through its default mailer and ignore the flat transport keys.
+        if ($this->transportOverride === null && config('Mailer')::class !== MailerConfig::class) {
+            return service('mailer')->mailer();
+        }
+
         // Participate in Postal's event pipeline so adapter sends behave like
         // any other send (a listener may cancel via email.sending).
         return new Mailer($this->resolveTransport(), fireEvents: true);
