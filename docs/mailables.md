@@ -47,7 +47,7 @@ Send it from anywhere:
 $result = (new WelcomeEmail($user))->send();
 ```
 
-`send()` returns the same `SendResult` you get from the mailer directly, so you can check `$result->success` if you need to.
+`send()` returns the same [`SendResult`](reference/send-result.md) you get from the mailer directly, so you can check `$result->success` if you need to.
 
 !!! warning "Call the parent constructor"
     If your Mailable defines its own `__construct()`, call `parent::__construct()`. That's what sets up the underlying `Email` the helpers compose into.
@@ -59,7 +59,7 @@ $result = (new WelcomeEmail($user))->send();
 !!! warning "Build each instance once"
     Every `send()` or `render()` call runs `build()` again on the same message, so calling `render()` and then `send()` on one instance adds the recipients twice. Use a fresh instance for each.
 
-Inside `build()` you have protected helpers that mirror part of the `Email` builder:
+Inside `build()` you have protected helpers that mirror part of the [`Email`](reference/email.md) builder:
 
 | Helper | What it sets |
 |--------|--------------|
@@ -164,13 +164,7 @@ class Postal extends BasePostal
 !!! danger "Never enable this in production"
     Even with the flag on, Postal refuses to register the preview routes when `ENVIRONMENT` is `production`. Leave the flag in your development config and you've got nothing to worry about.
 
-A few more knobs on `Config\Postal`:
-
-| Property | Default | What it does |
-|----------|---------|--------------|
-| `$enablePreview` | `false` | The opt-in switch described above |
-| `$previewPath` | `'postal/preview'` | The URI prefix the preview is mounted under |
-| `$mailableNamespaces` | `['App\Mails' => APPPATH . 'Mails']` | Namespace → directory pairs scanned for previewable Mailables |
+`Config\Postal` also sets the preview's URI prefix and where it looks for Mailables — see the [Config\Postal reference](reference/config-postal.md#preview).
 
 Add a pair to `$mailableNamespaces` for every place your Mailables live:
 
@@ -244,7 +238,7 @@ echo $email->subject;
 echo $email->htmlBody;
 ```
 
-`render()` runs `build()` and hands back the composed `Email` — it never sends. It's the build-without-send counterpart to `send()`.
+`render()` runs `build()` and hands back the composed [`Email`](reference/email.md) — it never sends. It's the build-without-send counterpart to `send()`.
 
 ### Building your own preview screen
 
