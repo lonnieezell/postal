@@ -87,27 +87,28 @@ nav:
     - Home: index.md
     - Installation: installation.md
     - Quick Start: quick-start.md
-  - Sending Mail:
+  - Guides:
     - Mailables: mailables.md
     - Markdown Mailables: markdown-mailables.md
+    - Previewing Mailables: previewing.md
     - Testing: testing.md
+    - Events: events.md
+    - Suppression & Unsubscribe: suppression-unsubscribe.md
+    - DKIM Signing: dkim-signing.md
+    - Failover: failover-mailer.md
+    - Legacy Compatibility: legacy-compatibility.md
   - Transports:
     - SMTP: smtp-mailer.md
     - Amazon SES: ses-mailer.md
     - Resend: resend-mailer.md
-    - Log: log-mailer.md
     - Sendmail & Mail: sendmail-mail-mailers.md
-    - Failover: failover-mailer.md
-  - Advanced:
-    - DKIM Signing: dkim-signing.md
-    - Suppression & Unsubscribe: suppression-unsubscribe.md
-    - Events: events.md
-    - MIME Rendering: mime-rendering.md
+    - Log: log-mailer.md
   - Reference:
     - Email: reference/email.md
     - SendResult: reference/send-result.md
     - Config\Mailer: reference/config-mailer.md
     - Config\Postal: reference/config-postal.md
-    - Legacy Compatibility: legacy-compatibility.md
     - CLI Commands: cli-commands.md
     - Changelog: changelog.md
+  - Explanation:
+    - MIME Rendering: mime-rendering.md

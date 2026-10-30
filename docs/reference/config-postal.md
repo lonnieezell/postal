@@ -25,7 +25,7 @@ class Postal extends BasePostal
 | `$previewPath` | `string` | `'postal/preview'` | The URI prefix the preview is served under. |
 | `$mailableNamespaces` | `array<string, string>` | `['App\Mails' => APPPATH . 'Mails']` | Namespace → directory pairs searched for previewable Mailables. |
 
-See [Previewing Mailables](../mailables.md#previewing-mailables).
+See [Previewing Mailables](../previewing.md).
 
 ### Markdown
 
