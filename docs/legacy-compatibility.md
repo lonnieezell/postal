@@ -2,7 +2,7 @@
 
 Postal ships a drop-in replacement for CodeIgniter 4's built-in email service. Existing application code that calls `service('email')` keeps working unchanged — the same fluent `setX` API, the same `send()` returning a boolean — but every message now flows through Postal's `Email` builder, `Mailer`, and transports.
 
-No configuration changes are required: the adapter reads the flat `Config\Email` keys your app already has.
+No configuration changes are required: the adapter reads the flat `Config\Email` keys your app already has. Once you publish `app/Config/Mailer.php`, the adapter sends through your default mailer instead (see [Which mailer sends](#which-mailer-sends)).
 
 ## How it works
 
@@ -23,9 +23,21 @@ if (! $email->send()) {
 }
 ```
 
+## Which mailer sends
+
+The adapter picks its transport by asking one question: has the app configured Postal?
+
+- **No `app/Config/Mailer.php`.** The adapter builds a transport from the flat `Config\Email` keys, as described in [Legacy configuration keys](#legacy-configuration-keys).
+- **An app `Config\Mailer` exists** (any subclass of `Myth\Postal\Config\Mailer`, such as the one `php spark publish` writes). The adapter sends through the default mailer, `service('mailer')->mailer()`. The flat transport keys (`protocol`, `mailPath`, `SMTP*`, `DSN`) are ignored, including keys passed to `initialize()` or `setProtocol()`. Shield's `emailer()` always passes them, and its mail still goes through your default mailer.
+
+Message keys (`mailType`, `wordWrap`/`wrapChars`, `priority`, `BCCBatchMode`/`BCCBatchSize`, `fromEmail`/`fromName`) apply either way. When the default mailer handles the send, its `fireEvents`, suppression list and unsubscribe settings apply too.
+
+!!! warning "Behaviour change"
+    Before, publishing `Config\Mailer` had no effect on `service('email')`, which kept sending through `Config\Email` (usually PHP's `mail()`). If you publish `Config\Mailer`, make sure its default mailer is the one your legacy mail should use. [`LegacyConfigMapper`](#reusing-the-legacy-mapping) can turn your `Config\Email` settings into a mailer definition.
+
 ## Type compatibility and Shield
 
-`LegacyEmailAdapter` extends `CodeIgniter\Email\Email`. Code that type-hints the framework class accepts it, so [CodeIgniter Shield](https://github.com/codeigniter4/shield)'s `emailer()` helper works with no changes. Activation, two-factor, and magic-link emails all send through Postal's transports and fire Postal's events.
+`LegacyEmailAdapter` extends `CodeIgniter\Email\Email`. Code that type-hints the framework class accepts it, so [CodeIgniter Shield](https://github.com/codeigniter4/shield)'s `emailer()` helper works with no changes. Activation, two-factor, and magic-link emails all send through Postal's transports and fire Postal's events (unless your `Config\Mailer` turns `fireEvents` off).
 
 The framework class is used only for its type. The adapter never runs the parent constructor, and it overrides every method that builds or sends a message. The framework's own sender is never used. See [ADR 0002](adr/0002-legacy-adapter-extends-framework-email.md).
 
@@ -49,7 +61,7 @@ The full legacy surface is available:
 
 ## Legacy configuration keys
 
-The adapter maps your existing `app/Config/Email.php` onto the new mailer:
+When the app has not published `Config\Mailer`, the adapter maps your existing `app/Config/Email.php` onto the new mailer:
 
 - `protocol` selects the transport (`mail`, `sendmail`, or `smtp`) for the send. It is case-insensitive, and an unknown value falls back to `mail`.
 - `SMTPHost`, `SMTPUser`, `SMTPPass`, `SMTPPort`, `SMTPTimeout`, `SMTPCrypto`, `SMTPKeepAlive`, and `SMTPAuthMethod` configure the SMTP transport. Auth is enabled automatically when a username and password are both set.
@@ -103,7 +115,7 @@ $mailer = LegacyConfigMapper::toMailer([
 
 - **Invalid addresses are swallowed.** Regardless of the `validate` setting, a malformed address is never thrown — it is recorded in the debugger and skipped, and `send()` returns `false`.
 - **Header defaults match CI4.** The envelope sender (`Return-Path`) defaults to the `From` address when you don't pass a return path to `setFrom()`, and `Reply-To` defaults to `From` when you don't set one.
-- **Events fire.** Adapter sends flow through Postal's [event pipeline](events.md): a listener on `email.sending` can cancel the send (which then returns `false`).
+- **Events fire.** Adapter sends flow through Postal's [event pipeline](events.md): a listener on `email.sending` can cancel the send (which then returns `false`). When your app publishes `Config\Mailer`, its `fireEvents` setting decides whether they fire.
 - **BCC batch mode** loops the blind recipients in `BCCBatchSize` chunks; the result is the logical AND of every batch.
 - **`printDebugger()`** renders the current message (headers, subject, body) through `MessageRenderer` and prepends any recorded errors. The output is compatible with the legacy debugger, though not byte-identical, and user-supplied values are HTML-escaped.
 - **Word wrap** maps to the renderer's hard wrap (see [MIME Rendering](mime-rendering.md)).
