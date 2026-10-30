@@ -19,11 +19,21 @@ use Myth\Postal\Config\Mailer as PostalMailer;
  *             'transport'  => 'smtp',
  *             'host'       => 'smtp.example.com',
  *             'port'       => 587,
- *             'username'   => env('SMTP_USER'),
- *             'password'   => env('SMTP_PASS'),
+ *             'authType'   => 'login',
  *             'encryption' => 'tls',
  *         ],
  *     ];
+ *
+ * PHP doesn't allow function calls in property defaults, so read secrets
+ * in the constructor:
+ *
+ *     public function __construct()
+ *     {
+ *         parent::__construct();
+ *
+ *         $this->mailers['smtp']['username'] = env('SMTP_USER');
+ *         $this->mailers['smtp']['password'] = env('SMTP_PASS');
+ *     }
  */
 class Mailer extends PostalMailer
 {

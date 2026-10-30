@@ -51,6 +51,8 @@ Pass a content matcher — a closure that receives an `Email` and returns a bool
 ```php
 <?php
 
+use Myth\Postal\Email;
+
 $welcomes = $fake->sent(static fn (Email $email): bool => $email->subject === 'Welcome!');
 ```
 
@@ -66,12 +68,14 @@ $welcomes = $fake->sent(WelcomeEmail::class);
 
 All assertions integrate with PHPUnit, so a failure fails the test with a readable message.
 
-### `assertSent(Closure $callback)`
+### `assertSent(Closure|string $callback, ?Closure $filter = null)`
 
-Passes when at least one recorded message satisfies the matcher:
+Passes when at least one recorded message satisfies the matcher. Pass a closure, or a Mailable class name ([see below](#by-mailable-class)):
 
 ```php
 <?php
+
+use Myth\Postal\Email;
 
 $fake->assertSent(static fn (Email $email): bool =>
     $email->subject === 'Welcome!'

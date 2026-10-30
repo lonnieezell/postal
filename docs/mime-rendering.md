@@ -1,6 +1,6 @@
 # MIME Rendering
 
-`MessageRenderer` turns an `Email` into a complete, RFC 5322 / MIME message as a raw string. Transports that speak raw MIME — like the [log mailer](log-mailer.md) and the SMTP-era transports — hand their message to it. You rarely call it directly, but knowing what it produces helps you reason about what actually leaves your app.
+`MessageRenderer` turns an `Email` into a complete, RFC 5322 / MIME message as a raw string. Transports that speak raw MIME — like the [log mailer](log-mailer.md) and the SMTP, sendmail and mail transports — hand their message to it. You rarely call it directly, but knowing what it produces helps you reason about what actually leaves your app.
 
 ```php
 <?php
@@ -150,7 +150,7 @@ Both the plain-text and HTML parts are encoded with `quoted-printable`, with eve
 Quoted-printable soft wrapping is invisible to the reader — it decodes away on delivery. When you want the plain-text part to *stay* wrapped in the recipient's client, set `Email::$wordWrap = true` (and `$wrapChars`, default 76). The renderer then hard-wraps the text at word boundaries before encoding, leaving long space-less tokens such as URLs intact. Word wrap is off by default; the legacy `setWordWrap()` adapter method drives it.
 
 !!! note "Current limitations"
-    The renderer is deliberately small for now. Very long non-ASCII header values aren't folded into multiple encoded-words, and non-ASCII attachment filenames are placed in the parameter as-is rather than RFC 2231-encoded (CR/LF and quotes are still stripped/escaped, so they remain safe). This is fine for the log mailer and typical messages; richer encoding will arrive with the SMTP transport.
+    The renderer is deliberately small for now. Very long non-ASCII header values aren't folded into multiple encoded-words, and non-ASCII attachment filenames are placed in the parameter as-is rather than RFC 2231-encoded (CR/LF and quotes are still stripped/escaped, so they remain safe). This is fine for typical messages.
 
 ## Next steps
 

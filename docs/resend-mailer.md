@@ -14,9 +14,16 @@ Create an API key in the Resend dashboard (a "Sending access" key is enough), th
 public array $mailers = [
     'resend' => [
         'transport' => 'resend',
-        'key'       => env('RESEND_KEY'),
     ],
 ];
+
+public function __construct()
+{
+    parent::__construct();
+
+    // PHP doesn't allow function calls in property defaults, so read the key here.
+    $this->mailers['resend']['key'] = env('RESEND_KEY');
+}
 ```
 
 Send through it by name, exactly like any other mailer:

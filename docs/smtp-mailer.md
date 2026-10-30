@@ -1,6 +1,6 @@
 # The SMTP Mailer
 
-When it's time to send real email, the `smtp` transport speaks SMTP directly to your mail server. It handles the full conversation — EHLO, authentication, the envelope, and the message body — and supports STARTTLS, implicit SSL/TLS, every common auth method, and connection reuse across a batch.
+When it's time to send real email, the `smtp` transport speaks SMTP directly to your mail server. It handles the full conversation — EHLO, authentication, the envelope, and the message body — and supports STARTTLS, implicit SSL/TLS, LOGIN, PLAIN and XOAUTH2 authentication, and connection reuse across a batch.
 
 ## Configuring an SMTP mailer
 
@@ -14,18 +14,25 @@ public array $mailers = [
         'transport'  => 'smtp',
         'host'       => 'smtp.example.com',
         'port'       => 587,
-        'username'   => env('SMTP_USER'),
-        'password'   => env('SMTP_PASS'),
         'authType'   => 'login',
         'encryption' => 'tls',
         'timeout'    => 30,
         'keepAlive'  => false,
     ],
 ];
+
+public function __construct()
+{
+    parent::__construct();
+
+    // PHP doesn't allow function calls in property defaults, so read secrets here.
+    $this->mailers['smtp']['username'] = env('SMTP_USER');
+    $this->mailers['smtp']['password'] = env('SMTP_PASS');
+}
 ```
 
 !!! warning "Keep credentials out of committed config"
-    Source `username` and `password` from your environment with `env('SMTP_USER')` / `env('SMTP_PASS')` (backed by `.env`), as shown above — never hardcode them in `Config\Mailer`, which is committed to version control. Add the variables to `.env` (which is git-ignored) and to your deployment's secret store.
+    Source `username` and `password` from your environment with `env('SMTP_USER')` / `env('SMTP_PASS')` (backed by `.env`) in the config's constructor, as shown above — never hardcode them in `Config\Mailer`, which is committed to version control. Add the variables to `.env` (which is git-ignored) and to your deployment's secret store.
 
 Send through it by name, exactly like any other mailer:
 
@@ -86,7 +93,7 @@ Two encryption modes, matching the two common ports:
 
 === "STARTTLS (port 587)"
     ```php
-<?php
+    <?php
 
     'port'       => 587,
     'encryption' => 'tls',
@@ -95,7 +102,7 @@ Two encryption modes, matching the two common ports:
 
 === "Implicit SSL (port 465)"
     ```php
-<?php
+    <?php
 
     'port'       => 465,
     'encryption' => 'ssl',
@@ -163,7 +170,7 @@ Postal's own suite uses a scripted double for exactly this. That double ships in
 ## Security
 
 !!! danger "Handle credentials and untrusted addresses with care"
-    - **Source secrets from the environment.** Read `username`/`password` from `.env` via `env()` and never commit them in `Config\Mailer`. See the warning above.
+    - **Source secrets from the environment.** Read `username`/`password` from `.env` via `env()` in the config's constructor and never commit them in `Config\Mailer`. See the warning above.
     - **SMTP command injection is blocked.** CR/LF is stripped from every command line, so an address, HELO name, or DSN value can't smuggle extra SMTP commands. Still, validate addresses at your application boundary.
     - **Credentials never reach your logs.** A failed `AUTH` reports against a safe label, so base64-encoded usernames and passwords stay out of exception messages and `SendResult` errors.
     - **Use encryption for authenticated sends.** `login` and `plain` put your credentials on the wire. Pair them with `encryption => 'tls'` or `'ssl'` so they're never sent in the clear.

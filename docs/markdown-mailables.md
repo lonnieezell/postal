@@ -37,7 +37,7 @@ class WelcomeEmail extends Mailable
 3. Inlines the layout's CSS, so styling survives in email clients that strip `<style>` blocks.
 4. Sets both outputs on the Mailable: `html()` with the rendered HTML, `text()` with a plain-text fallback generated from the markdown source.
 
-From the outside, a Mailable calling `->markdown(...)` behaves exactly like one calling `->html()->text()` directly — same `Email::$htmlBody`/`$textBody`, same `Mailable::fake()`/`assertSent()` surface.
+From the outside, a Mailable calling `->markdown(...)` behaves exactly like one calling `->html()->text()` directly — same `Email::$htmlBody`/`$textBody`, same `Mailer::fake()`/`assertSent()` surface.
 
 Want a different layout for one Mailable? Call `layout()` *before* `markdown()`:
 

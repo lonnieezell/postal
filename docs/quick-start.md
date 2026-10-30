@@ -37,15 +37,25 @@ class Mailer extends PostalMailer
             'transport'  => 'smtp',
             'host'       => 'smtp.example.com',
             'port'       => 587,
-            'username'   => env('SMTP_USER'),
-            'password'   => env('SMTP_PASS'),
+            'authType'   => 'login',
             'encryption' => 'tls',
         ],
     ];
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        // PHP doesn't allow function calls in property defaults, so read secrets here.
+        $this->mailers['smtp']['username'] = env('SMTP_USER');
+        $this->mailers['smtp']['password'] = env('SMTP_PASS');
+    }
 }
 ```
 
 With `default = 'log'`, every send in development writes the full rendered message to your app log — nothing leaves your machine.
+
+Redeclaring `$mailers` replaces the package's list rather than adding to it, so list every mailer you want to use.
 
 ## 3. Create a Mailable
 
@@ -68,7 +78,7 @@ class Welcome extends Mailable
 {
     public function __construct(
         private readonly string $name,
-        private readonly string $email,
+        private readonly string $address,
     ) {
         parent::__construct();
     }
@@ -76,7 +86,7 @@ class Welcome extends Mailable
     protected function build(): void
     {
         $this->from('hello@example.com', 'Acme')
-            ->to($this->email, $this->name)
+            ->to($this->address, $this->name)
             ->subject('Welcome aboard')
             ->html("<p>Hi {$this->name}, glad you're here.</p>");
     }
@@ -100,17 +110,23 @@ Open `writable/logs/` and you'll see the subject, headers, and body exactly as t
 ```php
 <?php
 
-use Myth\Postal\Mailer;
+namespace Tests;
+
 use App\Mails\Welcome;
+use CodeIgniter\Test\CIUnitTestCase;
+use Myth\Postal\Mailer;
 
-public function testWelcomeEmailIsSent(): void
+final class WelcomeEmailTest extends CIUnitTestCase
 {
-    $fake = Mailer::fake();
+    public function testWelcomeEmailIsSent(): void
+    {
+        $fake = Mailer::fake();
 
-    (new Welcome('Alice', 'alice@example.com'))->send();
+        (new Welcome('Alice', 'alice@example.com'))->send();
 
-    $fake->assertSent(Welcome::class);
-    $fake->assertSentTo('alice@example.com');
+        $fake->assertSent(Welcome::class);
+        $fake->assertSentTo('alice@example.com');
+    }
 }
 ```
 
