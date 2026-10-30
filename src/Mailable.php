@@ -43,6 +43,12 @@ abstract class Mailable
      */
     private bool $markdownRendered = false;
 
+    /**
+     * Whether build() has already run, so later render()/send() calls reuse
+     * the composed Email instead of building onto it again.
+     */
+    private bool $built = false;
+
     public function __construct()
     {
         $this->email = new Email();
@@ -54,15 +60,19 @@ abstract class Mailable
     abstract protected function build(): void;
 
     /**
-     * Runs build() and returns the composed Email, tagged with this
-     * mailable's class, without sending it. The build-without-send seam used
-     * by the preview tooling.
+     * Runs build() (the first time only) and returns the composed Email,
+     * tagged with this mailable's class, without sending it. Later calls
+     * return the same Email. The build-without-send seam used by the
+     * preview tooling.
      */
     public function render(): Email
     {
-        $this->build();
+        if (! $this->built) {
+            $this->built = true;
+            $this->build();
 
-        $this->email->mailableClass = static::class;
+            $this->email->mailableClass = static::class;
+        }
 
         return $this->email;
     }

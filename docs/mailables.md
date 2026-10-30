@@ -56,9 +56,6 @@ $result = (new WelcomeEmail($user))->send();
 
 `build()` is where you describe the message. It runs **lazily**, when you call `send()` or `render()` — never in the constructor. So passing data into the constructor and reading it in `build()` (like `$this->user` above) always works.
 
-!!! warning "Build each instance once"
-    Every `send()` or `render()` call runs `build()` again on the same message, so calling `render()` and then `send()` on one instance adds the recipients twice. Use a fresh instance for each.
-
 Inside `build()` you have protected helpers that mirror part of the [`Email`](reference/email.md) builder:
 
 | Helper | What it sets |
