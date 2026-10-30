@@ -87,21 +87,21 @@ nav:
     - Home: index.md
     - Installation: installation.md
     - Quick Start: quick-start.md
+    - Legacy Compatibility: legacy-compatibility.md
   - Guides:
     - Mailables: mailables.md
     - Markdown Mailables: markdown-mailables.md
     - Previewing Mailables: previewing.md
-    - Testing: testing.md
     - Events: events.md
     - Suppression & Unsubscribe: suppression-unsubscribe.md
+    - Testing: testing.md
     - DKIM Signing: dkim-signing.md
     - Failover: failover-mailer.md
-    - Legacy Compatibility: legacy-compatibility.md
   - Transports:
     - SMTP: smtp-mailer.md
+    - Sendmail & Mail: sendmail-mail-mailers.md
     - Amazon SES: ses-mailer.md
     - Resend: resend-mailer.md
-    - Sendmail & Mail: sendmail-mail-mailers.md
     - Log: log-mailer.md
   - Reference:
     - Email: reference/email.md
