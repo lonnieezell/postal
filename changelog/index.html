@@ -1548,11 +1548,15 @@ changes only arrive in a new major version. Classes marked <code>@internal</code
 covered. The entries below cover every change across the <code>1.0.0-beta</code> releases.</p>
 <h3 id="fixed">Fixed</h3>
 <ul>
-<li>
-<p>Mailables: calling <code>render()</code> and then <code>send()</code> (or either one twice) ran
+<li>Mailables: calling <code>render()</code> and then <code>send()</code> (or either one twice) ran
   <code>build()</code> again on the same <code>Email</code>, so recipients and attachments were added
   twice. A Mailable now builds once per instance, and later calls reuse the
-  composed <code>Email</code> (#64).</p>
+  composed <code>Email</code> (#64).</li>
+<li>
+<p>SMTP: a mailer with <code>username</code> and <code>password</code> but no <code>authType</code> skipped AUTH,
+  so the credentials were silently ignored. <code>authType</code> now defaults to <code>login</code>
+  when credentials are set, matching <code>LegacyConfigMapper</code>. An explicit
+  <code>authType</code> is unchanged (#65).</p>
 </li>
 <li>
 <p>Markdown: the plain-text part broke URLs that held a pair of <code>_</code>, <code>*</code>, <code>**</code>,
