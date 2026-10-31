@@ -12,6 +12,10 @@ covered. The entries below cover every change across the `1.0.0-beta` releases.
   `build()` again on the same `Email`, so recipients and attachments were added
   twice. A Mailable now builds once per instance, and later calls reuse the
   composed `Email` (#64).
+- SMTP: a mailer with `username` and `password` but no `authType` skipped AUTH,
+  so the credentials were silently ignored. `authType` now defaults to `login`
+  when credentials are set, matching `LegacyConfigMapper`. An explicit
+  `authType` is unchanged (#65).
 
 - Markdown: the plain-text part broke URLs that held a pair of `_`, `*`, `**`,
   `~~` or backticks, such as `https://example.com/_promo_/x`. The emphasis rules
