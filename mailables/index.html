@@ -1657,6 +1657,18 @@
 <td>A recipient (call more than once to add several)</td>
 </tr>
 <tr>
+<td><code>cc(array\|string $address, string $name = '')</code></td>
+<td>A carbon-copy recipient</td>
+</tr>
+<tr>
+<td><code>bcc(array\|string $address, string $name = '')</code></td>
+<td>A blind carbon-copy recipient</td>
+</tr>
+<tr>
+<td><code>replyTo(string $address, string $name = '')</code></td>
+<td>The Reply-To address</td>
+</tr>
+<tr>
 <td><code>subject(string $subject)</code></td>
 <td>The subject line</td>
 </tr>
@@ -1667,6 +1679,14 @@
 <tr>
 <td><code>text(string $text)</code></td>
 <td>The plain-text body</td>
+</tr>
+<tr>
+<td><code>attach(string $path, string $name = '', string $mime = '')</code></td>
+<td>A file attachment from disk</td>
+</tr>
+<tr>
+<td><code>attachData(string $data, string $name, string $mime = '')</code></td>
+<td>An attachment from in-memory content</td>
 </tr>
 <tr>
 <td><code>markdown(string $view, array $data = [])</code></td>
@@ -1683,10 +1703,10 @@
 </tbody>
 </table>
 <p>Each returns <code>$this</code>, so they chain.</p>
-<p>For anything else, such as <code>cc()</code>, <code>bcc()</code>, <code>replyTo()</code>, attachments or <code>metadata()</code>, call the <code>Email</code> builder directly through the protected <code>$this-&gt;email</code> property:</p>
+<p>For anything else, such as <code>header()</code>, <code>metadata()</code> or <code>embedImage()</code>, call the <code>Email</code> builder directly through the protected <code>$this-&gt;email</code> property:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="o">&lt;?</span><span class="nx">php</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">email</span><span class="o">-&gt;</span><span class="na">cc</span><span class="p">(</span><span class="s1">'team@example.com'</span><span class="p">);</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">email</span><span class="o">-&gt;</span><span class="na">metadata</span><span class="p">(</span><span class="s1">'campaign'</span><span class="p">,</span> <span class="s1">'welcome'</span><span class="p">);</span>
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Prefer <code>markdown()</code> over hand-rolled <code>html()</code>/<code>text()</code></p>

@@ -1253,15 +1253,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#unreleased" class="md-nav__link">
+  <a href="#100-2026-10-31" class="md-nav__link">
     <span class="md-ellipsis">
       
-        [Unreleased]
+        [1.0.0] - 2026-10-31
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="[Unreleased]">
+    <nav class="md-nav" aria-label="[1.0.0] - 2026-10-31">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1461,15 +1461,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#unreleased" class="md-nav__link">
+  <a href="#100-2026-10-31" class="md-nav__link">
     <span class="md-ellipsis">
       
-        [Unreleased]
+        [1.0.0] - 2026-10-31
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="[Unreleased]">
+    <nav class="md-nav" aria-label="[1.0.0] - 2026-10-31">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1542,14 +1542,25 @@
 
 
 <h1 id="changelog">Changelog</h1>
-<h2 id="unreleased">[Unreleased]</h2>
+<h2 id="100-2026-10-31">[1.0.0] - 2026-10-31</h2>
+<p>First stable release. From here on Postal follows semantic versioning: breaking
+changes only arrive in a new major version. Classes marked <code>@internal</code> are not
+covered. The entries below cover every change across the <code>1.0.0-beta</code> releases.</p>
 <h3 id="fixed">Fixed</h3>
 <ul>
-<li>Markdown: the plain-text part broke URLs that held a pair of <code>_</code>, <code>*</code>, <code>**</code>,
+<li>
+<p>Mailables: calling <code>render()</code> and then <code>send()</code> (or either one twice) ran
+  <code>build()</code> again on the same <code>Email</code>, so recipients and attachments were added
+  twice. A Mailable now builds once per instance, and later calls reuse the
+  composed <code>Email</code> (#64).</p>
+</li>
+<li>
+<p>Markdown: the plain-text part broke URLs that held a pair of <code>_</code>, <code>*</code>, <code>**</code>,
   <code>~~</code> or backticks, such as <code>https://example.com/_promo_/x</code>. The emphasis rules
   stripped the pair, so the link went somewhere else. <code>MarkdownRenderer::toText()</code>
   now leaves link targets, Mail Component <code>url</code> values and bare <code>http(s)</code> URLs
-  unchanged (#56).</li>
+  unchanged (#56).</p>
+</li>
 <li>Legacy adapter: Shield's <code>emailer()</code> threw a <code>TypeError</code>. <code>LegacyEmailAdapter</code>
   now extends <code>CodeIgniter\Email\Email</code>, so Shield's emails send through Postal.
   Subclasses that override a method with typed parameters must drop the types.
@@ -1589,6 +1600,14 @@
 </ul>
 <h3 id="changed">Changed</h3>
 <ul>
+<li><strong>BREAKING:</strong> <code>Mailer</code>, <code>MessageRenderer</code>, <code>Markdown\MarkdownRenderer</code> and
+  <code>Controllers\PreviewController</code> are now <code>final</code> (and <code>Mailer</code> and
+  <code>MarkdownRenderer</code> are <code>readonly</code>), so they can no longer be extended. Use
+  <code>Preview\MailablePreviewer</code> to build custom preview screens. The CommonMark
+  classes behind Mail Components (<code>MailComponentExtension</code>, <code>MailComponentNode</code>,
+  <code>MailComponentParser</code>, <code>MailComponentStartParser</code>, <code>MailComponentRenderer</code>)
+  and <code>Markdown\PackageView</code> are marked <code>@internal</code> and are not covered by
+  semantic versioning (#73).</li>
 <li>Legacy adapter (<strong>behaviour change</strong>): once an app publishes its own <code>Config\Mailer</code>, the
   legacy adapter sends through the default mailer (<code>service('mailer')-&gt;mailer()</code>)
   instead of building a transport from <code>Config\Email</code>. The flat transport keys
@@ -1620,6 +1639,10 @@
 </ul>
 <h3 id="added">Added</h3>
 <ul>
+<li><code>Mailable</code> helpers <code>cc()</code>, <code>bcc()</code>, <code>replyTo()</code>, <code>attach()</code> and
+  <code>attachData()</code>, matching the <code>Email</code> builder methods of the same name. Before,
+  these needed <code>$this-&gt;email-&gt;...</code>. A Mailable subclass that already defines a
+  method with one of these names must now match its signature (#73).</li>
 <li><code>Myth\Postal\LegacyConfigMapper::toMailer()</code>: turns CodeIgniter's flat
   <code>Config\Email</code> keys into a Postal mailer definition, using the same rules as
   <code>LegacyEmailAdapter</code>. Other packages can move legacy settings into
