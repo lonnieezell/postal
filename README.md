@@ -2,7 +2,7 @@
 
 [![PHPUnit](https://github.com/lonnieezell/postal/actions/workflows/phpunit.yml/badge.svg)](https://github.com/lonnieezell/postal/actions/workflows/phpunit.yml)
 [![PHPStan](https://github.com/lonnieezell/postal/actions/workflows/phpstan.yml/badge.svg)](https://github.com/lonnieezell/postal/actions/workflows/phpstan.yml)
-[![Latest Version](https://img.shields.io/packagist/v/myth/postal?include_prereleases)](https://packagist.org/packages/myth/postal)
+[![Latest Version](https://img.shields.io/packagist/v/myth/postal)](https://packagist.org/packages/myth/postal)
 [![License](https://img.shields.io/packagist/l/myth/postal)](LICENSE)
 
 **A modern email library for CodeIgniter 4.**
@@ -12,8 +12,8 @@ You choose the provider in config, not code. Mailables, Markdown emails, DKIM si
 suppression lists and test fakes are built in, and existing `service('email')` calls keep
 working, so you can adopt Postal one step at a time.
 
-> **Status:** 1.0 beta. The API is stable and ready for use; any breaking change before the
-> 1.0 release will be called out in the [changelog](https://lonnieezell.github.io/postal/changelog/).
+> **Status:** stable. Postal follows [semantic versioning](https://semver.org/): breaking changes
+> only arrive in a new major version and are called out in the [changelog](https://lonnieezell.github.io/postal/changelog/).
 
 ## 📖 Documentation
 

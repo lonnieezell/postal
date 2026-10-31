@@ -10,8 +10,6 @@
         "mailer",
         "smtp",
         "ses",
-        "mailgun",
-        "postmark",
         "resend",
         "transport"
     ],

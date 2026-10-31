@@ -1,8 +1,17 @@
 # Changelog
 
-## [Unreleased]
+## [1.0.0] - 2026-10-31
+
+First stable release. From here on Postal follows semantic versioning: breaking
+changes only arrive in a new major version. Classes marked `@internal` are not
+covered. The entries below cover every change across the `1.0.0-beta` releases.
 
 ### Fixed
+
+- Mailables: calling `render()` and then `send()` (or either one twice) ran
+  `build()` again on the same `Email`, so recipients and attachments were added
+  twice. A Mailable now builds once per instance, and later calls reuse the
+  composed `Email` (#64).
 
 - Markdown: the plain-text part broke URLs that held a pair of `_`, `*`, `**`,
   `~~` or backticks, such as `https://example.com/_promo_/x`. The emphasis rules
