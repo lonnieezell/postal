@@ -130,6 +130,36 @@ final class MailableTest extends CIUnitTestCase
         $fake->assertNothingSent();
     }
 
+    public function testRenderThenSendBuildsOnlyOnce(): void
+    {
+        $fake = Mailer::fake();
+
+        $mailable = new WelcomeEmail();
+        $mailable->render();
+        $mailable->send();
+
+        $fake->assertSent(static fn (Email $email): bool => count($email->to) === 1);
+    }
+
+    public function testSendingTwiceBuildsOnlyOnce(): void
+    {
+        $fake = Mailer::fake();
+
+        $mailable = new WelcomeEmail();
+        $mailable->send();
+        $mailable->send();
+
+        $fake->assertSentCount(2);
+        $fake->assertNotSent(static fn (Email $email): bool => count($email->to) !== 1);
+    }
+
+    public function testRenderReturnsTheSameEmailOnRepeatedCalls(): void
+    {
+        $mailable = new WelcomeEmail();
+
+        $this->assertSame($mailable->render(), $mailable->render());
+    }
+
     public function testRenderTagsTheMailableClass(): void
     {
         $email = (new WelcomeEmail())->render();
