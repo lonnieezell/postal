@@ -30,6 +30,8 @@ use Myth\Postal\Markdown\Node\MailComponentNode;
  * slot text is converted as inline-only markdown immediately (no children).
  * Otherwise the tag opens a multi-line container, closed later by
  * MailComponentParser once a line with only the closing tag is reached.
+ *
+ * @internal
  */
 final class MailComponentStartParser implements BlockStartParserInterface
 {

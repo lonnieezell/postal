@@ -26,6 +26,8 @@ use Myth\Postal\Markdown\Node\MailComponentNode;
  * stays open as a container - letting its slot content parse as normal
  * child blocks, including nested `<mail-*>` tags - until a line consisting
  * solely of its matching closing tag is reached.
+ *
+ * @internal
  */
 final class MailComponentParser extends AbstractBlockContinueParser
 {

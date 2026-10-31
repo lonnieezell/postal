@@ -26,7 +26,7 @@ use Throwable;
  * Serves the in-browser Mailable preview. Mounted by src/Config/Routes.php only
  * when the preview gate is open (non-production environment + enabled flag).
  */
-class PreviewController extends Controller
+final class PreviewController extends Controller
 {
     private readonly Postal $config;
     private readonly MailablePreviewer $previewer;

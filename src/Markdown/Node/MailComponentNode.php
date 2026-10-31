@@ -21,6 +21,8 @@ use League\CommonMark\Node\Block\AbstractBlock;
  * engine, so nested markdown/components work); single-line self-closing
  * tags carry their already-inline-converted slot content in $inlineSlot
  * instead, since they never receive children.
+ *
+ * @internal
  */
 final class MailComponentNode extends AbstractBlock
 {

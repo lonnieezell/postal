@@ -18,7 +18,7 @@ namespace Myth\Postal;
  * text/plain message, or a multipart/alternative message whenever HTML is
  * present (a plain-text part is generated from the HTML when none is supplied).
  */
-class MessageRenderer
+final class MessageRenderer
 {
     private const CRLF    = "\r\n";
     private const CHARSET = 'UTF-8';

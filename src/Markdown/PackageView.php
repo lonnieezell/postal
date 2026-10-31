@@ -21,6 +21,8 @@ namespace Myth\Postal\Markdown;
  * bare (non-namespaced) view paths, so without this fallback the package's
  * own shipped views (e.g. src/Views/mail/components/button.php) would be
  * unreachable until a host application publishes them.
+ *
+ * @internal
  */
 final class PackageView
 {

@@ -48,6 +48,14 @@
 
 ### Changed
 
+- **BREAKING:** `Mailer`, `MessageRenderer`, `Markdown\MarkdownRenderer` and
+  `Controllers\PreviewController` are now `final` (and `Mailer` and
+  `MarkdownRenderer` are `readonly`), so they can no longer be extended. Use
+  `Preview\MailablePreviewer` to build custom preview screens. The CommonMark
+  classes behind Mail Components (`MailComponentExtension`, `MailComponentNode`,
+  `MailComponentParser`, `MailComponentStartParser`, `MailComponentRenderer`)
+  and `Markdown\PackageView` are marked `@internal` and are not covered by
+  semantic versioning (#73).
 - Legacy adapter (**behaviour change**): once an app publishes its own `Config\Mailer`, the
   legacy adapter sends through the default mailer (`service('mailer')->mailer()`)
   instead of building a transport from `Config\Email`. The flat transport keys
