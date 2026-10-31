@@ -62,21 +62,26 @@ Inside `build()` you have protected helpers that mirror part of the [`Email`](re
 |--------|--------------|
 | `from(string $address, string $name = '')` | The sender |
 | `to(array\|string $address, string $name = '')` | A recipient (call more than once to add several) |
+| `cc(array\|string $address, string $name = '')` | A carbon-copy recipient |
+| `bcc(array\|string $address, string $name = '')` | A blind carbon-copy recipient |
+| `replyTo(string $address, string $name = '')` | The Reply-To address |
 | `subject(string $subject)` | The subject line |
 | `html(string $html)` | The HTML body |
 | `text(string $text)` | The plain-text body |
+| `attach(string $path, string $name = '', string $mime = '')` | A file attachment from disk |
+| `attachData(string $data, string $name, string $mime = '')` | An attachment from in-memory content |
 | `markdown(string $view, array $data = [])` | Both bodies at once, from a markdown view — see [Markdown Mailables](markdown-mailables.md) |
 | `layout(string $view)` | Overrides the Layout `markdown()` wraps its HTML in, for this Mailable only — call it *before* `markdown()` |
 | `transport(string $name)` | The named mailer to send through — see [Choosing a mailer](#choosing-a-mailer) |
 
 Each returns `$this`, so they chain.
 
-For anything else, such as `cc()`, `bcc()`, `replyTo()`, attachments or `metadata()`, call the `Email` builder directly through the protected `$this->email` property:
+For anything else, such as `header()`, `metadata()` or `embedImage()`, call the `Email` builder directly through the protected `$this->email` property:
 
 ```php
 <?php
 
-$this->email->cc('team@example.com');
+$this->email->metadata('campaign', 'welcome');
 ```
 
 !!! tip "Prefer `markdown()` over hand-rolled `html()`/`text()`"

@@ -105,6 +105,33 @@ abstract class Mailable
         return $this;
     }
 
+    /**
+     * @param list<string>|string $address
+     */
+    protected function cc(array|string $address, string $name = ''): static
+    {
+        $this->email->cc($address, $name);
+
+        return $this;
+    }
+
+    /**
+     * @param list<string>|string $address
+     */
+    protected function bcc(array|string $address, string $name = ''): static
+    {
+        $this->email->bcc($address, $name);
+
+        return $this;
+    }
+
+    protected function replyTo(string $address, string $name = ''): static
+    {
+        $this->email->replyTo($address, $name);
+
+        return $this;
+    }
+
     protected function subject(string $subject): static
     {
         $this->email->subject($subject);
@@ -122,6 +149,26 @@ abstract class Mailable
     protected function text(string $text): static
     {
         $this->email->text($text);
+
+        return $this;
+    }
+
+    /**
+     * Attaches a file from disk.
+     */
+    protected function attach(string $path, string $name = '', string $mime = ''): static
+    {
+        $this->email->attach($path, $name, $mime);
+
+        return $this;
+    }
+
+    /**
+     * Attaches in-memory content as a file.
+     */
+    protected function attachData(string $data, string $name, string $mime = ''): static
+    {
+        $this->email->attachData($data, $name, $mime);
 
         return $this;
     }

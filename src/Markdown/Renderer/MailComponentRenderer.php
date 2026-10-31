@@ -24,6 +24,8 @@ use Myth\Postal\Markdown\PackageView;
  * Renders a MailComponentNode by calling view() on its resolved component
  * view, passing tag attributes as $data and the (already markdown-converted)
  * slot content as the reserved $slot variable.
+ *
+ * @internal
  */
 final readonly class MailComponentRenderer implements NodeRendererInterface
 {

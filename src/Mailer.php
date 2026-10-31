@@ -23,13 +23,13 @@ use Myth\Postal\Transport\TransportInterface;
  * suppression filtering and unsubscribe header injection, fires the email
  * lifecycle events, and hands the message to the bound transport.
  */
-class Mailer
+final readonly class Mailer
 {
     public function __construct(
-        private readonly TransportInterface $transport,
-        private readonly bool $fireEvents = true,
-        private readonly ?SuppressionListInterface $suppressionList = null,
-        private readonly ?UnsubscribeUrlInterface $unsubscribeUrl = null,
+        private TransportInterface $transport,
+        private bool $fireEvents = true,
+        private ?SuppressionListInterface $suppressionList = null,
+        private ?UnsubscribeUrlInterface $unsubscribeUrl = null,
     ) {
     }
 

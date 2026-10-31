@@ -23,7 +23,7 @@ use Myth\Postal\Markdown\Parser\MailComponentStartParser;
  * Converts raw CommonMark markdown into HTML (for the message body) and into
  * plain text (for the multipart/alternative text fallback).
  */
-class MarkdownRenderer
+final readonly class MarkdownRenderer
 {
     /**
      * Per-line markdown-syntax replacements, applied before lines are
@@ -87,7 +87,7 @@ class MarkdownRenderer
      */
     private const URL = '/\bhttps?:\/\/[^\s()<>]*[^\s()<>*_~`.,;:!?\'"]/i';
 
-    private readonly MarkdownConverter $converter;
+    private MarkdownConverter $converter;
 
     public function __construct(?PostalConfig $config = null)
     {

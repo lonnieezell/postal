@@ -25,6 +25,8 @@ use Myth\Postal\Markdown\Renderer\MailComponentRenderer;
  * regex pre-processing or post-hoc DOM manipulation. Registered at a higher
  * priority than the core HTML block/heading/blockquote parsers so it claims
  * `<mail-*>` tags before they're swallowed as raw HTML passthrough.
+ *
+ * @internal
  */
 final readonly class MailComponentExtension implements ExtensionInterface
 {

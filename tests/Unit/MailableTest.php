@@ -195,4 +195,35 @@ final class MailableTest extends CIUnitTestCase
 
         $this->assertSame('marketing', $recorder->requestedName);
     }
+
+    public function testRecipientAndAttachmentHelpersComposeTheEmail(): void
+    {
+        $mailable = new class () extends Mailable {
+            protected function build(): void
+            {
+                $this->from('me@example.com')
+                    ->to('you@example.com')
+                    ->cc(['cc1@example.com', 'cc2@example.com'])
+                    ->bcc('bcc@example.com', 'Hidden')
+                    ->replyTo('reply@example.com', 'Support')
+                    ->attach(__FILE__, 'source.php', 'text/plain')
+                    ->attachData('a,b', 'report.csv', 'text/csv');
+            }
+        };
+
+        $email = $mailable->render();
+
+        $this->assertSame(['cc1@example.com', 'cc2@example.com'], array_map(static fn ($a): string => $a->email, $email->cc));
+        $this->assertSame('bcc@example.com', $email->bcc[0]->email);
+        $this->assertSame('Hidden', $email->bcc[0]->name);
+        $this->assertSame('reply@example.com', $email->replyTo?->email);
+        $this->assertSame('Support', $email->replyTo->name);
+        $this->assertCount(2, $email->attachments);
+        $this->assertSame(__FILE__, $email->attachments[0]->path);
+        $this->assertSame('source.php', $email->attachments[0]->name);
+        $this->assertSame('text/plain', $email->attachments[0]->mime);
+        $this->assertSame('a,b', $email->attachments[1]->data);
+        $this->assertSame('report.csv', $email->attachments[1]->name);
+        $this->assertSame('text/csv', $email->attachments[1]->mime);
+    }
 }

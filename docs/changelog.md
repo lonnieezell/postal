@@ -1,8 +1,17 @@
 # Changelog
 
-## [Unreleased]
+## [1.0.0] - 2026-10-31
+
+First stable release. From here on Postal follows semantic versioning: breaking
+changes only arrive in a new major version. Classes marked `@internal` are not
+covered. The entries below cover every change across the `1.0.0-beta` releases.
 
 ### Fixed
+
+- Mailables: calling `render()` and then `send()` (or either one twice) ran
+  `build()` again on the same `Email`, so recipients and attachments were added
+  twice. A Mailable now builds once per instance, and later calls reuse the
+  composed `Email` (#64).
 
 - Markdown: the plain-text part broke URLs that held a pair of `_`, `*`, `**`,
   `~~` or backticks, such as `https://example.com/_promo_/x`. The emphasis rules
@@ -48,6 +57,14 @@
 
 ### Changed
 
+- **BREAKING:** `Mailer`, `MessageRenderer`, `Markdown\MarkdownRenderer` and
+  `Controllers\PreviewController` are now `final` (and `Mailer` and
+  `MarkdownRenderer` are `readonly`), so they can no longer be extended. Use
+  `Preview\MailablePreviewer` to build custom preview screens. The CommonMark
+  classes behind Mail Components (`MailComponentExtension`, `MailComponentNode`,
+  `MailComponentParser`, `MailComponentStartParser`, `MailComponentRenderer`)
+  and `Markdown\PackageView` are marked `@internal` and are not covered by
+  semantic versioning (#73).
 - Legacy adapter (**behaviour change**): once an app publishes its own `Config\Mailer`, the
   legacy adapter sends through the default mailer (`service('mailer')->mailer()`)
   instead of building a transport from `Config\Email`. The flat transport keys
@@ -79,6 +96,10 @@
 
 ### Added
 
+- `Mailable` helpers `cc()`, `bcc()`, `replyTo()`, `attach()` and
+  `attachData()`, matching the `Email` builder methods of the same name. Before,
+  these needed `$this->email->...`. A Mailable subclass that already defines a
+  method with one of these names must now match its signature (#73).
 - `Myth\Postal\LegacyConfigMapper::toMailer()`: turns CodeIgniter's flat
   `Config\Email` keys into a Postal mailer definition, using the same rules as
   `LegacyEmailAdapter`. Other packages can move legacy settings into
