@@ -79,6 +79,10 @@
 
 ### Added
 
+- `Mailable` helpers `cc()`, `bcc()`, `replyTo()`, `attach()` and
+  `attachData()`, matching the `Email` builder methods of the same name. Before,
+  these needed `$this->email->...`. A Mailable subclass that already defines a
+  method with one of these names must now match its signature (#73).
 - `Myth\Postal\LegacyConfigMapper::toMailer()`: turns CodeIgniter's flat
   `Config\Email` keys into a Postal mailer definition, using the same rules as
   `LegacyEmailAdapter`. Other packages can move legacy settings into
