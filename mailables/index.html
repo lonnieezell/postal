@@ -1639,10 +1639,6 @@
 </div>
 <h2 id="composing-in-build">Composing in <code>build()</code></h2>
 <p><code>build()</code> is where you describe the message. It runs <strong>lazily</strong>, when you call <code>send()</code> or <code>render()</code> — never in the constructor. So passing data into the constructor and reading it in <code>build()</code> (like <code>$this-&gt;user</code> above) always works.</p>
-<div class="admonition warning">
-<p class="admonition-title">Build each instance once</p>
-<p>Every <code>send()</code> or <code>render()</code> call runs <code>build()</code> again on the same message, so calling <code>render()</code> and then <code>send()</code> on one instance adds the recipients twice. Use a fresh instance for each.</p>
-</div>
 <p>Inside <code>build()</code> you have protected helpers that mirror part of the <a href="../reference/email/"><code>Email</code></a> builder:</p>
 <table>
 <thead>
